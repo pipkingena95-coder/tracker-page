@@ -1182,6 +1182,14 @@
     background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;
     letter-spacing:.5px;word-break:break-all;}
   .cloud-key .btn{padding:5px 11px;font-size:11px;}
+  /* полоса «обновление готово» */
+  .upd-bar{display:flex;align-items:center;gap:10px;margin:0 0 12px;padding:9px 12px;
+    border-radius:13px;background:var(--ok-bg);border:1px solid var(--border);}
+  .upd-bar .t{flex:1;min-width:0;font-size:12.5px;font-weight:600;color:var(--ok-fg);}
+  .upd-bar button{flex:0 0 auto;background:var(--amber);color:var(--on-accent);border:none;
+    border-radius:10px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;
+    font-family:var(--font-body);}
+  .upd-bar button:hover{background:var(--amber2);}
   .upd-row{display:flex;align-items:baseline;gap:9px;padding:5px 2px;}
   .upd-row .k{flex:1;min-width:0;font-size:12px;color:var(--grey);}
   .upd-row code{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--white);
@@ -1287,7 +1295,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-09-11 11:24+d150d10d";
+window.TRACKER_BUILD = "2026-09-11 11:29+cabe21ac";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -1717,6 +1725,7 @@ function render(){
         <button class="icon-btn ${cur.tab==="settings"?'on':''}" id="openSettings" title="Настройки" aria-label="Настройки">⚙</button>
       </div>
     </header>
+    <div id="updBarSlot">${renderUpdateBar()}</div>
     <div id="content"></div>
     <nav class="tabbar" id="tabs">
       ${TABS.map(([id,label,ic])=>
@@ -1727,6 +1736,7 @@ function render(){
   document.getElementById("openSearch").onclick=()=>{ cur.tab = cur.tab==="search" ? "today" : "search"; render(); };
   document.getElementById("openSettings").onclick=()=>{ cur.tab = cur.tab==="settings" ? "today" : "settings"; render(); };
 
+  bindUpdateBar();
   const c=document.getElementById("content");
   if(cur.tab==="today"){ c.innerHTML = isConsole()? renderConsole() : renderToday(); bindToday(); bindReminders(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
@@ -6529,6 +6539,36 @@ function maybeAppUpdate(){
   checkAppUpdate(true);
 }
 
+// Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
+// него — и есть применение обновления: ни перезапуска, ни переустановки.
+const UPDATE_PAGE_URL="https://appassets.androidplatform.net/update/tracker.html";
+
+function updateWaiting(){
+  if(!isNativeShell()) return "";
+  let b="";
+  try{ b=AndroidHost.updateBuild()||""; }catch(e){ return ""; }
+  return (b && b!==currentBuild()) ? b : "";
+}
+function applyUpdateNow(){
+  // перед уходом дожимаем сохранение: страница сменится целиком
+  try{ saveData(); }catch(e){}
+  location.href=UPDATE_PAGE_URL;
+}
+// Полоса поверх любого экрана: раньше о готовом обновлении можно было узнать,
+// только заглянув в настройки.
+function renderUpdateBar(){
+  const b=updateWaiting();
+  if(!b) return "";
+  return `<div class="upd-bar">
+    <span class="t">Обновление готово</span>
+    <button id="updApplyBar">Применить</button>
+  </div>`;
+}
+function bindUpdateBar(){
+  const b=document.getElementById("updApplyBar");
+  if(b) b.onclick=applyUpdateNow;
+}
+
 function renderUpdateCard(){
   if(!isNativeShell()) return "";
   const c=updCfg();
@@ -6552,6 +6592,7 @@ function renderUpdateCard(){
         <button class="${c.on?'':'active'}" data-updon="0">Вручную</button>
       </div>
       <button class="btn ghost" id="updNow">Проверить сейчас</button>
+      ${pending? `<button class="btn" id="updApply">Применить сейчас</button>`:""}
       ${pending? `<button class="btn ghost" id="updDrop">Отменить</button>`:""}
     </div>
     <div style="font-size:11px;color:var(--grey-dim);margin-top:8px;">${last}</div>
@@ -6570,6 +6611,8 @@ function bindUpdateUi(){
   });
   const now=document.getElementById("updNow");
   if(now) now.onclick=()=>checkAppUpdate(false);
+  const apply=document.getElementById("updApply");
+  if(apply) apply.onclick=applyUpdateNow;
   const drop=document.getElementById("updDrop");
   if(drop) drop.onclick=()=>{
     if(AndroidHost.dropAppUpdate()){ showBanner("Скачанное обновление удалено"); render(); }
