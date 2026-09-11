@@ -547,6 +547,52 @@
   html[data-look="glass"] .day-cell{border-radius:9px;}
   html[data-look="glass"] .wk-cell{border-radius:11px;}
 
+  /* шапка раздела финансов */
+  .fin-hero{display:flex;flex-direction:column;gap:14px;}
+  .fh-k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-dim);}
+  .fh-v{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:700;
+    letter-spacing:-.035em;line-height:1;margin-top:5px;color:var(--white);}
+  .fh-v.warn{color:var(--pink);}
+  .fh-s{font-size:11.5px;color:var(--grey);margin-top:6px;}
+  .fh-side{display:flex;gap:8px;}
+  .fh-side > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;
+    padding:10px 11px;background:var(--card);border-radius:13px;}
+  .fh-side .k{font-size:8.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--grey-dim);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .fh-side .v{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;
+    color:var(--white);white-space:nowrap;}
+  .fh-side .v.pos{color:var(--green);} .fh-side .v.neg{color:var(--pink);}
+  .fh-other{display:flex;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;color:var(--grey);padding-top:2px;border-top:1px solid var(--border);}
+
+  /* переключатель панелей */
+  .fp-nav{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none;}
+  .fp-nav::-webkit-scrollbar{display:none;}
+  .fp-nav button{flex:0 0 auto;background:var(--card);border:1px solid var(--border);
+    color:var(--grey);padding:8px 15px;border-radius:19px;font-size:12.5px;font-weight:600;
+    cursor:pointer;font-family:var(--font-body);}
+  .fp-nav button.on{background:var(--amber);color:var(--on-accent);border-color:transparent;}
+
+  /* записи: доходы отдельно от расходов */
+  .fin-group{margin-bottom:6px;}
+  .fin-group + .fin-group{margin-top:20px;}
+  .fg-head{display:flex;align-items:baseline;gap:9px;padding:0 2px 8px;
+    border-bottom:1px solid var(--border);margin-bottom:4px;}
+  .fg-head .t{flex:1;font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;}
+  .fg-head .t.inc{color:var(--green);} .fg-head .t.exp{color:var(--pink);}
+  .fg-head .n{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;}
+  .fg-head .c{font-size:10.5px;color:var(--grey-dim);font-family:'JetBrains Mono',monospace;}
+  .fr-date{font-size:10px;color:var(--grey-dim);font-family:'JetBrains Mono',monospace;
+    flex:0 0 auto;}
+  .fr-cur{font-size:9.5px;color:var(--grey-dim);margin-left:3px;}
+
+  /* валюта при вводе */
+  .qa-cur{display:flex;gap:5px;flex-wrap:wrap;}
+  .qa-cur button{background:var(--card);border:1px solid var(--border);color:var(--grey);
+    border-radius:11px;padding:5px 11px;font-size:12px;font-weight:600;cursor:pointer;
+    font-family:'JetBrains Mono',monospace;}
+  .qa-cur button.on{background:var(--amber);color:var(--on-accent);border-color:transparent;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1295,7 +1341,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-09-11 11:29+cabe21ac";
+window.TRACKER_BUILD = "2026-09-11 11:59+38f55838";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -1569,7 +1615,7 @@ function projectSavingsCompletion(entries, remaining){
 }
 
 let DATA=null;
-let cur = { tab:"today", sub:{rhythm:"habits", doing:"todos", money:"finance"}, monthIdx: new Date().getMonth(), year: new Date().getFullYear(), day: new Date().getDate(), savingsGoalIdx: 0, habitView:"month", weekAnchor: Date.now(), finFilter:{type:"",accountId:"",category:"",q:"",from:"",to:""}, wkFilter:{ex:"",type:"",day:"",expand:false}, finEdit:null, finDraft:null, finAddMode:"one", bulkDraft:null, finPeriod:"month", finYear:null, finLimit:null, catLimitEdit:false, cloudList:null, calY:null, calM:null, calMode:"days", calMetric:"spend", calSel:null, calDraft:null, reconcileAcc:null, reconcileValue:null, backupPanel:null, searchQuery:"" };
+let cur = { tab:"today", sub:{rhythm:"habits", doing:"todos", money:"finance"}, monthIdx: new Date().getMonth(), year: new Date().getFullYear(), day: new Date().getDate(), savingsGoalIdx: 0, habitView:"month", weekAnchor: Date.now(), finFilter:{type:"",accountId:"",category:"",q:"",from:"",to:""}, wkFilter:{ex:"",type:"",day:"",expand:false}, finEdit:null, finDraft:null, finAddMode:"one", bulkDraft:null, finPeriod:"month", finPanel:"cat", finYear:null, finLimit:null, catLimitEdit:false, cloudList:null, calY:null, calM:null, calMode:"days", calMetric:"spend", calSel:null, calDraft:null, reconcileAcc:null, reconcileValue:null, backupPanel:null, searchQuery:"" };
 let saveTimer=null;
 
 async function loadData(){
@@ -3144,9 +3190,12 @@ function defaultAccountId(){ return DATA.finance.accounts[0].id; }
 function accountBalance(accId){
   const acc=(DATA.finance.accounts||[]).find(a=>String(a.id)===String(accId));
   let bal=acc? (+acc.startBalance||0) : 0;
+  const accCur=acc? (acc.currency||"RUB") : "RUB";
   DATA.finance.entries.forEach(e=>{
     if(String(e.accountId||defaultAccountId())!==String(accId)) return;
-    if(e.type==="доход") bal+=(+e.amount||0); else bal-=(+e.amount||0);
+    // запись может быть в другой валюте — приводим к валюте счёта
+    const v=entryIn(e, accCur);
+    if(e.type==="доход") bal+=v; else bal-=v;
   });
   (DATA.finance.transfers||[]).forEach(t=>{
     if(String(t.fromAccountId)===String(accId)) bal-=(+t.amount||0);
@@ -3160,6 +3209,111 @@ function accountBalance(accId){
 // Строками, а не как лежит в данных: форма добавления пишет accountId строкой,
 // а у счёта id числовой. Set.has("1") при наборе из чисел — false, и запись
 // молча выпадала из бюджета, прогноза и категорий.
+// ---------- ВАЛЮТА У САМОЙ ЗАПИСИ ----------
+// Раньше валюта бралась только от счёта: чтобы записать доход в долларах,
+// приходилось заводить долларовый счёт. Теперь валюту можно указать прямо при
+// вводе. У старых записей поля нет — для них всё работает ровно как прежде.
+function accountCurrency(accId){
+  const a=(DATA.finance.accounts||[]).find(x=>String(x.id)===String(accId));
+  return a? (a.currency||"RUB") : "RUB";
+}
+function entryCurrency(e){ return e.currency || accountCurrency(e.accountId||defaultAccountId()); }
+function isRubEntry(e){ return entryCurrency(e)==="RUB"; }
+// Пересчёт в нужную валюту. Курса нет — возвращаем как есть, а не делаем вид,
+// что пересчитали.
+function entryIn(e, curr){
+  const v=+e.amount||0, from=entryCurrency(e);
+  if(from===curr) return v;
+  const c=convertMoney(v, from, curr);
+  return c==null? v : c;
+}
+function finCurrencies(){
+  // валюты, которые реально есть у счетов, плюс рубль — чтобы список не рос зря
+  const set=new Set(["RUB"]);
+  (DATA.finance.accounts||[]).forEach(a=>set.add(a.currency||"RUB"));
+  (DATA.finance.entries||[]).forEach(e=>{ if(e.currency) set.add(e.currency); });
+  return CURRENCY_LIST.filter(c=>set.has(c));
+}
+
+// ---------- ШАПКА РАЗДЕЛА ----------
+// Раньше сверху была таблица «баланс / доход / расход за всё время» — три числа,
+// которые ничего не решают. Здесь то, что нужно каждый день.
+function renderFinHero(){
+  const f=financeForecast();
+  const totals=currencyTotals();
+  const other=Object.keys(totals).filter(c=>c!=="RUB" && Math.abs(totals[c].bal)>0.005);
+  const over=f.budget>0 && f.forecastExpense>f.budget;
+  const perDay = f.safePerDay!=null ? fmtRub(f.safePerDay) : fmtRub(f.dailyEstimate);
+  return `<div class="card fin-hero">
+    <div class="fh-main">
+      <div class="fh-k">${f.budget? "Можно тратить в день" : "Текущий темп"}</div>
+      <div class="fh-v ${f.safePerDay!=null && over?'warn':''}">${perDay}</div>
+      <div class="fh-s">${f.daysLeft} ${plural(f.daysLeft,'день','дня','дней')} до конца месяца${f.budget? "" : " · задай лимит, и появится норма"}</div>
+    </div>
+    <div class="fh-side">
+      <div><span class="k">На счетах</span><span class="v">${fmtRub(f.balance)}</span></div>
+      <div><span class="k">Потрачено</span><span class="v neg">${fmtRub(f.cur.exp)}</span></div>
+      <div><span class="k">Останется</span><span class="v ${f.endBalance>=0?'pos':'neg'}">${fmtRub(f.endBalance)}</span></div>
+    </div>
+    ${other.length? `<div class="fh-other">${other.map(c=>`<span>${fmtMoney(totals[c].bal,c,2)}</span>`).join("")}</div>`:""}
+  </div>`;
+}
+
+// ---------- ОДНА ПАНЕЛЬ ВМЕСТО ЧЕТЫРЁХ КАРТОЧЕК ----------
+// Категории, прогноз, подписки и годовой график занимали четыре карточки подряд,
+// и до записей приходилось прокручивать пол-экрана. Теперь они по очереди.
+const FIN_PANELS=[["cat","Категории"],["fore","Прогноз"],["rec","Подписки"],["year","Год"]];
+function finPanel(){ return FIN_PANELS.some(p=>p[0]===cur.finPanel)? cur.finPanel : "cat"; }
+function renderFinPanels(){
+  const p=finPanel();
+  const nav=`<div class="fp-nav">${FIN_PANELS.map(([k,l])=>
+    `<button class="${p===k?'on':''}" data-finpanel="${k}">${l}</button>`).join("")}</div>`;
+  let body="";
+  if(p==="cat") body=renderCategoriesCard()+renderSpendInsights();
+  else if(p==="fore") body=renderBudgetCard()+renderForecastCard();
+  else if(p==="rec") body=renderRecurringCard();
+  else body=`<div class="card">
+      <h2>Доход и расход по месяцам</h2>
+      <div class="fin-chart-head">
+        <div class="lg">
+          <span style="font-size:11px;color:var(--green);font-weight:700;">● Доход</span>
+          <span style="font-size:11px;color:var(--pink);font-weight:700;">● Расход</span>
+        </div>
+        <div class="ynav">
+          <button data-finyear="-1" title="Предыдущий год">‹</button>
+          <span>${finYear()}</span>
+          <button data-finyear="1" ${finYear()>=new Date().getFullYear()?"disabled":""} title="Следующий год">›</button>
+        </div>
+      </div>
+      <canvas id="finChart" style="width:100%;height:170px;display:block;"></canvas>
+    </div>`;
+  return nav+body;
+}
+
+// Строка в режиме правки вынесена отдельно: она понадобилась в двух местах,
+// а заодно обзавелась выбором валюты.
+function renderFinEditRow(e, i){
+  const catOptions=DATA.financeCats.map(c=>`<option value="${escapeHtml(c.name)}" ${c.name===e.category?"selected":""}>${escapeHtml(c.name)}</option>`).join("");
+  const accOptions=DATA.finance.accounts.map(a=>`<option value="${a.id}" ${String(e.accountId||defaultAccountId())===String(a.id)?"selected":""}>${escapeHtml(a.name)}</option>`).join("");
+  const curOptions=finCurrencies().map(c=>`<option value="${c}" ${entryCurrency(e)===c?"selected":""}>${c}</option>`).join("");
+  return `<div class="fin-entry-wrap editing">
+    <div class="fin-log-row">
+      <input type="date" value="${e.date||''}" data-i="${i}" data-f="date">
+      <input type="number" value="${e.amount||''}" placeholder="Сумма" data-i="${i}" data-f="amount">
+      <select data-i="${i}" data-f="currency">${curOptions}</select>
+      <select data-i="${i}" data-f="type">
+        <option value="доход" ${e.type==="доход"?"selected":""}>доход</option>
+        <option value="расход" ${e.type!=="доход"?"selected":""}>расход</option>
+      </select>
+      <select data-i="${i}" data-f="accountId">${accOptions}</select>
+      <select data-i="${i}" data-f="category"><option value="" ${!e.category?"selected":""}>без категории</option>${catOptions}</select>
+      <button class="del" data-delfin="${i}">✕</button>
+    </div>
+    <input class="fin-comment" value="${escapeHtml(e.comment||'')}" placeholder="Комментарий (необязательно)" data-i="${i}" data-f="comment">
+    <button class="edit-done" data-finclose="1">свернуть</button>
+  </div>`;
+}
+
 function rubAccountIds(){ return new Set(DATA.finance.accounts.filter(a=>a.currency==="RUB").map(a=>String(a.id))); }
 function currencyTotals(){
   const totals={};
@@ -3172,8 +3326,7 @@ function currencyTotals(){
     totals[a.currency].bal+=accountBalance(a.id);
   });
   DATA.finance.entries.forEach(e=>{
-    const accId=e.accountId||defaultAccountId();
-    const curr=accCurrency[accId]||"RUB";
+    const curr=entryCurrency(e);
     if(!totals[curr]) totals[curr]={income:0,expense:0,bal:0};
     if(e.type==="доход") totals[curr].income+=(+e.amount||0); else totals[curr].expense+=(+e.amount||0);
   });
@@ -3567,7 +3720,7 @@ function applyReconcile(){
 }
 
 function finDraft(){
-  if(!cur.finDraft) cur.finDraft={type:"расход", amount:"", category:"", accountId:"", comment:"", date:todayStr()};
+  if(!cur.finDraft) cur.finDraft={type:"расход", amount:"", category:"", accountId:"", comment:"", date:todayStr(), currency:""};
   if(!cur.finDraft.date) cur.finDraft.date=todayStr();
   return cur.finDraft;
 }
@@ -3584,8 +3737,16 @@ function renderFinQuickAdd(){
   const accs=DATA.finance.accounts;
   if(!d.accountId || !accs.some(a=>String(a.id)===String(d.accountId))) d.accountId=String(defaultAccountId());
   const acc=accs.find(a=>String(a.id)===String(d.accountId))||accs[0];
-  const sym=CURRENCY_SYMBOL[acc.currency]||acc.currency;
+  const curNow=d.currency || acc.currency || "RUB";
+  const sym=CURRENCY_SYMBOL[curNow]||curNow;
   const isInc=d.type==="доход";
+  // Раньше валюта бралась только от счёта, и доход в долларах требовал
+  // отдельного долларового счёта. Теперь её видно и можно сменить прямо тут.
+  const curList=finCurrencies();
+  const curRow=curList.length>1? `<div class="frow"><span class="flab">Валюта</span>
+      <div class="qa-cur">${curList.map(c=>
+        `<button class="${curNow===c?'on':''}" data-fdcur="${c}">${CURRENCY_SYMBOL[c]||c} ${c}</button>`).join("")}</div>
+    </div>` : "";
 
   const catChips=DATA.financeCats.map(c=>
     `<button class="fchip ${d.category===c.name?'on':''}" data-fdcat="${escapeHtml(c.name)}">
@@ -3620,6 +3781,7 @@ function renderFinQuickAdd(){
       <input id="qaAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(String(d.amount||''))}">
       <span class="cur">${sym}</span>
     </div>
+    ${curRow}
     <div class="frow">
       <span class="flab">Категория</span>
       <button class="fchip ${d.category?'':'on'}" data-fdcat="">Без категории</button>
@@ -3643,6 +3805,9 @@ function bindFinQuickAdd(){
   });
   document.querySelectorAll('[data-fdacc]').forEach(b=>{
     b.onclick=()=>{ finDraft().accountId=b.dataset.fdacc; render(); };
+  });
+  document.querySelectorAll('[data-fdcur]').forEach(b=>{
+    b.onclick=()=>{ syncFinDraftInputs(); finDraft().currency=b.dataset.fdcur; render(); };
   });
   const dateEl=document.getElementById("qaDate");
   if(dateEl) dateEl.onchange=()=>{ finDraft().date=dateEl.value; render(); };
@@ -3668,8 +3833,11 @@ function bindFinQuickAdd(){
     const d=finDraft();
     const amount=parseFloat(String(d.amount).replace(",","."));
     if(!isFinite(amount) || amount<=0){ flashError(amountEl,"Введи сумму"); return; }
-    DATA.finance.entries.push({date:d.date||todayStr(), time:nowTime(), amount:amount,
-      type:d.type, category:d.category||"", comment:(d.comment||"").trim(), accountId:d.accountId});
+    const accCur=accountCurrency(d.accountId);
+    const entry={date:d.date||todayStr(), time:nowTime(), amount:amount,
+      type:d.type, category:d.category||"", comment:(d.comment||"").trim(), accountId:d.accountId};
+    if(d.currency && d.currency!==accCur) entry.currency=d.currency;
+    DATA.finance.entries.push(entry);
     d.amount=""; d.comment="";           // type / category / account stay for the next one
     cur.finFocusAmount=true;
     scheduleSave(); render();
@@ -3913,7 +4081,7 @@ function bindWhere(){
 // month doesn't produce a wild number from a single big purchase.
 function rubEntriesAll(){
   const ids=rubAccountIds();
-  return DATA.finance.entries.filter(e=>ids.has(String(e.accountId||defaultAccountId())));
+  return DATA.finance.entries.filter(e=>isRubEntry(e));
 }
 function monthSums(prefix, entries){
   let inc=0, exp=0, expRec=0;
@@ -3936,7 +4104,7 @@ function upcomingRecurring(){
     const day=Math.max(1,Math.min(31,+r.day||1,nd));
     if(day<=now.getDate()) return;                       // already applied by applyRecurring
     const accId=r.accountId||defaultAccountId();
-    if(!rubIds.has(String(accId))) return;
+    if(accountCurrency(accId)!=="RUB") return;
     const already=DATA.finance.entries.some(e=>e.recurringId===r.id && e.date && e.date.slice(0,7)===prefix);
     if(already) return;
     const amount=+r.amount||0;
@@ -4173,7 +4341,7 @@ function inRange(e, from, to){
 function rubExpenses(from, to){
   const ids=rubAccountIds();
   return (DATA.finance.entries||[]).filter(e=>
-    e.type==="расход" && ids.has(String(e.accountId||defaultAccountId())) && inRange(e, from, to));
+    e.type==="расход" && isRubEntry(e) && inRange(e, from, to));
 }
 // В отличие от прежнего подсчёта сюда попадают и записи без категории, и категории,
 // удалённые из списка: раньше они молча выпадали, и сумма столбиков не сходилась
@@ -4230,7 +4398,7 @@ function spentByDayOfMonth(y, m, day){
   let s=0;
   (DATA.finance.entries||[]).forEach(e=>{
     if(e.type!=="расход" || !e.date || e.date.slice(0,7)!==prefix) return;
-    if(!ids.has(String(e.accountId||defaultAccountId()))) return;
+    if(!isRubEntry(e)) return;
     if(parseInt(e.date.slice(8,10),10)>day) return;
     s+=(+e.amount||0);
   });
@@ -4466,7 +4634,7 @@ function financeByDay(y, m){
   const out={};
   (DATA.finance.entries||[]).forEach(e=>{
     if(!e.date || e.date.slice(0,7)!==prefix) return;
-    if(!ids.has(String(e.accountId||defaultAccountId()))) return;
+    if(!isRubEntry(e)) return;
     const d=parseInt(e.date.slice(8,10),10);
     if(!d) return;
     const cell=out[d]||(out[d]={inc:0, exp:0, n:0});
@@ -4482,7 +4650,7 @@ function financeByMonth(y){
   for(let m=0;m<12;m++) out[m]={inc:0, exp:0, net:0, n:0};
   (DATA.finance.entries||[]).forEach(e=>{
     if(!e.date || e.date.slice(0,4)!==String(y)) return;
-    if(!ids.has(String(e.accountId||defaultAccountId()))) return;
+    if(!isRubEntry(e)) return;
     const m=parseInt(e.date.slice(5,7),10)-1;
     if(!(m>=0 && m<12)) return;
     if(e.type==="доход") out[m].inc+=(+e.amount||0); else out[m].exp+=(+e.amount||0);
@@ -4590,7 +4758,7 @@ function renderCalendarMonths(){
 }
 
 function calDraft(){
-  if(!cur.calDraft) cur.calDraft={type:"расход", amount:"", category:"", comment:""};
+  if(!cur.calDraft) cur.calDraft={type:"расход", amount:"", category:"", comment:"", currency:""};
   return cur.calDraft;
 }
 function renderCalendarDay(){
@@ -4601,7 +4769,7 @@ function renderCalendarDay(){
   const ids=rubAccountIds();
   const rows=(DATA.finance.entries||[])
     .map((e,i)=>({...e,_i:i}))
-    .filter(e=>e.date===key && ids.has(String(e.accountId||defaultAccountId())));
+    .filter(e=>e.date===key && isRubEntry(e));
   const inc=rows.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const exp=rows.filter(e=>e.type!=="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const d=calDraft();
@@ -4631,6 +4799,8 @@ function renderCalendarDay(){
       </div>
       <input id="calAmount" type="text" inputmode="decimal" placeholder="Сумма" value="${escapeHtml(String(d.amount||''))}">
       <select id="calCat"><option value="">без категории</option>${catOpts}</select>
+      ${finCurrencies().length>1? `<select id="calCur">${finCurrencies().map(c=>
+        `<option value="${c}" ${(d.currency||accountCurrency(defaultAccountId()))===c?"selected":""}>${c}</option>`).join("")}</select>`:""}
       <input id="calComment" placeholder="Комментарий" value="${escapeHtml(d.comment||'')}">
       <button class="btn" id="calAdd">Добавить</button>
     </div>
@@ -4721,8 +4891,11 @@ function bindProfitCalendar(){
     const d=calDraft();
     const v=parseFloat(String(d.amount).replace(",","."));
     if(!isFinite(v) || v<=0){ flashError(amount,"Введи сумму"); return; }
-    DATA.finance.entries.push({date:cur.calSel, time:nowTime(), amount:v, type:d.type,
-      category:d.category||"", comment:(d.comment||"").trim(), accountId:String(defaultAccountId())});
+    const accCur=accountCurrency(defaultAccountId());
+    const entry={date:cur.calSel, time:nowTime(), amount:v, type:d.type,
+      category:d.category||"", comment:(d.comment||"").trim(), accountId:String(defaultAccountId())};
+    if(d.currency && d.currency!==accCur) entry.currency=d.currency;
+    DATA.finance.entries.push(entry);
     d.amount=""; d.comment="";     // тип и категория остаются: обычно за день их несколько подряд
     cur.calFocus=true;
     scheduleSave(); render();
@@ -4734,6 +4907,8 @@ function bindProfitCalendar(){
   if(comment) comment.onkeydown=enter;
   const cat=document.getElementById("calCat");
   if(cat) cat.onchange=()=>{ syncCalDraft(); };
+  const ccur=document.getElementById("calCur");
+  if(ccur) ccur.onchange=()=>{ syncCalDraft(); };
   if(cur.calFocus){ cur.calFocus=false; amount.focus(); }
 }
 // поля живут в DOM до перерисовки, поэтому забираем их значения перед ней
@@ -4745,6 +4920,8 @@ function syncCalDraft(){
   if(a) d.amount=a.value;
   if(c) d.comment=c.value;
   if(cat) d.category=cat.value;
+  const ccur=document.getElementById("calCur");
+  if(ccur) d.currency=ccur.value;
 }
 
 function renderFinance(){
@@ -4792,100 +4969,70 @@ function renderFinance(){
   DATA.financeCats.forEach(c=>{ catColor[c.name]=c.color; });
   const accName={};
   DATA.finance.accounts.forEach(a=>{ accName[a.id]=a.name; });
-  const dayNet={};
-  ordered.forEach(e=>{
-    const k=e.date||"";
-    dayNet[k]=(dayNet[k]||0)+((e.type==="доход"?1:-1)*(+e.amount||0));
-  });
-  // Список записей рос без ограничения: за пару лет это тысячи строк в DOM
-  // на каждую перерисовку. Показываем страницу, остальное — по кнопке.
-  const shown=ordered.slice(0, cur.finLimit||FIN_PAGE);
-  let lastDate=null;
-  const rows=shown.map(e=>{
+  // Доходы и расходы разнесены: в одном списке вперемешку их было не сопоставить.
+  const rowHtml=(e)=>{
     const i=e._i;
-    let sep="";
-    if(e.date!==lastDate){
-      lastDate=e.date;
-      const dt=parseLocalDate(e.date);
-      const net=dayNet[e.date||""]||0;
-      sep=`<div class="fin-daysep">
-        <span class="d">${dt? `${dt.getDate()} ${MONTHS_RU[dt.getMonth()].toLowerCase()}` : 'без даты'}</span>
-        <span class="n">${net>=0?'+':'−'}${Math.abs(net).toLocaleString('ru-RU',{maximumFractionDigits:2})}</span>
-      </div>`;
-    }
-    if(cur.finEdit===i){
-      const catOptions=DATA.financeCats.map(c=>`<option value="${escapeHtml(c.name)}" ${c.name===e.category?"selected":""}>${escapeHtml(c.name)}</option>`).join("");
-      const accOptions=DATA.finance.accounts.map(a=>`<option value="${a.id}" ${String(e.accountId||defaultAccountId())===String(a.id)?"selected":""}>${escapeHtml(a.name)}</option>`).join("");
-      return sep+`<div class="fin-entry-wrap editing">
-        <div class="fin-log-row">
-          <input type="date" value="${e.date||''}" data-i="${i}" data-f="date">
-          <input type="number" value="${e.amount||''}" placeholder="Сумма" data-i="${i}" data-f="amount">
-          <select data-i="${i}" data-f="type">
-            <option value="доход" ${e.type==="доход"?"selected":""}>доход</option>
-            <option value="расход" ${e.type==="расход"?"selected":""}>расход</option>
-          </select>
-          <select data-i="${i}" data-f="accountId">${accOptions}</select>
-          <select data-i="${i}" data-f="category"><option value="" ${!e.category?"selected":""}>без категории</option>${catOptions}</select>
-          <button class="del" data-delfin="${i}">✕</button>
-        </div>
-        <input class="fin-comment" value="${escapeHtml(e.comment||'')}" placeholder="Комментарий (необязательно)" data-i="${i}" data-f="comment">
-        <button class="edit-done" data-finclose="1">свернуть</button>
-      </div>`;
-    }
+    if(cur.finEdit===i) return renderFinEditRow(e, i);
     const inc=e.type==="доход";
     const col=catColor[e.category]||"var(--grey-dim)";
     const title=e.comment || e.category || (inc? "доход":"расход");
     const sub=e.comment && e.category? e.category : "";
+    const dt=parseLocalDate(e.date);
+    const curr=entryCurrency(e);
     const accTag=DATA.finance.accounts.length>1? `<span class="fr-tag">${escapeHtml(accName[e.accountId||defaultAccountId()]||'')}</span>`:"";
-    return sep+`<div class="fin-row" data-finrow="${i}">
+    return `<div class="fin-row" data-finrow="${i}">
       <span class="dot" style="background:${col}"></span>
       <div class="fr-main">
         <span class="fr-cat">${escapeHtml(title)}</span>
         ${sub? `<span class="fr-com">${escapeHtml(sub)}</span>`:""}
       </div>
       ${accTag}
-      <span class="fr-amt ${inc?'inc':'exp'}">${inc?'+':'−'}${(+e.amount||0).toLocaleString('ru-RU',{maximumFractionDigits:2})}</span>
+      <span class="fr-date">${dt? `${dt.getDate()}.${pad2(dt.getMonth()+1)}` : ''}</span>
+      <span class="fr-amt ${inc?'inc':'exp'}">${inc?'+':'−'}${(+e.amount||0).toLocaleString('ru-RU',{maximumFractionDigits:2})}${curr!=="RUB"? `<span class="fr-cur">${CURRENCY_SYMBOL[curr]||curr}</span>`:""}</span>
     </div>`;
-  }).join("");
+  };
 
-  let flInc=0, flExp=0;
-  ordered.forEach(e=>{ if(e.type==="доход") flInc+=(+e.amount||0); else flExp+=(+e.amount||0); });
-  const filterSummary=`<div class="fin-more" style="margin:0 0 8px;"><span class="c">${ordered.length} ${plural(ordered.length,"запись","записи","записей")} · <b style="color:var(--green)">+${Math.round(flInc).toLocaleString("ru-RU")}</b> · <b style="color:var(--pink)">−${Math.round(flExp).toLocaleString("ru-RU")}</b></span></div>`;
-  const moreBtn = ordered.length>shown.length
-    ? `<div class="fin-more"><button class="btn ghost" id="finMore">Показать ещё ${Math.min(FIN_PAGE, ordered.length-shown.length)}</button><span class="c">показано ${shown.length} из ${ordered.length}</span></div>`
+  const incRows=ordered.filter(e=>e.type==="доход");
+  const expRows=ordered.filter(e=>e.type!=="доход");
+  const lim=cur.finLimit||FIN_PAGE;
+  const sumIn=(list)=>{
+    const m={};
+    list.forEach(e=>{ const c=entryCurrency(e); m[c]=(m[c]||0)+(+e.amount||0); });
+    return m;
+  };
+  const group=(list,kind,label)=>{
+    if(!list.length) return "";
+    const shownList=list.slice(0,lim);
+    return `<div class="fin-group">
+      <div class="fg-head">
+        <span class="t ${kind}">${label}</span>
+        <span class="c">${list.length} ${plural(list.length,'запись','записи','записей')}</span>
+        <span class="n ${kind==='inc'?'pos':'neg'}" style="color:${kind==='inc'?'var(--green)':'var(--pink)'}">${kind==='inc'?'+':'−'}${fmtMoneyMap(sumIn(list),0)}</span>
+      </div>
+      ${shownList.map(rowHtml).join("")}
+      ${list.length>shownList.length? `<div class="fin-more"><span class="c">показано ${shownList.length} из ${list.length}</span></div>`:""}
+    </div>`;
+  };
+  const rows = group(incRows,'inc','Доходы') + group(expRows,'exp','Расходы');
+
+  // Итог по фильтру теперь стоит в заголовке каждой группы, отдельная строка
+  // под фильтром была бы третьим повторением тех же чисел.
+  const filterSummary="";
+  const hidden = Math.max(0, incRows.length-lim) + Math.max(0, expRows.length-lim);
+  const moreBtn = hidden
+    ? `<div class="fin-more"><button class="btn ghost" id="finMore">Показать ещё ${Math.min(FIN_PAGE, hidden)}</button></div>`
     : "";
 
-  return `<div class="card">
-    <h2>Финансы</h2>
-    ${finCurSwitch}
-    ${summaryBoxes}
-    <div class="fin-chart-head">
-      <div class="lg">
-        <span style="font-size:11px;color:var(--green);font-weight:700;">● Доход</span>
-        <span style="font-size:11px;color:var(--pink);font-weight:700;">● Расход</span>
-      </div>
-      <div class="ynav">
-        <button data-finyear="-1" title="Предыдущий год">‹</button>
-        <span>${finYear()}</span>
-        <button data-finyear="1" ${finYear()>=new Date().getFullYear()?"disabled":""} title="Следующий год">›</button>
-      </div>
-    </div>
-    <canvas id="finChart" style="width:100%;height:150px;display:block;margin-bottom:16px;"></canvas>
-  </div>
-
-  ${renderProfitCalendar()}
+  // Вместо таблицы «баланс / доход / расход за всё время» и годового графика —
+  // то, что нужно каждый день. График уехал в панель «Год», сводка по валютам —
+  // в шапку, и только когда валют больше одной.
+  return `${renderFinHero()}
 
   ${renderFinQuickAdd()}
 
-  ${renderBudgetCard()}
+  ${renderProfitCalendar()}
 
-  ${renderForecastCard()}
-
-  ${renderRecurringCard()}
-
-  ${renderCategoriesCard()}
-
-  ${renderSpendInsights()}
+  ${renderFinPanels()}
 
   <div class="card">
     <h2>Записи</h2>
@@ -4898,7 +5045,7 @@ function renderFinance(){
 }
 function bindFinance(){
   const rubIds=rubAccountIds();
-  const entries=DATA.finance.entries.filter(e=>rubIds.has(String(e.accountId||defaultAccountId())));
+  const entries=DATA.finance.entries.filter(e=>isRubEntry(e));
   const incByM=Array(12).fill(0), expByM=Array(12).fill(0);
   const chartYear=finYear();
   entries.forEach(e=>{
@@ -4911,7 +5058,7 @@ function bindFinance(){
   document.querySelectorAll('[data-finyear]').forEach(b=>{
     b.onclick=()=>{ cur.finYear=finYear()+(+b.dataset.finyear); render(); };
   });
-  drawGroupedBars("finChart", MONTHS_SHORT, [
+  if(document.getElementById("finChart")) drawGroupedBars("finChart", MONTHS_SHORT, [
     {data:incByM, color:cssVar("--green")},
     {data:expByM, color:cssVar("--pink")}
   ]);
@@ -4931,6 +5078,9 @@ function bindFinance(){
       cur.finEdit=null; // indices shift after the splice, so drop the open editor
       deleteWithUndo('Запись', ()=>DATA.finance.entries.splice(+b.dataset.delfin,1));
     };
+  });
+  document.querySelectorAll('[data-finpanel]').forEach(b=>{
+    b.onclick=()=>{ cur.finPanel=b.dataset.finpanel; render(); };
   });
   bindCurrencySwitch();
   bindProfitCalendar();
@@ -5850,7 +6000,7 @@ function todayQuietSummary(){
   const rubIds=rubAccountIds();
   const prefix=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
   const spent=DATA.finance.entries
-    .filter(e=>e.type==="расход" && rubIds.has(String(e.accountId||defaultAccountId())) && e.date && e.date.slice(0,7)===prefix)
+    .filter(e=>e.type==="расход" && isRubEntry(e) && e.date && e.date.slice(0,7)===prefix)
     .reduce((s,e)=>s+(+e.amount||0),0);
   const budget=+DATA.finance.budgetLimit||0;
   const nd=daysInMonth(now.getFullYear(),now.getMonth());
@@ -5931,7 +6081,7 @@ function renderRetro(){
   const overdue=openTodos.filter(t=>t.dueDate && t.dueDate<todayStr()).length;
 
   const rubIds=rubAccountIds();
-  const ent=DATA.finance.entries.filter(e=>rubIds.has(String(e.accountId||defaultAccountId())) && e.date && inRange.has(e.date));
+  const ent=DATA.finance.entries.filter(e=>isRubEntry(e) && e.date && inRange.has(e.date));
   const spent=ent.filter(e=>e.type==="расход").reduce((x,e)=>x+(+e.amount||0),0);
   const earned=ent.filter(e=>e.type==="доход").reduce((x,e)=>x+(+e.amount||0),0);
   const byCat={};
@@ -5994,7 +6144,7 @@ function renderConsole(){
   const overdue=openTodos.filter(t=>t.dueDate && t.dueDate<ts).length;
 
   const rubIds=rubAccountIds();
-  const rubEntries=DATA.finance.entries.filter(e=>rubIds.has(String(e.accountId||defaultAccountId())));
+  const rubEntries=DATA.finance.entries.filter(e=>isRubEntry(e));
   const inc=rubEntries.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const exp=rubEntries.filter(e=>e.type==="расход").reduce((s,e)=>s+(+e.amount||0),0);
   const prefix=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
@@ -6171,7 +6321,7 @@ function renderDashCharts(){
   const wkMonth = workoutsInMonth(cur.year, cur.monthIdx).length;
   ensureFinanceAccounts();
   const rubIdsDash=rubAccountIds();
-  const rubEntriesDash=DATA.finance.entries.filter(e=>rubIdsDash.has(String(e.accountId||defaultAccountId())));
+  const rubEntriesDash=DATA.finance.entries.filter(e=>isRubEntry(e));
   const income=rubEntriesDash.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const expense=rubEntriesDash.filter(e=>e.type==="расход").reduce((s,e)=>s+(+e.amount||0),0);
   const balance=income-expense;
