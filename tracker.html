@@ -968,6 +968,26 @@
   .app-upd span{flex:1;min-width:0;}
   .app-upd .btn{flex:0 0 auto;text-decoration:none;padding:8px 14px;font-size:12.5px;}
 
+
+  /* голос, версия 4 */
+  .ls-items{margin:6px 0 2px;padding:0 0 0 22px;text-align:left;align-self:stretch;max-height:34vh;overflow:auto;}
+  .ls-items li{font-size:14px;line-height:1.4;padding:5px 0;color:var(--white);border-bottom:1px solid var(--hair, var(--border));}
+  .ls-items li:last-child{border-bottom:none;}
+  .ls-items li::marker{color:var(--amber);font-weight:700;}
+  .ls-wrap.has-items .ls-mic{width:54px;height:54px;margin:2px 0 8px;}
+  .ls-wrap.has-items .ls-mic svg{width:24px;height:24px;}
+  .ls-wrap.has-items .ls-text{font-size:13.5px;font-weight:500;color:var(--grey);min-height:0;margin:6px 4px 2px;}
+  .todo-row.fresh{animation:todoFresh 2.4s ease;}
+  @keyframes todoFresh{0%,35%{background:color-mix(in srgb, var(--amber) 22%, transparent);border-color:var(--amber);}100%{}}
+  .vc-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:10px 0 4px;}
+  .vc-row.col{flex-direction:column;align-items:stretch;}
+  .vc-row .k{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .vc-row .btn{text-decoration:none;text-align:center;}
+  .vc-check{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 4px;font-size:13.5px;color:var(--white);cursor:pointer;}
+  .vc-check input{width:18px;height:18px;accent-color:var(--amber);}
+  .vc-check small{flex-basis:100%;font-size:11.5px;color:var(--grey-dim);line-height:1.4;padding-left:26px;}
+  .vh-p.sm{font-size:12.5px;margin:0;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1716,7 +1736,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-09-30 17:11+67a3ff19";
+window.TRACKER_BUILD = "2026-09-30 23:38+0552aad1";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2163,8 +2183,8 @@ function render(){
   if(cur.tab==="today"){ c.innerHTML = isConsole()? renderConsole() : renderToday(); bindToday(); bindReminders(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
-    c.innerHTML=renderAppearanceCard()+renderDashCharts()+renderDataCard();
-    bindAppearance(); bindBackupUi(); drawDashChart();
+    c.innerHTML=renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
+    bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
   }
   else if(cur.tab==="rhythm"){
     const v=subView("rhythm");
@@ -3382,7 +3402,7 @@ function renderTodos(){
     const i=t._i;
     const overdue=t.dueDate && !t.done && t.dueDate<todayStr;
     const dueToday=t.dueDate===todayStr && !t.done;
-    return `<div class="todo-row ${t.done?'done':''}">
+    return `<div class="todo-row ${t.done?'done':''} ${(cur.freshTodos||[]).includes(t.id)?'fresh':''}">
       <div class="chk ${t.done?'done':''}" data-todoidx="${i}"></div>
       <input class="todo-text" data-toidx="${i}" data-tof="text" value="${escapeHtml(t.text||'')}" placeholder="Что нужно сделать?">
       <input type="date" class="todo-date ${overdue?'overdue':''} ${dueToday?'due-today':''}" data-toidx="${i}" data-tof="dueDate" value="${t.dueDate||''}">
@@ -3403,7 +3423,7 @@ function renderTodos(){
       <button class="mic-btn" id="todoMic" aria-label="Сказать голосом" title="Сказать голосом">${MIC_SVG}</button>
       <button id="addTodoBtn" aria-label="Добавить">+</button>
     </div>
-    <div class="todo-hint">Нажми на микрофон и скажи, например, <b>«завтра позвонить в банк, срочно»</b> — дело встанет на завтра с высоким приоритетом. Так же понимается и набранный текст.</div>
+    <div class="todo-hint">Нажми на микрофон и перечисляй: <b>«завтра купить хлеб, молоко, позвонить в банк — срочно»</b> — будет три дела на завтра. Между пунктами можно говорить «потом» или «запятая».</div>
     <div class="row-wrap">${rows || '<div class="empty">Дел нет — можно отдохнуть 🙂</div>'}</div>
   </div>`;
 }
@@ -6212,6 +6232,7 @@ function renderSheet(){
   else if(s.kind==="news") body=renderNewsSheet(s);
   else if(s.kind==="listen") body=renderListenSheet(s);
   else if(s.kind==="voicehelp") body=renderVoiceHelpSheet(s);
+  else if(s.kind==="masktip") body=renderMaskTipSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -6245,6 +6266,7 @@ function renderSheet(){
   else if(s.kind==="news") bindNewsSheet(s);
   else if(s.kind==="listen") bindListenSheet(s);
   else if(s.kind==="voicehelp") bindVoiceHelpSheet(s);
+  else if(s.kind==="masktip") bindMaskTipSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -6308,13 +6330,10 @@ function showActionToast(label, action, fn, ms){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-01-voice", items:[
-  ["🎤","Голосовой ввод в делах","Большая кнопка с микрофоном рядом с полем. «Завтра позвонить в банк, срочно» — и дело появится со сроком и приоритетом.", "voice"],
+const WHATS_NEW={id:"2026-10-01-list", items:[
+  ["☰","Перечисляй — будет несколько дел","«Купить хлеб, молоко, позвонить маме» — три отдельных дела. Между пунктами можно говорить «потом» или «запятая»; пока говоришь, видно, как это разложится."],
+  ["✱","Мат без звёздочек","Звёздочки ставит распознавание Google. Приложение 2.2 просит его не прятать слова, а если Google всё равно прячет — трекер покажет, где у него выключается «Цензура»."],
   ["🎤","Голосовой ввод в делах","Распознавание речи — часть самого приложения, поэтому ему нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.", "novoice"],
-  ["▦","Календарь прибыли","Как в торговом журнале: плюс и минус по каждому дню, итоги недель и месяцев. Нажми на день — запишешь результат."],
-  ["◐","Источники дохода","Крипто-арбитраж и фондовый арбитраж считаются отдельно: доля каждого, лучший день, серия плюсовых дней."],
-  ["₮","Любая валюта","USDT, доллары, рубли — календарь сводит всё в одну валюту по курсу. Переключатель ₮ $ ₽ в шапке."],
-  ["⇅","Доходы и расходы раздельно","Сверху переключатель. Расходы с лимитом, категориями и подписками — на своей вкладке."],
   ["⟳","Обновления сами","Приложение проверяет новую версию при каждом открытии и сразу её включает.", "native"]
 ]};
 function newsItems(){
@@ -6344,7 +6363,7 @@ function renderNewsSheet(){
     </div>
     <div class="news-list">${newsItems().map(([ic,t,p])=>`<div class="news-item">
       <span class="ic">${ic}</span><div><b>${escapeHtml(t)}</b><p>${escapeHtml(p)}</p></div></div>`).join("")}</div>
-    ${!voiceSupported() && appOutdated()? `<div class="vh-act"><a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
+    ${appOutdated()? `<div class="vh-act"><a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
       <p class="vh-note">Откроется браузер и скачает файл. Открой его и нажми «Установить» — поставится поверх, данные останутся.</p></div>` : ""}
     <div class="sh-actions">
       <button class="btn ghost" id="newsFin">Открыть финансы</button>
@@ -6371,7 +6390,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.1", size:"меньше 1 МБ",
+const LATEST_APP={version:"2.2", size:"меньше 1 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -6418,7 +6437,11 @@ function voiceListen(prompt){
       if(voicePending) voicePending.reject(new Error(""));
       voicePending={resolve, reject};
       let ok=false;
-      try{ ok=AndroidHost.startVoice(prompt||""); }catch(e){ ok=false; }
+      try{
+        ok = typeof AndroidHost.startVoiceWith==="function"
+          ? AndroidHost.startVoiceWith(prompt||"", voiceMode())
+          : AndroidHost.startVoice(prompt||"");
+      }catch(e){ ok=false; }
       if(!ok){ voicePending=null; reject(new Error("unavailable")); }
       return;
     }
@@ -6481,22 +6504,39 @@ function voicePartial(text){
   if(!cur.sheet) return;
   cur.sheet.text=text||"";
   const el=document.getElementById("lsText");
-  if(el){ el.textContent=cur.sheet.text || "Говори — я слушаю"; el.classList.toggle("empty", !cur.sheet.text); }
+  if(el){ el.textContent=cur.sheet.text || "Говори — можно списком"; el.classList.toggle("empty", !cur.sheet.text); }
+  const list=document.getElementById("lsItems");
+  if(list){
+    const items=listenPreview(cur.sheet.text);
+    list.innerHTML=items.length>1? items.map(t=>`<li>${escapeHtml(t)}</li>`).join("") : "";
+    // когда дел больше одного, главное — их список, а не сплошной текст
+    const wrap=list.closest(".ls-wrap");
+    if(wrap) wrap.classList.toggle("has-items", items.length>1);
+  }
 }
+
 function closeListenSheet(){
   if(cur.sheet && cur.sheet.kind==="listen"){ cur.sheet.done=true; closeSheet(); }
 }
+function listenPreview(text){
+  if(!text || (DATA.settings||{}).voiceSplit===false) return [];
+  return parseTodoList(text).map(x=>x.text+(x.dueDate? " · "+dueLabel(x.dueDate) : "")+(x.priority==="high"? " · срочно" : ""));
+}
 function renderListenSheet(s){
-  return `<div class="ls-wrap">
+  // пока говоришь — видно, на какие дела это разложится
+  const items=listenPreview(s.text);
+  return `<div class="ls-wrap ${items.length>1?'has-items':''}">
       <div class="ls-mic ${s.processing?'busy':''}">${MIC_SVG}</div>
       <div class="ls-state">${s.processing? "Распознаю…" : "Слушаю"}</div>
-      <div class="ls-text ${s.text?'':'empty'}" id="lsText">${escapeHtml(s.text||"Говори — я слушаю")}</div>
+      <div class="ls-text ${s.text?'':'empty'}" id="lsText">${escapeHtml(s.text||"Говори — можно списком")}</div>
+      <ol class="ls-items" id="lsItems">${items.length>1? items.map(t=>`<li>${escapeHtml(t)}</li>`).join("") : ""}</ol>
       <div class="sh-actions">
         <button class="btn ghost" id="lsCancel">Отмена</button>
         <button class="btn" id="lsDone">Готово</button>
       </div>
     </div>`;
 }
+
 function bindListenSheet(s){
   const done=document.getElementById("lsDone");
   if(done) done.onclick=()=>{
@@ -6621,11 +6661,216 @@ function dueLabel(key){
   return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}, ${WEEKDAYS[(d.getDay()+6)%7].toLowerCase()}`;
 }
 const MIC_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>`;
+// ---------- ПЕРЕЧИСЛЕНИЕ → ОТДЕЛЬНЫЕ ДЕЛА ----------
+// «купить хлеб, молоко и яйца, позвонить маме, завтра забрать посылку» — это пять
+// дел, а не одно. Делим по запятым и по словам-разделителям («потом», «ещё»,
+// «запятая»), а если распознавание вернуло сплошной текст без знаков — по началу
+// нового действия: «купить хлеб позвонить маме» → два дела. Глагол из начала
+// перечисления переносится на его продолжение: «купить хлеб, молоко» →
+// «Купить хлеб», «Купить молоко».
+const TODO_IMPERATIVES=new Set(("купи позвони напиши сделай забери отправь проверь оплати закажи запиши отнеси возьми найди "+
+  "посмотри подготовь скинь переведи продай отмени узнай спроси напомни сходи съезди помой убери почини продли закрой "+
+  "открой выведи пополни поставь выключи включи скачай установи обнови прочитай выучи приготовь позови встреть отвези "+
+  "привези забронируй запишись сдай получи верни отдай реши обсуди созвонись договорись купите позвоните сделайте").split(" "));
+// похожие на инфинитив, но не глаголы: числа, наречия, существительные на -ть
+const TODO_NOT_VERBS=new Set(("пять девять десять опять мать кровать печать благодать рать зять сеть треть плеть клеть нить "+
+  "путь суть ртуть жуть муть прыть чуть пусть знать").split(" "));
+// после них инфинитив — продолжение того же действия, а не новое дело:
+// «сходить купить», «не забыть позвонить», «попросить маму купить»
+const TODO_GLUE=new Set(("не ни бы чтобы чтоб как где куда зачем что если пока когда перед после можно нельзя надо нужно "+
+  "пора хочу хочется буду будет будем начать стать успеть забыть пойти сходить съездить поехать попробовать постараться "+
+  "решить мочь могу смогу дать давай идти пойду поеду заехать зайти забежать стоит лучше хотел хотела собирался "+
+  "собиралась обязательно срочно просто тоже и а или то").split(" "));
+const TODO_CONTROL=new Set(("попросить попроси сказать скажи напомнить напомни уговорить заставить помочь помоги разрешить "+
+  "предложить научить велеть пригласить позвать позови отпустить").split(" "));
+const TODO_PREPS=new Set("в во на к ко за у из от до по с со для про о об".split(" "));
+function todoWordKey(w){ return String(w||"").toLowerCase().replace(/ё/g,"е").replace(/[^a-zа-я0-9-]/g,""); }
+function isVerbWord(w){
+  const x=todoWordKey(w).replace(/-/g,"");
+  if(x.length<3 || /[a-z0-9]/.test(x)) return false;
+  if(TODO_IMPERATIVES.has(x)) return true;
+  if(TODO_NOT_VERBS.has(x) || /(надцать|дцать)$/.test(x)) return false;
+  const b=x.replace(/(ся|сь)$/,"");
+  if(/(ать|ять|еть|ить|уть|ыть)$/.test(b)) return true;
+  if(/(ести|езти|ясти|йти|дти|зти)$/.test(b)) return true;
+  if(/асти$/.test(b)) return ["расти","вырасти","нарасти","подрасти","прорасти","спасти","пасти"].includes(b);
+  if(/оть$/.test(b)) return ["колоть","полоть","молоть","бороть","пороть","заколоть","уколоть","прополоть","смолоть"].includes(b);
+  if(/чь$/.test(b)) return ["мочь","помочь","лечь","прилечь","беречь","сберечь","сжечь","жечь","поджечь","течь","отвлечь",
+    "привлечь","увлечь","развлечь","испечь","стричь","постричь","подстричь","стеречь"].includes(b);
+  return false;
+}
+// Слова в начале, которые делу не нужны: «надо», «не забыть», «запиши»…
+const TODO_LEAD_RE=/^(?:(?:ну|так|значит|короче|в общем|итак|и|а|ещё|еще|также|а также|плюс|потом|затем|дальше|далее|мне|надо бы|нужно бы|надо|нужно|не забыть|не забудь|напомни мне|напомнить мне|напомни|запиши|запомни|добавь|добавить|задача|дело)(?:[\s,:—-]+|$))+/iu;
+function splitTodoList(raw){
+  let s=" "+String(raw||"").replace(/[«»"]/g,"").replace(/\s+/g," ").trim()+" ";
+  // Сказанные вслух разделители. «Запятая» продолжает перечисление — глагол
+  // переносится («купить хлеб запятая молоко»), а «потом» начинает новое дело —
+  // не переносится («потом в спортзал» не должно стать «забрать в спортзал»).
+  s=s.replace(/\s(?:запятая|точка с запятой|а также)(?=[\s,.!?;:]|$)/giu, ",");
+  s=s.replace(/\s(?:точка|следующее дело|следующий пункт|следующее|новое дело|новый пункт|дальше|далее|потом|затем|во-первых|во-вторых|в-третьих|в-четв[её]ртых|в-пятых|в-шестых)(?=[\s,.!?;:]|$)/giu, " \u0001 ");
+  // «и ещё позвонить», «и забрать» — новое действие; «хлеб и молоко» — нет
+  s=s.replace(/\s(?:и\s+ещ[её]|ещ[её]|и|плюс)\s+(?=(\S+))/giu, (m, next)=> isVerbWord(next) ? ", " : m);
+  // по знакам; запятая или точка между цифрами — это дробь, её не трогаем
+  const parts=s.split(/(\u0001|[\n!?]+|;|(?<!\d)[.,]|[.,](?!\d))/);
+  const pieces=[];
+  for(let i=0;i<parts.length;i+=2){
+    const text=(parts[i]||"").trim();
+    const delim=i>0? parts[i-1] : "";
+    if(text) pieces.push({text, list: delim===","||delim===";"});
+  }
+  const out=[];
+  pieces.forEach(({text:p, list})=>{
+    // сплошная речь: новое действие — глагол после не-глагола, если это не
+    // продолжение («сходить купить», «попросить маму купить»)
+    let cur=[], head=null, first=true;
+    const flush=()=>{
+      const text=cur.join(" ").replace(TODO_LEAD_RE, "").trim();
+      if(text) out.push({text, fromList: list && first});
+      first=false; cur=[]; head=null;
+    };
+    p.split(" ").forEach(w=>{
+      const verb=isVerbWord(w);
+      const prev=cur.length? cur[cur.length-1] : "";
+      if(verb && head && !isVerbWord(prev) && !TODO_GLUE.has(todoWordKey(prev)) && !TODO_CONTROL.has(todoWordKey(head))) flush();
+      if(verb && !head) head=w;
+      cur.push(w);
+    });
+    flush();
+  });
+  // «хлеб, молоко и яйца»: в элементе перечисления без глагола «и» — тоже разделитель
+  const res=[];
+  out.forEach(x=>{
+    const first=x.text.split(" ")[0];
+    if(x.fromList && !isVerbWord(first) && / и /.test(x.text))
+      x.text.split(/ и /).map(y=>y.trim()).filter(Boolean).forEach(y=>res.push({text:y, fromList:true}));
+    else res.push(x);
+  });
+  return res;
+}
+// Разбор целиком: дела с их сроками и приоритетами. Глагол начала перечисления
+// переносится на продолжение без глагола («купить хлеб, молоко» → два «купить»),
+// а срок и «срочно» из первого дела достаются всем, у кого своих нет:
+// «завтра купить хлеб, позвонить маме» — оба на завтра.
+function parseTodoList(raw, base){
+  let carry=null;
+  const items=[];
+  splitTodoList(raw).forEach(p=>{
+    let t=parseTodoSpeech(p.text, base);
+    if(!t.text) return;
+    const w=t.text.split(" ");
+    if(isVerbWord(w[0])){
+      carry=w[0].toLowerCase();
+      if(w[1] && TODO_PREPS.has(todoWordKey(w[1])) && w[2]) carry+=" "+w[1].toLowerCase();
+    } else if(p.fromList && carry){
+      const lead=TODO_PREPS.has(todoWordKey(w[0])) ? carry.split(" ")[0] : carry;
+      t=parseTodoSpeech(lead+" "+p.text, base);
+    }
+    items.push(t);
+  });
+  if(items.length>1){
+    const f=items[0];
+    items.forEach((x,i)=>{
+      if(i===0) return;
+      if(!x.dueDate && f.dueDate) x.dueDate=f.dueDate;
+      if(!x.priority && f.priority) x.priority=f.priority;
+    });
+  }
+  return items;
+}
+// Распознавание Google прячет мат: «б***», «х**». Сами слова уже не вернуть —
+// можно только выключить это в самом Google, туда и ведём.
+function hasMaskedWords(text){ return /[A-Za-zА-Яа-яЁё]\*{2,}|\*{3,}/.test(String(text||"")); }
+
+function voiceMode(){
+  const m=(DATA.settings||{}).voiceMode;
+  return m==="inapp" || m==="dialog" ? m : "auto";
+}
+function voiceModesAvailable(){
+  const s=shellInfo();
+  if(!s || !s.modes) return [];
+  return String(s.modes).split(",").filter(Boolean);
+}
+function canOpenVoiceSettings(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.openVoiceSettings==="function"; }
+function openVoiceSettings(){
+  if(!canOpenVoiceSettings()) return false;
+  try{ AndroidHost.openVoiceSettings(); return true; }catch(e){ return false; }
+}
+
+// ---------- МАТ ЗВЁЗДОЧКАМИ: ЧТО С ЭТИМ ДЕЛАТЬ ----------
+function renderMaskTipSheet(){
+  const s=shellInfo();
+  const modes=voiceModesAvailable();
+  const old=s && versionLess(s.version, "2.2");
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Google спрятал мат звёздочками</b><span class="zero">это не трекер — так делает распознавание Google</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <p class="vh-p">${old
+      ? `Приложение ${LATEST_APP.version} просит Google не прятать слова, а твоё (${escapeHtml(s.version)}) ещё не умеет. Поставь новое — и если Google всё равно спрячет, останется выключить его «Цензуру».`
+      : `Трекер уже просит Google не прятать слова, но у Google есть своя настройка сверх этого — «Цензура» («Блокировать нецензурные слова»). Её можно выключить только в настройках самого Google.`}</p>
+    <div class="vh-act">
+      ${old? `<a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>` : ""}
+      ${canOpenVoiceSettings()? `<button class="btn ${old?'ghost':''}" id="mtSettings">Открыть настройки голосового ввода</button>` : ""}
+      ${modes.includes("inapp") && voiceMode()!=="inapp"? `<button class="btn ghost" id="mtInApp">Распознавать внутри приложения</button>
+        <p class="vh-note">Без окна Google: слушает само приложение и показывает текст по ходу речи. Спросит доступ к микрофону один раз.</p>` : ""}
+    </div>
+    <div class="sh-lab">Где эта настройка</div>
+    <p class="vh-p">В настройках голосового ввода Google выключи пункт <b>«Цензура»</b> (может называться «Блокировать нецензурные слова»). Туда же ведёт: приложение Google → Настройки → Голосовой поиск, или Настройки телефона → Система → Язык и ввод → Голосовой ввод Google.</p>
+    <div class="sh-actions"><button class="btn ghost" data-shclose="1">Понятно</button></div>`;
+}
+function bindMaskTipSheet(){
+  const set=document.getElementById("mtSettings");
+  if(set) set.onclick=()=>{ openVoiceSettings(); closeSheet(); };
+  const inapp=document.getElementById("mtInApp");
+  if(inapp) inapp.onclick=()=>{
+    DATA.settings.voiceMode="inapp"; scheduleSave(); closeSheet();
+    showActionToast("Теперь распознаёт само приложение — попробуй микрофон ещё раз");
+  };
+}
+
+// ---------- НАСТРОЙКИ ГОЛОСА ----------
+function renderVoiceCard(){
+  const kind=voiceSupported();
+  const s=shellInfo();
+  const modes=voiceModesAvailable();
+  const mode=voiceMode();
+  const split=(DATA.settings||{}).voiceSplit!==false;
+  const how = !kind ? "нечем распознавать"
+    : kind==="web" ? "распознаёт браузер"
+    : (mode==="inapp" && modes.includes("inapp")) || (s && s.voice==="inapp") ? "распознаёт само приложение"
+    : "окно распознавания Google";
+  return `<div class="card">
+    <h2>🎤 Голосовой ввод</h2>
+    <div class="upd-row"><span class="k">Сейчас</span><code>${escapeHtml(how)}</code></div>
+    ${modes.length>1? `<div class="vc-row"><span class="k">Как распознавать</span>
+      <div class="seg">
+        <button class="${mode!=="inapp"?'active':''}" data-vmode="dialog">Окно Google</button>
+        <button class="${mode==="inapp"?'active':''}" data-vmode="inapp">В приложении</button>
+      </div></div>` : ""}
+    <label class="vc-check"><input type="checkbox" id="vSplit" ${split?"checked":""}> Перечисление — отдельными делами
+      <small>«купить хлеб, молоко, позвонить маме» → три дела. Между пунктами можно говорить «потом» или «запятая».</small></label>
+    <div class="vc-row col"><span class="k">Мат</span>
+      <p class="vh-p sm">Google может прятать его звёздочками. Трекер просит этого не делать${s && versionLess(s.version,"2.2")? " (с приложения 2.2)" : ""}, а если Google всё равно прячет — выключи у него «Цензуру».</p>
+      ${canOpenVoiceSettings()? `<button class="btn ghost" id="vSettings">Открыть настройки голосового ввода</button>` : ""}
+      ${s && versionLess(s.version, LATEST_APP.version)? `<a class="btn ghost" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version}</a>` : ""}
+    </div>
+  </div>`;
+}
+function bindVoiceCard(){
+  document.querySelectorAll('[data-vmode]').forEach(b=>b.onclick=()=>{
+    DATA.settings.voiceMode=b.dataset.vmode; scheduleSave(); render();
+  });
+  const sp=document.getElementById("vSplit");
+  if(sp) sp.onchange=()=>{ DATA.settings.voiceSplit=sp.checked; scheduleSave(); };
+  const vs=document.getElementById("vSettings");
+  if(vs) vs.onclick=()=>openVoiceSettings();
+}
+
 async function voiceAddTodo(btn){
   if(!voiceSupported()){ openSheet({kind:"voicehelp"}); return; }
   if(btn) btn.classList.add("listening");
   let raw="";
-  try{ raw=await voiceListen("Какое дело добавить?"); }
+  try{ raw=await voiceListen("Какие дела добавить? Можно списком"); }
   catch(e){
     if(btn) btn.classList.remove("listening");
     const msg=e && e.message || "";
@@ -6635,19 +6880,39 @@ async function voiceAddTodo(btn){
     return;
   }
   if(btn) btn.classList.remove("listening");
-  const t=parseTodoSpeech(raw);
-  if(!t.text){ showBanner("🎤 Не расслышал — попробуй ещё раз"); return; }
-  const id=Date.now();
+  const split=(DATA.settings||{}).voiceSplit!==false;
+  const items=split? parseTodoList(raw) : [parseTodoSpeech(raw)].filter(x=>x.text);
+  if(!items.length){ showBanner("🎤 Не расслышал — попробуй ещё раз"); return; }
   if(!DATA.todos) DATA.todos=[];
-  DATA.todos.push({id, text:t.text, done:false, dueDate:t.dueDate||"", priority:t.priority||"medium", createdAt:id, voice:true});
-  scheduleSave(); render();
-  const bits=[];
-  if(t.dueDate) bits.push(dueLabel(t.dueDate));
-  if(t.priority==="high") bits.push("срочно");
-  showActionToast(`Добавлено: «${t.text}»${bits.length? " · "+bits.join(", "):""}`, "Отменить", ()=>{
-    const i=(DATA.todos||[]).findIndex(x=>x.id===id);
-    if(i>=0){ DATA.todos.splice(i,1); scheduleSave(); render(); }
+  const base=Date.now();
+  const ids=items.map((t,i)=>{
+    const id=base+i;
+    DATA.todos.push({id, text:t.text, done:false, dueDate:t.dueDate||"", priority:t.priority||"medium", createdAt:id, voice:true});
+    return id;
   });
+  cur.freshTodos=ids;
+  scheduleSave(); render();
+  setTimeout(()=>{ cur.freshTodos=null; }, 2600);
+  const undo=()=>{
+    DATA.todos=(DATA.todos||[]).filter(x=>!ids.includes(x.id));
+    scheduleSave(); render();
+  };
+  if(items.length===1){
+    const t=items[0], bits=[];
+    if(t.dueDate) bits.push(dueLabel(t.dueDate));
+    if(t.priority==="high") bits.push("срочно");
+    showActionToast(`Добавлено: «${t.text}»${bits.length? " · "+bits.join(", "):""}`, "Отменить", undo);
+  } else {
+    showActionToast(`Добавлено ${items.length} ${plural(items.length,'дело','дела','дел')}: ${items.map(x=>"«"+x.text+"»").join(", ")}`, "Отменить", undo, 7000);
+  }
+  // Google спрятал мат звёздочками — показываем, как это выключить (не чаще раза в день)
+  if(hasMaskedWords(raw)){
+    const st=DATA.settings||(DATA.settings={});
+    if(!st.maskTipAt || Date.now()-st.maskTipAt>20*3600*1000){
+      st.maskTipAt=Date.now(); scheduleSave();
+      setTimeout(()=>openSheet({kind:"masktip"}), 600);
+    }
+  }
 }
 
 function bindFinance(){
