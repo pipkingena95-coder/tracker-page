@@ -56,68 +56,6 @@
     --streak-bg1:#FBEAD7; --streak-bg2:#F6DCC0;
   }
 
-  /* ---- LOOKS: two complete presets, each with its own palette + type ---- */
-  /* Фокус (макет А) — graphite surfaces, one flat warm signal, serif display */
-  html[data-look="focus"]{
-    --bg:#101311; --panel:#191E1B; --card:#191E1B; --card2:#222825;
-    --white:#E9EEEA; --grey:#7E8B84; --grey-dim:#5E6A64; --border:#2A322D;
-    --amber:#F2C14E; --amber2:#F7D179; --on-accent:#241C05;
-    --green:#7FB88A; --pink:#D9705C; --purple:#C9A96E; --cyan:#6E9E99;
-    --ok-bg:#1B2A20; --ok-fg:#7FB88A;
-    --bad-bg:#2C1D1A; --bad-fg:#D9705C;
-    --info-bg:#1A2726; --info-fg:#6E9E99;
-    --frozen-fg:#7FA6B8; --frozen-border:#33454E;
-    --warn-bg1:#2E2412; --warn-bg2:#3A2C14; --warn-fg:#F2C14E;
-    --streak-bg1:#242B22; --streak-bg2:#2C3429;
-    --on-green:#0E1A11; --on-pink:#2A100B;
-    --glow1:rgba(242,193,78,.05); --glow2:rgba(126,139,132,.04);
-    --font-display:'Instrument Serif',serif; --font-body:'Inter',system-ui,sans-serif;
-    --radius-card:18px; --radius-row:14px; --accent-flat:1;
-  }
-  html[data-look="focus"][data-theme="light"]{
-    --bg:#F4F3EF; --panel:#FBFAF7; --card:#EFEEE9; --card2:#E4E3DC;
-    --white:#1B201D; --grey:#5F6B65; --grey-dim:#8D978F; --border:#DCDBD3;
-    --amber:#C8931B; --amber2:#E0AE38; --on-accent:#FFFFFF;
-    --ok-bg:#E1EDE2; --ok-fg:#3C7A4C; --bad-bg:#F6E1DC; --bad-fg:#A8402C;
-    --info-bg:#E0EBEA; --info-fg:#2F6863;
-    --warn-bg1:#F7EBD3; --warn-bg2:#F1E0BC; --warn-fg:#8A6512;
-    --streak-bg1:#EDEAE0; --streak-bg2:#E4E0D3;
-    --frozen-fg:#3A6E85; --frozen-border:#BBD2DC;
-    --on-green:#FFFFFF; --on-pink:#FFFFFF;
-    --glow1:rgba(200,147,27,.07); --glow2:rgba(95,107,101,.04);
-  }
-  /* Пульт (макет Б) — near-black, teal signal, everything monospaced and tight */
-  html[data-look="console"]{
-    --bg:#0B0C0E; --panel:#14161A; --card:#14161A; --card2:#1D222A;
-    --white:#D8DDE5; --grey:#69707C; --grey-dim:#565D68; --border:#232830;
-    --amber:#4FD1C5; --amber2:#7EE3DA; --on-accent:#04201D;
-    --green:#4FD1C5; --pink:#FF6B4A; --purple:#E3B341; --cyan:#5AA9E6;
-    --ok-bg:#0F2A28; --ok-fg:#4FD1C5;
-    --bad-bg:#2E1611; --bad-fg:#FF6B4A;
-    --info-bg:#122430; --info-fg:#5AA9E6;
-    --frozen-fg:#5AA9E6; --frozen-border:#25404F;
-    --warn-bg1:#2E1611; --warn-bg2:#3A1D16; --warn-fg:#FF6B4A;
-    --streak-bg1:#12232A; --streak-bg2:#162C33;
-    --on-green:#04201D; --on-pink:#2A0C06;
-    --glow1:rgba(79,209,197,.06); --glow2:rgba(227,179,65,.03);
-    --font-display:'Archivo',system-ui,sans-serif; --font-body:'Archivo',system-ui,sans-serif;
-    --radius-card:8px; --radius-row:7px; --accent-flat:1;
-    --card-pad:11px; --card-radius:8px; --card-gap:8px; --row-pad:8px 9px; --row-radius:7px;
-  }
-  html[data-look="console"][data-theme="light"]{
-    --bg:#F2F4F6; --panel:#FFFFFF; --card:#FFFFFF; --card2:#EAEDF1;
-    --white:#171B21; --grey:#5C6470; --grey-dim:#8A929C; --border:#DCE0E6;
-    --amber:#178F84; --amber2:#3FB3A7; --on-accent:#FFFFFF;
-    --green:#178F84; --pink:#C4462A;
-    --ok-bg:#DDF0EE; --ok-fg:#136F66; --bad-bg:#FAE2DC; --bad-fg:#B23E23;
-    --info-bg:#E1EDF7; --info-fg:#2A6A99;
-    --warn-bg1:#FAE2DC; --warn-bg2:#F5D2C8; --warn-fg:#A83A1E;
-    --streak-bg1:#E4EFEE; --streak-bg2:#D6E7E5;
-    --frozen-fg:#2A6A99; --frozen-border:#BBD5E8;
-    --on-green:#FFFFFF; --on-pink:#FFFFFF;
-    --glow1:rgba(23,143,132,.06); --glow2:rgba(90,169,230,.04);
-  }
-
   html[data-density="compact"]{
     --card-pad:11px; --card-radius:14px; --card-gap:9px;
     --row-pad:7px 9px; --row-radius:10px; --app-pad:12px 10px 84px;
@@ -988,6 +926,112 @@
   .vc-check small{flex-basis:100%;font-size:11.5px;color:var(--grey-dim);line-height:1.4;padding-left:26px;}
   .vh-p.sm{font-size:12.5px;margin:0;}
 
+
+  /* ═══════ ДЕЛА: единый список привычек и дел ═══════ */
+  .do-head .dh-row{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+  .dh-ring{--p:0;width:66px;height:66px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+    background:conic-gradient(var(--amber) calc(var(--p)*1%), color-mix(in srgb, var(--grey-dim) 24%, transparent) 0);}
+  .dh-ring::before{content:"";grid-area:1/1;width:52px;height:52px;border-radius:50%;background:var(--pane-solid, var(--panel));}
+  .dh-ring span{grid-area:1/1;position:relative;font:700 17px var(--fx-num);letter-spacing:-.03em;color:var(--white);}
+  .dh-ring small{font-size:11px;color:var(--grey-dim);font-weight:600;}
+  .dh-txt{display:flex;flex-direction:column;gap:3px;min-width:0;}
+  .dh-txt b{font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--white);line-height:1.15;}
+  .dh-txt span{font-size:12.5px;color:var(--grey);line-height:1.35;}
+  .do-list{padding-top:14px;}
+  .do-group + .do-group{margin-top:20px;}
+  .dg-h{display:flex;align-items:baseline;gap:8px;padding:0 2px 7px;border-bottom:1px solid var(--hair, var(--border));}
+  .dg-h span{flex:1;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;color:var(--grey-dim);}
+  .dg-h.today span{color:var(--amber);}
+  .dg-h b{font:600 11.5px 'JetBrains Mono',monospace;color:var(--grey-dim);}
+  .do-row{display:flex;align-items:center;gap:12px;padding:10px 2px;border-bottom:1px solid var(--hair, var(--border));}
+  .do-row:last-child{border-bottom:none;}
+  .do-chk{width:26px;height:26px;border-radius:50%;flex:0 0 auto;padding:0;cursor:pointer;
+    border:2px solid color-mix(in srgb, var(--grey-dim) 75%, transparent);background:transparent;
+    display:flex;align-items:center;justify-content:center;color:var(--on-accent);font:700 11px var(--fx-num);transition:background .15s,border-color .15s;}
+  .do-row.habit .do-chk{border-radius:9px;}
+  .do-row.hot .do-chk{border-color:var(--pnl-down);}
+  .do-chk.part{border-color:var(--amber);color:var(--amber);}
+  .do-row.done .do-chk{background:var(--amber);border-color:var(--amber);color:var(--on-accent);}
+  .do-row.frozen .do-chk{border-color:var(--cyan);color:var(--cyan);font-size:12px;}
+  .do-chk svg{width:15px;height:15px;}
+  .do-chk:active{transform:scale(.9);}
+  .do-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;background:none;border:none;
+    padding:0;cursor:pointer;color:var(--white);font-family:var(--font-body);}
+  .do-t{font-size:14.5px;font-weight:500;letter-spacing:-.01em;line-height:1.3;word-break:break-word;}
+  .do-m{font-size:11.5px;color:var(--grey-dim);line-height:1.35;}
+  .do-m .do-kind{font-style:normal;color:var(--grey);}
+  .do-m b.late, .do-m b.hot{color:var(--pnl-down);font-weight:600;}
+  .do-row.done .do-t{color:var(--grey-dim);text-decoration:line-through;
+    text-decoration-color:color-mix(in srgb, var(--grey-dim) 60%, transparent);}
+  .do-row.done .do-m{opacity:.7;}
+  .do-row.fresh{animation:todoFresh 2.4s ease;border-radius:12px;}
+  .do-empty{font-size:12.5px;color:var(--grey-dim);padding:12px 2px 4px;}
+  .do-done summary{cursor:pointer;font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;
+    color:var(--grey-dim);list-style:none;}
+  .do-done summary::-webkit-details-marker{display:none;}
+  .do-done summary::after{content:" ›";}
+  .do-done[open] summary{margin-bottom:6px;}
+  .do-done .fx-linkbtn{display:block;margin-top:10px;}
+  .fx-linkbtn.danger{color:var(--pnl-down);}
+  .dw-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+  .dw-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:center;gap:6px;}
+  .dw-row{grid-column:1/-1;display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-top:8px;}
+  .dw-grid .wd{font-size:9.5px;color:var(--grey-dim);text-align:center;font-weight:700;letter-spacing:.04em;}
+  .dw-grid .wd.now{color:var(--amber);}
+  .dw-name{font-size:13.5px;font-weight:500;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
+    background:none;border:none;text-align:left;padding:0;font-family:var(--font-body);min-width:0;flex:1;}
+  .dw-name small{font-size:11px;color:var(--grey-dim);font-weight:400;margin-left:7px;}
+  .dw-c{width:100%;height:32px;border-radius:9px;margin:0;padding:0;cursor:pointer;display:flex;align-items:center;
+    justify-content:center;font-size:10px;color:var(--cyan);border:1.5px solid color-mix(in srgb, var(--grey-dim) 50%, transparent);background:transparent;}
+  .dw-c.done{background:var(--amber);border-color:var(--amber);}
+  .dw-c.frozen{border-color:var(--cyan);background:color-mix(in srgb, var(--cyan) 16%, transparent);}
+  .dw-c.off{border-style:dashed;opacity:.4;}
+  .dw-c.miss{border-color:color-mix(in srgb, var(--pnl-down) 55%, transparent);}
+  .dw-c.future{opacity:.28;cursor:default;}
+  .dw-c.today{box-shadow:0 0 0 2px color-mix(in srgb, var(--amber) 30%, transparent);}
+  .dw-s{font:600 11px 'JetBrains Mono',monospace;color:var(--grey-dim);text-align:right;white-space:nowrap;}
+  .it-text{resize:none;font-size:15px;line-height:1.4;font-weight:500;}
+  .it-name{font-size:16px;font-weight:600;}
+  .it-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px;}
+  .it-stats > div{display:flex;flex-direction:column;gap:2px;padding:10px 11px;border-radius:14px;min-width:0;
+    background:color-mix(in srgb, var(--card) 72%, transparent);border:1px solid var(--border);}
+  .it-stats b{font:700 16px var(--fx-num);letter-spacing:-.02em;color:var(--white);white-space:nowrap;}
+  .it-stats span{font-size:10.5px;color:var(--grey-dim);line-height:1.25;}
+  .it-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;}
+  .it-days button{height:40px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--grey);
+    font:600 13px var(--font-body);cursor:pointer;}
+  .it-days button.on{background:var(--amber);color:var(--on-accent);border-color:transparent;}
+  .it-quick{display:inline-flex;gap:10px;text-transform:none;letter-spacing:0;}
+  .it-quick button{background:none;border:none;color:var(--amber);font:600 11.5px var(--font-body);cursor:pointer;padding:0;}
+  .it-target{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--grey);}
+  .it-target input{width:64px;padding:6px 8px;border-radius:10px;}
+  /* в сетках месяца и недели — дни не по расписанию и кнопка дней */
+  .day-cell.off{opacity:.35;border-style:dashed;}
+  .days-btn{background:var(--card2);border:1px solid var(--border);color:var(--grey);border-radius:9px;
+    padding:3px 9px;font-size:11px;cursor:pointer;white-space:nowrap;font-family:var(--font-body);}
+  .days-btn:hover{border-color:var(--amber);color:var(--white);}
+
+  /* привычки: месяц и неделя в новом виде */
+  .hb-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+  .hb-avg{font:600 12px 'JetBrains Mono',monospace;color:var(--grey-dim);}
+  .hb-list{display:flex;flex-direction:column;gap:8px;}
+  .hb-card{padding:12px 12px 10px;border-radius:16px;background:color-mix(in srgb, var(--pane-solid, var(--card)) 60%, transparent);
+    border:1px solid var(--border);}
+  .hb-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;}
+  .hb-head{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;text-align:left;background:none;border:none;
+    padding:0;cursor:pointer;font-family:var(--font-body);color:var(--white);}
+  .hb-name{font-size:14.5px;font-weight:600;letter-spacing:-.01em;line-height:1.3;word-break:break-word;}
+  .hb-sub{font-size:11.5px;color:var(--grey-dim);}
+  .hb-pills{display:flex;gap:5px;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;max-width:52%;}
+  .hb-pill{font:700 11px 'JetBrains Mono',monospace;padding:3px 8px;border-radius:20px;white-space:nowrap;
+    background:color-mix(in srgb, var(--grey-dim) 14%, transparent);color:var(--grey);}
+  .hb-pill.risk{background:color-mix(in srgb, var(--pnl-down) 16%, transparent);color:var(--pnl-down);}
+  .hb-pill.ok{background:var(--ok-bg);color:var(--ok-fg);}
+  .hb-pill.low{background:var(--bad-bg);color:var(--bad-fg);}
+  .hb-list.week .days-scroll{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;overflow:visible;}
+  .hb-list.week .day-cell{width:auto;height:34px;}
+  .day-cell.is-today{box-shadow:inset 0 0 0 1.5px var(--amber);}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1088,47 +1132,6 @@
   .fd-tick:hover{border-color:var(--amber);background:var(--card2);}
   .fd-tick:focus-visible{outline:2px solid var(--amber2);outline-offset:2px;}
 
-
-  /* ---- console look (mockup Б): dense grid, mono numerals, icon rail ---- */
-  .con-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:10px;}
-  .con-grid .cell{background:var(--panel);border:1px solid var(--border);border-radius:7px;padding:9px 10px;}
-  .con-grid .cell.wide{grid-column:1/-1;}
-  .con-grid .k{font-size:8.5px;text-transform:uppercase;letter-spacing:1.1px;color:var(--grey);
-    font-weight:700;margin-bottom:5px;}
-  .con-grid .v{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:700;letter-spacing:-.5px;
-    color:var(--white);}
-  .con-grid .v.teal{color:var(--amber);} .con-grid .v.warn{color:var(--pink);} .con-grid .v.gold{color:var(--purple);}
-  .con-grid .sub{font-size:9.5px;color:var(--grey);margin-top:3px;font-family:'JetBrains Mono',monospace;}
-  .con-grid .spark{display:flex;align-items:flex-end;gap:1.5px;height:22px;margin-top:7px;}
-  .con-grid .spark span{flex:1;border-radius:1px;opacity:.8;background:var(--grey-dim);}
-  .con-grid .spark span.teal{background:var(--amber);}
-  .con-grid .spark span.warn{background:var(--pink);}
-  .con-tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:10.5px;
-    color:var(--white);}
-  .con-tbl td{padding:4.5px 0;border-bottom:1px solid var(--border);}
-  .con-tbl td:last-child{text-align:right;color:var(--grey);}
-  .con-tbl tr:last-child td{border-bottom:none;}
-  .con-grid .tag{font-size:8.5px;padding:1.5px 5px;border-radius:3px;background:var(--card2);color:var(--grey);
-    text-transform:uppercase;letter-spacing:.7px;font-weight:700;}
-  .con-grid .tag.hot{background:var(--bad-bg);color:var(--bad-fg);}
-  .con-grid .streak{display:flex;gap:2px;}
-  .con-grid .streak span{width:8px;height:8px;border-radius:2px;background:var(--card2);}
-  .con-grid .streak span.f{background:var(--amber);}
-  .con-grid .streak span.z{background:var(--frozen-border);}
-  .con-bar{display:flex;gap:0;height:5px;margin-top:8px;border-radius:3px;overflow:hidden;}
-  .con-bar span{background:var(--amber);}
-  .con-bar span.rest{background:var(--card2);}
-
-  /* console: icon-only rail, labels hidden */
-  html[data-look="console"] nav.tabbar button .lbl{display:none;}
-  html[data-look="console"] nav.tabbar button{gap:0;padding:8px 2px;}
-  html[data-look="console"] nav.tabbar button .ic{font-size:19px;}
-  html[data-look="console"] nav.tabbar button.active .ic{opacity:1;}
-  html[data-look="console"] .today-head h2{font-size:15px;font-weight:700;letter-spacing:-.2px;}
-  html[data-look="console"] .card h2{font-size:11px;letter-spacing:1px;}
-  @media(min-width:760px){
-    html[data-look="console"] nav.tabbar button .lbl{display:inline;}
-  }
 
   .arch-btn{background:var(--card2);border:1px solid var(--border);color:var(--grey);border-radius:7px;
     padding:3px 8px;font-size:12px;cursor:pointer;line-height:1;font-family:inherit;}
@@ -1736,7 +1739,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-09-30 23:38+0552aad1";
+window.TRACKER_BUILD = "2026-10-01 00:37+dfaf6d39";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -1876,7 +1879,7 @@ function defaultData(){
     investments: [], // {id, kind:"crypto"|"deposit"|"other", ...}; crypto quotes cached in DATA.prices
     prices: { updated:0, usdRub:0, eurRub:0, usd:{}, rub:{}, src:"" },
     todos: [], // {id, text, done, dueDate, priority:'high'|'medium'|'low', createdAt}
-    settings: { look:"focus", theme:"dark", density:"comfortable", displayCurrency:"native" },
+    settings: { look:"glass", glass:"hvoya", theme:"light", density:"comfortable", displayCurrency:"native" },
     plan: { }, // plan["2026-0"]["РАБОТА"] = [{text,done}]
     finance: { entries: [], recurring: [], accounts: [{id:1, name:"Основной", currency:"RUB", startBalance:0}], transfers: [] }, // {date, amount, type, category, comment, accountId}; recurring: {id,day,amount,type,category,comment,accountId}; transfers: {date,fromAccountId,toAccountId,amount,toAmount,comment}
     savingsGoals: [{id:1, name:"Цель", amount:100000, entries:[], monthlyTargets:{}}],
@@ -1898,18 +1901,20 @@ function cssVar(name, fallback){
 // This build runs outside Telegram; the bot integration needs a signed initData,
 // which only exists inside the messenger, so TG stays null here on purpose.
 const TG = (typeof window!=="undefined" && window.Telegram && window.Telegram.WebApp) || null;
-const APPEARANCE_DEFAULTS={look:"focus", theme:"dark", density:"comfortable"};
+const APPEARANCE_DEFAULTS={look:"glass", theme:"light", density:"comfortable"};
 function appearance(){
   if(!DATA.settings) DATA.settings={...APPEARANCE_DEFAULTS};
   const s=DATA.settings;
-  if(!s.look) s.look=APPEARANCE_DEFAULTS.look;   // older saves stored `accent` instead
-  if(s.look==="glass" && !s.glass) s.glass="hvoya";
+  // Облики «Фокус» и «Пульт» убраны — осталось «Стекло» с восемью темами.
+  // Кто сидел в тёмном «Фокусе» или «Пульте», тот получает тёмную тему стекла.
+  if(s.look!=="glass" && !s.glass) s.glass = s.theme==="dark" ? "omut" : "hvoya";
+  s.look="glass";
+  if(!s.glass) s.glass="hvoya";
   if(!s.theme) s.theme=APPEARANCE_DEFAULTS.theme;
   if(!s.density) s.density=APPEARANCE_DEFAULTS.density;
   delete s.accent;
   return s;
 }
-function isConsole(){ return appearance().look==="console"; }
 function applyAppearance(){
   const s=appearance();
   const root=document.documentElement;
@@ -1974,9 +1979,13 @@ function habitGoal(idx, year, monthIdx){
   const raw=(DATA.habits.goals && DATA.habits.goals[idx]) || 21;
   const nd=daysInMonth(year, monthIdx);
   const key=`${year}-${monthIdx}`;
-  const frozenCount=(DATA.habits.frozen && DATA.habits.frozen[key] && DATA.habits.frozen[key][idx]) ? DATA.habits.frozen[key][idx].length : 0;
-  const availableDays=Math.max(1, nd-frozenCount);
-  return Math.min(raw, availableDays);
+  const frozen=(DATA.habits.frozen && DATA.habits.frozen[key] && DATA.habits.frozen[key][idx]) || [];
+  // в зачёт идут только дни по расписанию и без заморозки
+  let availableDays=0;
+  for(let d=1; d<=nd; d++){
+    if(habitScheduledOn(idx, new Date(year, monthIdx, d)) && !frozen.includes(d)) availableDays++;
+  }
+  return Math.min(raw, Math.max(1, availableDays));
 }
 function getWeekStart(date){
   const d=new Date(date); d.setHours(0,0,0,0);
@@ -2010,7 +2019,7 @@ function projectSavingsCompletion(entries, remaining){
 }
 
 let DATA=null;
-let cur = { tab:"today", sub:{rhythm:"habits", doing:"todos", money:"finance"}, monthIdx: new Date().getMonth(), year: new Date().getFullYear(), day: new Date().getDate(), savingsGoalIdx: 0, habitView:"month", weekAnchor: Date.now(), finFilter:{type:"",accountId:"",category:"",q:"",from:"",to:""}, wkFilter:{ex:"",type:"",day:"",expand:false}, finEdit:null, finDraft:null, finAddMode:"one", bulkDraft:null, finPeriod:"month", finPanel:"cat", finYear:null, finLimit:null, catLimitEdit:false, cloudList:null, calY:null, calM:null, calMode:"days", calMetric:"spend", calSel:null, calDraft:null, reconcileAcc:null, reconcileValue:null, backupPanel:null, searchQuery:"", sheet:null, pnlSrc:"all", fxQ:"", fxFilterOpen:false };
+let cur = { tab:"today", sub:{doing:"list", money:"finance"}, monthIdx: new Date().getMonth(), year: new Date().getFullYear(), day: new Date().getDate(), savingsGoalIdx: 0, habitView:"month", weekAnchor: Date.now(), finFilter:{type:"",accountId:"",category:"",q:"",from:"",to:""}, wkFilter:{ex:"",type:"",day:"",expand:false}, finEdit:null, finDraft:null, finAddMode:"one", bulkDraft:null, finPeriod:"month", finPanel:"cat", finYear:null, finLimit:null, catLimitEdit:false, cloudList:null, calY:null, calM:null, calMode:"days", calMetric:"spend", calSel:null, calDraft:null, reconcileAcc:null, reconcileValue:null, backupPanel:null, searchQuery:"", sheet:null, pnlSrc:"all", fxQ:"", fxFilterOpen:false };
 let saveTimer=null;
 
 async function loadData(){
@@ -2138,9 +2147,10 @@ async function saveData(){
 function mk(k){ return `${cur.year}-${cur.monthIdx}`; }
 
 // ---------- RENDER ----------
-const TABS=[["today","Сегодня","◎"],["rhythm","Ритм","◇"],["doing","Дела","☰"],["money","Деньги","▤"],["journal","Дневник","✎"]];
+const TABS=[["today","Сегодня","◎"],["doing","Дела","☰"],["money","Деньги","▤"],["journal","Дневник","✎"]];
 function subView(tab){
-  if(!cur.sub) cur.sub={rhythm:"habits", doing:"todos", money:"finance"};
+  if(!cur.sub) cur.sub={doing:"list", money:"finance"};
+  if(!cur.sub.doing || cur.sub.doing==="todos") cur.sub.doing="list";
   return cur.sub[tab];
 }
 function renderSubNav(tab, items){
@@ -2180,38 +2190,40 @@ function render(){
 
   bindUpdateBar();
   const c=document.getElementById("content");
-  if(cur.tab==="today"){ c.innerHTML = isConsole()? renderConsole() : renderToday(); bindToday(); bindReminders(); }
+  if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
     c.innerHTML=renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
     bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
   }
-  else if(cur.tab==="rhythm"){
-    const v=subView("rhythm");
-    const nav=renderSubNav("rhythm",[["habits","Привычки"],["workouts","Тренировки"],["retro","Итоги"],["year","Год"]]);
+  else if(cur.tab==="doing"){
+    const v=subView("doing");
+    const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["workouts","Тренировки"],["plan","План"],["retro","Итоги"]]);
     if(v==="habits"){
-      const mnav = cur.habitView==="week" ? renderWeekNav() : renderMonthNav();
-      c.innerHTML = nav + renderHabitViewToggle() + mnav + (cur.habitView==="week"?renderHabitsWeek():renderHabits());
+      const hv=cur.habitView==="week"||cur.habitView==="year" ? cur.habitView : "month";
+      const mnav = hv==="week" ? renderWeekNav() : hv==="year" ? "" : renderMonthNav();
+      const body = hv==="week" ? renderHabitsWeek() : hv==="year" ? renderYear() : renderHabits();
+      c.innerHTML = nav + renderHabitViewToggle() + mnav + body;
       bindSubNav(); bindHabitViewToggle();
-      if(cur.habitView==="week"){ bindWeekNav(); bindHabitsWeek(); } else { bindMonthNav(); bindHabits(); }
+      if(hv==="week"){ bindWeekNav(); bindHabitsWeek(); }
+      else if(hv==="year"){
+        document.getElementById("prevY").onclick=()=>{ cur.year--; render(); };
+        document.getElementById("nextY").onclick=()=>{ cur.year++; render(); };
+      }
+      else { bindMonthNav(); bindHabits(); }
     } else if(v==="workouts"){
       c.innerHTML = nav + renderMonthNav() + renderWorkouts();
       bindSubNav(); bindMonthNav(); bindWorkouts();
+    } else if(v==="plan"){
+      c.innerHTML = nav + renderMonthNav() + renderPlan();
+      bindSubNav(); bindMonthNav(); bindPlan();
     } else if(v==="retro"){
       c.innerHTML = nav + renderRetro();
       bindSubNav(); bindRetro();
     } else {
-      c.innerHTML = nav + renderYear();
-      bindSubNav();
-      document.getElementById("prevY").onclick=()=>{ cur.year--; render(); };
-      document.getElementById("nextY").onclick=()=>{ cur.year++; render(); };
+      c.innerHTML = nav + renderDoList();
+      bindSubNav(); bindDoList();
     }
-  }
-  else if(cur.tab==="doing"){
-    const v=subView("doing");
-    const nav=renderSubNav("doing",[["todos","Дела"],["plan","План месяца"]]);
-    if(v==="todos"){ c.innerHTML=nav+renderTodos(); bindSubNav(); bindTodos(); }
-    else { c.innerHTML=nav+renderMonthNav()+renderPlan(); bindSubNav(); bindMonthNav(); bindPlan(); }
   }
   else if(cur.tab==="money"){
     const v=subView("money");
@@ -2254,14 +2266,17 @@ function bindWeekNav(){
   document.getElementById("nextW").onclick=()=>{ cur.weekAnchor += 7*86400000; render(); };
 }
 function renderHabitViewToggle(){
-  return `<div style="display:flex;gap:6px;margin-bottom:10px;">
-    <button class="btn ${cur.habitView==='month'?'':'ghost'}" id="viewMonthBtn" style="padding:6px 14px;font-size:12px;">Месяц</button>
-    <button class="btn ${cur.habitView==='week'?'':'ghost'}" id="viewWeekBtn" style="padding:6px 14px;font-size:12px;">Неделя</button>
+  const v=cur.habitView==="week"||cur.habitView==="year" ? cur.habitView : "month";
+  return `<div class="seg hv-seg" style="margin-bottom:10px;">
+    <button class="${v==='week'?'active':''}" data-hview="week">Неделя</button>
+    <button class="${v==='month'?'active':''}" data-hview="month">Месяц</button>
+    <button class="${v==='year'?'active':''}" data-hview="year">Год</button>
   </div>`;
 }
 function bindHabitViewToggle(){
-  document.getElementById("viewMonthBtn").onclick=()=>{ if(cur.habitView!=="month"){ cur.habitView="month"; render(); } };
-  document.getElementById("viewWeekBtn").onclick=()=>{ if(cur.habitView!=="week"){ cur.habitView="week"; render(); } };
+  document.querySelectorAll('[data-hview]').forEach(b=>b.onclick=()=>{
+    if(cur.habitView!==b.dataset.hview){ cur.habitView=b.dataset.hview; render(); }
+  });
 }
 
 function renderDayNav(){
@@ -2310,7 +2325,8 @@ function bestStreakEver(idx){
     else {
       let allFrozen=true;
       for(let g=1; g<gapDays; g++){
-        if(!frozenDates.has(dates[i-1]+g*86400000)){ allFrozen=false; break; }
+        const gd=dates[i-1]+g*86400000;
+        if(!frozenDates.has(gd) && habitScheduledOn(idx, new Date(gd))){ allFrozen=false; break; }
       }
       run = allFrozen ? run+1 : 1;
     }
@@ -2408,63 +2424,63 @@ function habitStreak(idx){
   while(guard<3660){
     guard++;
     if(isHabitDoneOn(idx,d)){ streak++; d.setDate(d.getDate()-1); continue; }
-    if(isHabitFrozenOn(idx,d)){ d.setDate(d.getDate()-1); continue; }
+    // заморозка и дни не по расписанию серию не рвут, но и не удлиняют
+    if(isHabitFrozenOn(idx,d) || !habitScheduledOn(idx,d)){ d.setDate(d.getDate()-1); continue; }
     break;
   }
   return streak;
 }
-function renderHabits(){
-  const key=mk(); const nd=daysInMonth(cur.year,cur.monthIdx);
-  const list=DATA.habits.list;
-  const todayDone0=new Date();
-  const rows=list.map((name,idx)=>{
-    if(isHabitArchived(idx)) return "";
-    const type=habitType(idx);
-    const target=habitCounterTarget(idx);
-    const frozenArr=(DATA.habits.frozen&&DATA.habits.frozen[key]&&DATA.habits.frozen[key][idx])||[];
-    const goal=habitGoal(idx, cur.year, cur.monthIdx);
-    const pct=Math.round(habitPct(idx)*100);
-    const streak=habitStreak(idx);
-    const best=bestStreakEver(idx);
-    const atRisk = streak>0 && !isHabitDoneOn(idx, todayDone0) && !isHabitFrozenOn(idx, todayDone0);
-    let days="";
-    for(let d=1; d<=nd; d++){
-      const dt=new Date(cur.year,cur.monthIdx,d);
-      const done=isHabitDoneOn(idx,dt);
-      const frozen=!done && frozenArr.includes(d);
-      const count=type==='counter'?habitDailyCount(idx,dt):0;
-      const label = done?'✔':(frozen?'❄':(type==='counter'&&count>0?count:d));
-      days+=`<div class="day-cell ${done?'done':(frozen?'frozen':'')}" data-idx="${idx}" data-day="${d}">${label}</div>`;
-    }
-    return `<div class="item-row">
-      <div class="top">
-        <input class="name" data-idx="${idx}" value="${escapeHtml(name)}" title="${escapeHtml(name)}">
-        <button class="type-toggle" data-typeidx="${idx}" title="${type==='counter'?'Счётчик — нажми, чтобы сделать галочкой':'Галочка — нажми, чтобы сделать счётчиком'}">${type==='counter'?'🔢':'✅'}</button>
-        ${type==='counter'?`<input class="counter-target" type="number" min="1" data-targetidx="${idx}" value="${target}" title="Цель в день">`:''}
-        <button class="arch-btn" data-arch="${idx}" title="В архив" aria-label="В архив">⌂</button>
-        <button class="del" data-del="${idx}">✕</button>
+function habitCardHtml(idx, cells, pctLabel, pct){
+  // Карточка привычки — имя целиком, расписание, серия и полоса дней.
+  // Переименование, дни недели, тип, архив и удаление — в карточке по нажатию на
+  // имя: раньше всё это теснилось кнопками в каждой строке и обрезало названия.
+  const now=new Date();
+  const streak=habitStreak(idx), best=bestStreakEver(idx);
+  // «под угрозой» — только если сегодня её день: пятничная не горит в четверг
+  const atRisk=streak>0 && habitScheduledOn(idx,now) && !isHabitDoneOn(idx,now) && !isHabitFrozenOn(idx,now);
+  const sub=[habitDaysLabel(idx)];
+  if(habitType(idx)==='counter') sub.push(`счётчик до ${habitCounterTarget(idx)}`);
+  return `<div class="hb-card">
+    <div class="hb-row">
+      <button class="hb-head" data-hsheet="${idx}">
+        <span class="hb-name">${escapeHtml(DATA.habits.list[idx]||"")}</span>
+        <span class="hb-sub">${escapeHtml(sub.join(" · "))}</span>
+      </button>
+      <div class="hb-pills">
+        ${streak>0? `<span class="hb-pill ${atRisk?'risk':''}" title="${atRisk?'Серия прервётся, если не отметить сегодня':'Серия подряд'}">🔥 ${streak}</span>`:""}
+        ${best>1? `<span class="hb-pill" title="Лучшая серия">🏆 ${best}</span>`:""}
+        <span class="hb-pill ${pct>=70?'ok':'low'}">${pctLabel}</span>
       </div>
-      <div class="meta">
-        ${streak>0?`<span class="streak-pill" title="Серия подряд">🔥 ${streak}</span>`:""}
-        ${atRisk?`<span class="streak-pill" style="background:linear-gradient(100deg,var(--warn-bg1),var(--warn-bg2));color:var(--warn-fg);box-shadow:inset 0 0 0 1px rgba(255,107,53,.4);" title="Сегодня ещё не отмечено — серия под угрозой">⚠️ отметь сегодня</span>`:""}
-        ${best>1?`<span class="streak-pill" title="Лучшая серия за всё время">🏆 ${best}</span>`:""}
-        <span class="pct-pill" style="background:${pct>=70?'var(--ok-bg)':'var(--bad-bg)'};color:${pct>=70?'var(--ok-fg)':'var(--bad-fg)'}">${pct}%</span>
-      </div>
-      <input class="habit-note" data-noteidx="${idx}" value="${escapeHtml((DATA.habits.notes&&DATA.habits.notes[idx])||'')}" placeholder="Зачем эта привычка? (необязательно)">
-      <div class="days-scroll">${days}</div>
-      <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
-    </div>`;
-  }).join("");
-  const avg = Math.round(habitPctAvg()*100);
-  return `<div class="card">
-    <h2>Привычки — ${MONTHS_RU[cur.monthIdx]}</h2>
-    <div class="kpi" style="margin-bottom:12px;border-top-color:var(--purple)">
-      <div class="t">Средний прогресс месяца</div><div class="v">${avg}%</div>
     </div>
-    <div class="row-wrap">${rows || '<div class="empty">Пока нет привычек — добавь первую ниже</div>'}</div>
-    <div class="add-row"><input id="newHabit" placeholder="Новая привычка..."><button id="addHabit">+</button></div>
+    <div class="days-scroll">${cells}</div>
+    <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
+  </div>`;
+}
+function habitCellHtml(idx, dt, attrs){
+  const done=isHabitDoneOn(idx,dt), frozen=!done && isHabitFrozenOn(idx,dt);
+  const type=habitType(idx);
+  const count=type==='counter'? habitDailyCount(idx,dt) : 0;
+  const label=done? '✔' : frozen? '❄' : (type==='counter' && count>0 ? count : dt.getDate());
+  const cls=["day-cell"];
+  if(done) cls.push("done"); else if(frozen) cls.push("frozen"); else if(!habitScheduledOn(idx,dt)) cls.push("off");
+  if(ymdOf(dt)===todayStr()) cls.push("is-today");
+  return `<div class="${cls.join(" ")}" data-idx="${idx}" ${attrs} title="${WD_SHORT[(dt.getDay()+6)%7]} ${dt.getDate()}">${label}</div>`;
+}
+function renderHabits(){
+  const nd=daysInMonth(cur.year,cur.monthIdx);
+  const cards=activeHabitIdx().map(idx=>{
+    let cells="";
+    for(let d=1; d<=nd; d++) cells+=habitCellHtml(idx, new Date(cur.year,cur.monthIdx,d), `data-day="${d}"`);
+    const pct=Math.round(habitPct(idx)*100);
+    return habitCardHtml(idx, cells, `${pct}%`, pct);
+  }).join("");
+  const avg=Math.round(habitPctAvg()*100);
+  return `<div class="card">
+    <div class="hb-top"><h2>Привычки — ${MONTHS_RU[cur.monthIdx]}</h2><span class="hb-avg">в среднем ${avg}%</span></div>
+    <div class="hb-list">${cards || '<div class="empty">Пока нет привычек — добавь первую ниже</div>'}</div>
+    <div class="add-row"><input id="newHabit" placeholder="Новая привычка — можно «по будням бег»"><button id="addHabit">+</button></div>
     ${renderArchivedHabits()}
-    <div class="empty" style="text-align:left;padding:8px 0 0;font-size:11px;">Тапни по дню: галочка → выполнено → заморожено (пропуск без разрыва серии) → пусто. У счётчиков — плюс 1 за тап, до цели, потом заморозка.</div>
+    <div class="fx-hint">Тапни по дню: сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию. Нажми на название — дни, тип, архив.</div>
   </div>`;
 }
 // Cycles a single day's state for a habit on tap:
@@ -2601,6 +2617,7 @@ function bindHabitTypeControls(){
     };
   });
   bindHabitArchive();
+  document.querySelectorAll('[data-hsheet]').forEach(b=>b.onclick=()=>openSheet({kind:"doitem", ref:"h:"+b.dataset.hsheet}));
 }
 function bindHabits(){
   document.querySelectorAll('[data-idx][data-day]').forEach(cell=>{
@@ -2622,64 +2639,34 @@ function bindHabits(){
     };
   });
   document.querySelectorAll('[data-del]').forEach(b=>{
-    b.onclick=()=>{ const n=DATA.habits.list[+b.dataset.del]; deleteWithUndo(`Привычка «${n}»`, ()=>DATA.habits.list.splice(+b.dataset.del,1)); };
+    b.onclick=()=>{ const n=DATA.habits.list[+b.dataset.del]; deleteWithUndo(`Привычка «${n}»`, ()=>removeHabit(+b.dataset.del)); };
   });
   document.getElementById("addHabit").onclick=()=>{
     const v=document.getElementById("newHabit").value.trim();
-    if(v){ DATA.habits.list.push(v); scheduleSave(); render(); }
+    if(v){ const r=parseRecurrence(v); const hab=r && r.kind==="habit"; addHabitItem(hab? (parseTodoSpeech(r.rest).text||v) : v, hab? r.days : null); scheduleSave(); render(); }
   };
 }
 function renderHabitsWeek(){
   const dates=getWeekDates(cur.weekAnchor);
-  const list=DATA.habits.list;
-  const today0=new Date();
-  const rows=list.map((name,idx)=>{
-    if(isHabitArchived(idx)) return "";
-    const type=habitType(idx);
-    const target=habitCounterTarget(idx);
-    const streak=habitStreak(idx);
-    const best=bestStreakEver(idx);
-    const atRisk = streak>0 && !isHabitDoneOn(idx, today0) && !isHabitFrozenOn(idx, today0);
-    let doneCount=0, frozenCount=0, days="";
-    dates.forEach(dt=>{
-      const done=isHabitDoneOn(idx,dt);
-      const frozen=!done && isHabitFrozenOn(idx,dt);
-      if(done) doneCount++; else if(frozen) frozenCount++;
-      const count=type==='counter'?habitDailyCount(idx,dt):0;
-      const wk=WEEKDAYS[(dt.getDay()+6)%7];
-      const label = done?'✔':(frozen?'❄':(type==='counter'&&count>0?count:dt.getDate()));
-      days+=`<div class="day-cell ${done?'done':(frozen?'frozen':'')}" data-idx="${idx}" data-wdate="${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}" title="${wk} ${dt.getDate()}">${label}</div>`;
-    });
-    const denom=Math.max(1, 7-frozenCount);
-    const pct=Math.round(Math.min(1,doneCount/denom)*100);
-    return `<div class="item-row">
-      <div class="top">
-        <input class="name" data-idx="${idx}" value="${escapeHtml(name)}" title="${escapeHtml(name)}">
-        <button class="type-toggle" data-typeidx="${idx}" title="${type==='counter'?'Счётчик — нажми, чтобы сделать галочкой':'Галочка — нажми, чтобы сделать счётчиком'}">${type==='counter'?'🔢':'✅'}</button>
-        ${type==='counter'?`<input class="counter-target" type="number" min="1" data-targetidx="${idx}" value="${target}" title="Цель в день">`:''}
-        <button class="del" data-del="${idx}">✕</button>
-      </div>
-      <div class="meta">
-        ${streak>0?`<span class="streak-pill" title="Серия подряд">🔥 ${streak}</span>`:""}
-        ${atRisk?`<span class="streak-pill" style="background:linear-gradient(100deg,var(--warn-bg1),var(--warn-bg2));color:var(--warn-fg);box-shadow:inset 0 0 0 1px rgba(255,107,53,.4);" title="Сегодня ещё не отмечено — серия под угрозой">⚠️ отметь сегодня</span>`:""}
-        ${best>1?`<span class="streak-pill" title="Лучшая серия за всё время">🏆 ${best}</span>`:""}
-        <span class="pct-pill" style="background:${pct>=70?'var(--ok-bg)':'var(--bad-bg)'};color:${pct>=70?'var(--ok-fg)':'var(--bad-fg)'}">${doneCount}/7</span>
-      </div>
-      <input class="habit-note" data-noteidx="${idx}" value="${escapeHtml((DATA.habits.notes&&DATA.habits.notes[idx])||'')}" placeholder="Зачем эта привычка? (необязательно)">
-      <div class="days-scroll">${days}</div>
-      <div class="progress-bar"><div class="fill" style="width:${pct}%"></div></div>
-    </div>`;
+  const ids=activeHabitIdx();
+  let sumDone=0, sumNeed=0;
+  const cards=ids.map(idx=>{
+    let doneN=0, need=0;
+    const cells=dates.map(dt=>{
+      const done=isHabitDoneOn(idx,dt), frozen=!done && isHabitFrozenOn(idx,dt);
+      if(done) doneN++;
+      if(habitScheduledOn(idx,dt) && !frozen) need++;
+      return habitCellHtml(idx, dt, `data-wdate="${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}"`);
+    }).join("");
+    sumDone+=Math.min(doneN, need); sumNeed+=need;
+    const pct=need? Math.round(Math.min(1, doneN/need)*100) : 100;
+    return habitCardHtml(idx, cells, `${doneN} из ${need}`, pct);
   }).join("");
-  const act=activeHabitIdx();
-  const avg = act.length? Math.round(act.reduce((s,idx)=>
-    s+dates.filter(dt=>isHabitDoneOn(idx,dt)).length,0)/(act.length*7)*100):0;
+  const avg=sumNeed? Math.round(sumDone/sumNeed*100) : 0;
   return `<div class="card">
-    <h2>Привычки — неделя</h2>
-    <div class="kpi" style="margin-bottom:12px;border-top-color:var(--purple)">
-      <div class="t">Средний прогресс недели</div><div class="v">${avg}%</div>
-    </div>
-    <div class="row-wrap">${rows || '<div class="empty">Пока нет привычек — добавь первую ниже</div>'}</div>
-    <div class="add-row"><input id="newHabit" placeholder="Новая привычка..."><button id="addHabit">+</button></div>
+    <div class="hb-top"><h2>Привычки — неделя</h2><span class="hb-avg">${avg}% по плану</span></div>
+    <div class="hb-list week">${cards || '<div class="empty">Пока нет привычек — добавь первую ниже</div>'}</div>
+    <div class="add-row"><input id="newHabit" placeholder="Новая привычка — можно «по будням бег»"><button id="addHabit">+</button></div>
   </div>`;
 }
 function bindHabitsWeek(){
@@ -2704,11 +2691,11 @@ function bindHabitsWeek(){
     };
   });
   document.querySelectorAll('[data-del]').forEach(b=>{
-    b.onclick=()=>{ const n=DATA.habits.list[+b.dataset.del]; deleteWithUndo(`Привычка «${n}»`, ()=>DATA.habits.list.splice(+b.dataset.del,1)); };
+    b.onclick=()=>{ const n=DATA.habits.list[+b.dataset.del]; deleteWithUndo(`Привычка «${n}»`, ()=>removeHabit(+b.dataset.del)); };
   });
   document.getElementById("addHabit").onclick=()=>{
     const v=document.getElementById("newHabit").value.trim();
-    if(v){ DATA.habits.list.push(v); scheduleSave(); render(); }
+    if(v){ const r=parseRecurrence(v); const hab=r && r.kind==="habit"; addHabitItem(hab? (parseTodoSpeech(r.rest).text||v) : v, hab? r.days : null); scheduleSave(); render(); }
   };
 }
 
@@ -3387,87 +3374,607 @@ function ensurePlanCats(){
 }
 // ---------- TODOS (one-off tasks with deadline/priority, unlike the daily "Задачи" checklist) ----------
 const TODO_PRIORITY_WEIGHT={high:0, medium:1, low:2};
-function renderTodos(){
-  const list=DATA.todos||[];
-  const today=new Date(); today.setHours(0,0,0,0);
-  const todayStr=`${today.getFullYear()}-${pad2(today.getMonth()+1)}-${pad2(today.getDate())}`;
-  const sorted=list.map((t,i)=>({...t,_i:i})).sort((a,b)=>{
-    if(!!a.done!==!!b.done) return a.done?1:-1;
-    const pw=(TODO_PRIORITY_WEIGHT[a.priority]??1)-(TODO_PRIORITY_WEIGHT[b.priority]??1);
-    if(pw!==0) return pw;
-    const ad=a.dueDate||"9999-99-99", bd=b.dueDate||"9999-99-99";
-    return ad<bd?-1:ad>bd?1:0;
+// ═════════ ПРИВЫЧКИ: ДНИ НЕДЕЛИ И УДАЛЕНИЕ ═════════
+// Привычка — это дело, которое повторяется. Раньше повторяться она могла только
+// каждый день; теперь — и по выбранным дням: «по пятницам выводить прибыль»
+// появляется в списке по пятницам, а серия не рвётся в остальные дни.
+const WD_SHORT=["пн","вт","ср","чт","пт","сб","вс"];
+function habitDays(idx){
+  const d=DATA.habits.days && DATA.habits.days[idx];
+  return Array.isArray(d) && d.length && d.length<7 ? d.slice().sort((a,b)=>a-b) : null;
+}
+function habitScheduledOn(idx, date){
+  const d=habitDays(idx);
+  return !d || d.includes((date.getDay()+6)%7);
+}
+function habitDaysLabel(idx){
+  const d=habitDays(idx);
+  if(!d) return "каждый день";
+  const k=d.join();
+  if(k==="0,1,2,3,4") return "по будням";
+  if(k==="5,6") return "по выходным";
+  return d.map(i=>WD_SHORT[i]).join(", ");
+}
+function setHabitDays(idx, days){
+  DATA.habits.days=DATA.habits.days||{};
+  const uniq=[...new Set((days||[]).map(Number).filter(x=>x>=0 && x<=6))].sort((a,b)=>a-b);
+  if(!uniq.length || uniq.length===7) delete DATA.habits.days[idx];
+  else DATA.habits.days[idx]=uniq;
+}
+function monthKeyOf(d){ return `${d.getFullYear()}-${d.getMonth()}`; }
+function activeHabitsOn(date){
+  return activeHabitIdx().filter(idx=>habitScheduledOn(idx,date) || isHabitDoneOn(idx,date));
+}
+
+// Всё про привычки лежит по её номеру в списке: отметки, счётчики, заморозки,
+// типы, цели, заметки, архив, дни недели. Раньше удалялось только имя, а данные
+// оставались на местах — и следующая привычка получала чужие галочки и серии.
+// Теперь номера сдвигаются везде разом.
+function removeHabit(idx){
+  const H=DATA.habits;
+  idx=+idx;
+  if(!(idx>=0 && idx<H.list.length)) return;
+  H.list.splice(idx,1);
+  const shift=obj=>{
+    if(!obj || typeof obj!=="object") return obj;
+    const out={};
+    Object.keys(obj).forEach(k=>{
+      const i=Number(k);
+      if(!Number.isInteger(i)){ out[k]=obj[k]; return; }
+      if(i<idx) out[i]=obj[k];
+      else if(i>idx) out[i-1]=obj[k];
+    });
+    return out;
+  };
+  ["types","counterTargets","goals","notes","archived","days"].forEach(f=>{ if(H[f]) H[f]=shift(H[f]); });
+  ["checks","counts","frozen","times"].forEach(f=>{
+    if(!H[f]) return;
+    Object.keys(H[f]).forEach(mkey=>{ H[f][mkey]=shift(H[f][mkey]); });
   });
-  const rows=sorted.map(t=>{
-    const i=t._i;
-    const overdue=t.dueDate && !t.done && t.dueDate<todayStr;
-    const dueToday=t.dueDate===todayStr && !t.done;
-    return `<div class="todo-row ${t.done?'done':''} ${(cur.freshTodos||[]).includes(t.id)?'fresh':''}">
-      <div class="chk ${t.done?'done':''}" data-todoidx="${i}"></div>
-      <input class="todo-text" data-toidx="${i}" data-tof="text" value="${escapeHtml(t.text||'')}" placeholder="Что нужно сделать?">
-      <input type="date" class="todo-date ${overdue?'overdue':''} ${dueToday?'due-today':''}" data-toidx="${i}" data-tof="dueDate" value="${t.dueDate||''}">
-      <select class="todo-priority" data-toidx="${i}" data-tof="priority">
-        <option value="high" ${t.priority==="high"?"selected":""}>🔴 Высокий</option>
-        <option value="medium" ${(!t.priority||t.priority==="medium")?"selected":""}>🟡 Средний</option>
-        <option value="low" ${t.priority==="low"?"selected":""}>⚪ Низкий</option>
-      </select>
-      <button class="del" data-tododel="${i}">✕</button>
+}
+
+// Галочка в списке — «сделано / не сделано», без заморозки: пропуск без разрыва
+// серии ставится в карточке привычки. У счётчика — плюс один до цели, потом сброс.
+function toggleHabitToday(idx){
+  const d=new Date(), key=monthKeyOf(d), day=d.getDate();
+  const H=DATA.habits;
+  const fr=H.frozen && H.frozen[key] && H.frozen[key][idx];
+  if(fr){ const fi=fr.indexOf(day); if(fi>=0) fr.splice(fi,1); }
+  const clearTime=()=>{ if(H.times && H.times[key] && H.times[key][idx]) delete H.times[key][idx][day]; };
+  if(habitType(idx)==='counter'){
+    H.counts=H.counts||{}; H.counts[key]=H.counts[key]||{}; H.counts[key][idx]=H.counts[key][idx]||{};
+    const c=H.counts[key][idx], target=habitCounterTarget(idx), now=c[day]||0;
+    if(now>=target){ delete c[day]; clearTime(); }
+    else { c[day]=now+1; if(c[day]>=target) markHabitTime(idx,key,day); }
+  } else {
+    H.checks[key]=H.checks[key]||{}; H.checks[key][idx]=H.checks[key][idx]||[];
+    const arr=H.checks[key][idx], di=arr.indexOf(day);
+    if(di>=0){ arr.splice(di,1); clearTime(); }
+    else { arr.push(day); markHabitTime(idx,key,day); }
+  }
+}
+function setHabitStateToday(idx, state){
+  const d=new Date(), key=monthKeyOf(d), day=d.getDate();
+  const H=DATA.habits;
+  const drop=arr=>{ if(!arr) return; const i=arr.indexOf(day); if(i>=0) arr.splice(i,1); };
+  drop(H.checks[key] && H.checks[key][idx]);
+  if(H.counts && H.counts[key] && H.counts[key][idx]) delete H.counts[key][idx][day];
+  drop(H.frozen && H.frozen[key] && H.frozen[key][idx]);
+  if(H.times && H.times[key] && H.times[key][idx]) delete H.times[key][idx][day];
+  if(state==="done"){
+    if(habitType(idx)==='counter'){
+      H.counts=H.counts||{}; H.counts[key]=H.counts[key]||{}; H.counts[key][idx]=H.counts[key][idx]||{};
+      H.counts[key][idx][day]=habitCounterTarget(idx);
+    } else {
+      H.checks[key]=H.checks[key]||{}; H.checks[key][idx]=H.checks[key][idx]||[];
+      H.checks[key][idx].push(day);
+    }
+    markHabitTime(idx,key,day);
+  } else if(state==="skip"){
+    H.frozen=H.frozen||{}; H.frozen[key]=H.frozen[key]||{}; H.frozen[key][idx]=H.frozen[key][idx]||[];
+    H.frozen[key][idx].push(day);
+  }
+}
+function addHabitItem(name, days){
+  const H=DATA.habits;
+  const idx=H.list.length;
+  H.list.push(name);
+  if(days) setHabitDays(idx, days);
+  return idx;
+}
+function findHabitByName(name){
+  const n=String(name||"").trim().toLowerCase();
+  return DATA.habits.list.findIndex((x,i)=>!isHabitArchived(i) && String(x||"").trim().toLowerCase()===n);
+}
+
+// ---------- ПОВТОРЯЮЩИЕСЯ ДЕЛА ----------
+// «Каждый месяц 10 числа платить аренду» — не привычка с серией, а дело, которое
+// само появляется снова, когда его отметишь.
+function nextRepeatDate(t){
+  const today=new Date(); today.setHours(0,0,0,0);
+  const base=parseLocalDate(t.dueDate) || new Date(today);
+  let d=new Date(base);
+  const step=()=>{
+    if(t.repeat.every==="week"){ d.setDate(d.getDate()+7); return; }
+    const want=t.repeat.day || base.getDate();
+    const n=new Date(d.getFullYear(), d.getMonth()+1, 1);
+    n.setDate(Math.min(want, daysInMonth(n.getFullYear(), n.getMonth())));
+    d=n;
+  };
+  step();
+  // отметил просроченный повтор — следующий не должен сразу родиться просроченным
+  let guard=0;
+  while(d<=today && guard++<400) step();
+  return ymdOf(d);
+}
+function toggleTodo(i){
+  const t=DATA.todos && DATA.todos[i];
+  if(!t) return;
+  if(!t.done){
+    t.done=true; t.doneAt=Date.now();
+    if(t.repeat && !t.spawnedId){
+      const next={id:Date.now()+1, text:t.text, done:false, dueDate:nextRepeatDate(t),
+        priority:t.priority||"medium", createdAt:Date.now(), repeat:{...t.repeat}};
+      DATA.todos.push(next);
+      t.spawnedId=next.id;
+    }
+  } else {
+    t.done=false; delete t.doneAt;
+    if(t.spawnedId){
+      const j=DATA.todos.findIndex(x=>x.id===t.spawnedId && !x.done);
+      if(j>=0) DATA.todos.splice(j,1);
+      delete t.spawnedId;
+    }
+  }
+}
+
+// ---------- «КАЖДЫЙ ДЕНЬ», «ПО ПЯТНИЦАМ», «КАЖДЫЙ МЕСЯЦ» ----------
+const WD_FORMS=[["понедельник",0],["пн",0],["вторник",1],["вт",1],["сред",2],["ср",2],["четверг",3],["чт",3],
+  ["пятниц",4],["пт",4],["суббот",5],["сб",5],["воскресен",6],["вс",6]];
+function parseRecurrence(raw){
+  let s=" "+String(raw||"").replace(/\s+/g," ").trim()+" ";
+  const END="(?=[\\s,.!?;:]|$)";
+  const cut=re=>{ const m=s.match(re); if(m) s=s.slice(0,m.index)+" "+s.slice(m.index+m[0].length); return m; };
+  const WD="(?:понедельник\\p{L}*|вторник\\p{L}*|сред\\p{L}*|четверг\\p{L}*|пятниц\\p{L}*|суббот\\p{L}*|воскресен\\p{L}*|пн|вт|ср|чт|пт|сб|вс)";
+  let kind=null, days=null, repeat=null, m;
+  if(cut(new RegExp("\\s(?:каждый\\s+день|каждый\\s+божий\\s+день|ежедневно|каждодневно|каждое\\s+утро|каждый\\s+вечер|каждую\\s+ночь|по\\s+утрам|по\\s+вечерам|каждый\\s+раз)"+END,"iu"))) kind="habit";
+  else if(cut(new RegExp("\\s(?:по\\s+будням|в\\s+будни|каждый\\s+будний\\s+день|по\\s+рабочим\\s+дням)"+END,"iu"))){ kind="habit"; days=[0,1,2,3,4]; }
+  else if(cut(new RegExp("\\s(?:по\\s+выходным|в\\s+выходные|каждые\\s+выходные)"+END,"iu"))){ kind="habit"; days=[5,6]; }
+  else if((m=cut(new RegExp("\\s(?:по|каждый|каждую|каждое|каждые)\\s+("+WD+"(?:(?:\\s*,\\s*|\\s+и\\s+|\\s+)"+WD+")*)"+END,"iu")))){
+    const found=[];
+    m[1].toLowerCase().split(/\s*,\s*|\s+и\s+|\s+/).forEach(w=>{
+      const hit=WD_FORMS.find(([k])=> k.length<=2 ? w===k : w.startsWith(k));
+      if(hit && !found.includes(hit[1])) found.push(hit[1]);
+    });
+    if(found.length){ kind="habit"; days=found.sort((a,b)=>a-b); }
+  }
+  else if(cut(new RegExp("\\s(?:каждую\\s+неделю|раз\\s+в\\s+неделю|еженедельно)"+END,"iu"))){ kind="todo"; repeat={every:"week"}; }
+  else if(cut(new RegExp("\\s(?:каждый\\s+месяц|раз\\s+в\\s+месяц|ежемесячно|каждого\\s+месяца)"+END,"iu"))){ kind="todo"; repeat={every:"month"}; }
+  if(!kind) return null;
+  return {kind, days, repeat, rest:s.replace(/\s+/g," ").trim()};
+}
+
+// Из текста — голосового или набранного — привычки и дела. Голос делит
+// перечисление на пункты; набранное остаётся одним пунктом.
+function createFromText(raw, opts){
+  opts=opts||{};
+  const split=opts.split && (DATA.settings||{}).voiceSplit!==false;
+  const chunks=split ? splitTodoList(raw) : [{text:String(raw||"").trim(), fromList:false}];
+  const res={habits:[], todos:[], dup:[]};
+  const plain=[];
+  chunks.forEach(ch=>{
+    const r=parseRecurrence(ch.text);
+    if(r && r.kind==="habit"){
+      const name=parseTodoSpeech(r.rest).text;
+      if(!name) return;
+      const exist=findHabitByName(name);
+      if(exist>=0){
+        res.dup.push(name);
+        if(r.days) setHabitDays(exist, r.days);
+        return;
+      }
+      res.habits.push({idx:addHabitItem(name, r.days), name, days:r.days});
+    } else if(r && r.kind==="todo"){
+      const t=parseTodoSpeech(r.rest);
+      if(!t.text) return;
+      const due=t.dueDate || todayStr();
+      const rep={every:r.repeat.every};
+      if(rep.every==="month") rep.day=(parseLocalDate(due)||new Date()).getDate();
+      res.todos.push({...t, dueDate:due, repeat:rep});
+    } else if(ch.text) plain.push(ch);
+  });
+  if(plain.length){
+    const items = split ? parseTodoList(plain, opts.base) : [parseTodoSpeech(plain[0].text, opts.base)];
+    items.filter(x=>x.text).forEach(x=>res.todos.push(x));
+  }
+  if(!DATA.todos) DATA.todos=[];
+  const base=Date.now();
+  res.todos=res.todos.map((t,i)=>{
+    const id=base+i;
+    const item={id, text:t.text, done:false, dueDate:t.dueDate||"", priority:t.priority||"medium", createdAt:id};
+    if(t.repeat) item.repeat=t.repeat;
+    if(opts.voice) item.voice=true;
+    DATA.todos.push(item);
+    return item;
+  });
+  cur.freshTodos=res.todos.map(t=>t.id);
+  cur.freshHabits=res.habits.map(h=>h.idx);
+  setTimeout(()=>{ cur.freshTodos=null; cur.freshHabits=null; }, 2600);
+  return res;
+}
+function undoCreated(res){
+  const ids=res.todos.map(t=>t.id);
+  DATA.todos=(DATA.todos||[]).filter(x=>!ids.includes(x.id));
+  res.habits.map(h=>h.idx).sort((a,b)=>b-a).forEach(removeHabit);
+}
+function createdToast(res){
+  const n=res.habits.length+res.todos.length;
+  if(!n){
+    if(res.dup.length) showActionToast(`«${res.dup[0]}» уже есть в привычках`);
+    return;
+  }
+  const undo=()=>{ undoCreated(res); scheduleSave(); render(); };
+  if(n===1){
+    if(res.habits.length){
+      const h=res.habits[0];
+      showActionToast(`Новая привычка: «${h.name}» · ${habitDaysLabel(h.idx)}`, "Отменить", undo);
+    } else {
+      const t=res.todos[0], bits=[];
+      if(t.dueDate) bits.push(dueLabel(t.dueDate));
+      if(t.priority==="high") bits.push("срочно");
+      if(t.repeat) bits.push(t.repeat.every==="week"? "каждую неделю" : "каждый месяц");
+      showActionToast(`Добавлено: «${t.text}»${bits.length? " · "+bits.join(", "):""}`, "Отменить", undo);
+    }
+    return;
+  }
+  const parts=[];
+  if(res.todos.length) parts.push(`${res.todos.length} ${plural(res.todos.length,'дело','дела','дел')}`);
+  if(res.habits.length) parts.push(`${res.habits.length} ${plural(res.habits.length,'привычка','привычки','привычек')}`);
+  const names=[...res.habits.map(h=>h.name), ...res.todos.map(t=>t.text)].map(x=>"«"+x+"»").join(", ");
+  showActionToast(`Добавлено ${parts.join(" и ")}: ${names}`, "Отменить", undo, 7000);
+}
+
+// ═════════ ДЕЛА: ВСЁ В ОДНОМ СПИСКЕ ═════════
+// «Ритм» и «Дела» были двумя вкладками про одно — что сделать. Теперь сверху
+// всё на сегодня, и привычки, и дела, по срочности: просроченное, серии под
+// угрозой, сегодняшнее; сделанное — вниз. Дальше — завтра, неделя, позже, без
+// срока. Привычка отмечается квадратной галочкой, дело — круглой.
+const CHECK_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`;
+function doTodoMeta(t){
+  const ts=todayStr(), bits=[];
+  if(t.dueDate){
+    if(!t.done && t.dueDate<ts){
+      const days=Math.max(1, Math.round((parseLocalDate(ts)-parseLocalDate(t.dueDate))/86400000));
+      bits.push(`<b class="late">просрочено ${days} ${plural(days,'день','дня','дней')}</b>`);
+    } else if(t.dueDate!==ts) bits.push(escapeHtml(dueLabel(t.dueDate)));
+  }
+  if(t.priority==="high" && !t.done) bits.push('<b class="hot">срочно</b>');
+  else if(t.priority==="low") bits.push('не срочно');
+  if(t.repeat) bits.push(t.repeat.every==="week"? "↻ каждую неделю" : "↻ каждый месяц");
+  return bits.join(" · ");
+}
+function renderDoRow(item){
+  if(item.kind==="habit"){
+    const idx=item.idx, now=new Date();
+    const done=isHabitDoneOn(idx,now), frozen=!done && isHabitFrozenOn(idx,now);
+    const streak=habitStreak(idx), type=habitType(idx);
+    const cnt=type==="counter"? habitDailyCount(idx,now) : 0;
+    // «каждый день» — это норма, её не подписываем; подписываем только расписание
+    const bits=habitDays(idx)? [`<i class="do-kind">${escapeHtml(habitDaysLabel(idx))}</i>`] : [];
+    if(type==="counter") bits.push(`${cnt} из ${habitCounterTarget(idx)}`);
+    // серия, которую сегодня ещё можно потерять, — красным числом, без лишних слов
+    if(streak>0) bits.push(!done && !frozen ? `<b class="hot" title="Серия прервётся, если не отметить сегодня">🔥 ${streak}</b>` : `🔥 ${streak}`);
+    if(frozen) bits.push("пропуск, серия цела");
+    const fresh=(cur.freshHabits||[]).includes(idx);
+    return `<div class="do-row habit ${done?'done':''} ${frozen?'frozen':''} ${fresh?'fresh':''}">
+      <button class="do-chk ${cnt>0 && !done?'part':''}" data-dotick="h:${idx}" aria-label="${done?'Снять отметку':'Отметить'}">${done? CHECK_SVG : frozen? '❄' : (cnt>0? cnt : '')}</button>
+      <button class="do-main" data-doopen="h:${idx}"><span class="do-t">${escapeHtml(DATA.habits.list[idx]||"")}</span>${bits.length? `<span class="do-m">${bits.join(" · ")}</span>`:""}</button>
     </div>`;
-  }).join("");
-  const activeCount=list.filter(t=>!t.done).length;
-  const overdueCount=list.filter(t=>!t.done && t.dueDate && t.dueDate<todayStr).length;
-  return `<div class="card todo-card">
-    <div class="todo-head"><h2>Дела</h2><span class="todo-count">${activeCount} ${plural(activeCount,'активное','активных','активных')}${overdueCount? ` · <b>${overdueCount} ${plural(overdueCount,'просрочено','просрочено','просрочено')}</b>`:""}</span></div>
-    <div class="add-row todo-add">
-      <input id="newTodoText" placeholder="Новое дело…" autocomplete="off" enterkeyhint="done">
-      <button class="mic-btn" id="todoMic" aria-label="Сказать голосом" title="Сказать голосом">${MIC_SVG}</button>
-      <button id="addTodoBtn" aria-label="Добавить">+</button>
-    </div>
-    <div class="todo-hint">Нажми на микрофон и перечисляй: <b>«завтра купить хлеб, молоко, позвонить в банк — срочно»</b> — будет три дела на завтра. Между пунктами можно говорить «потом» или «запятая».</div>
-    <div class="row-wrap">${rows || '<div class="empty">Дел нет — можно отдохнуть 🙂</div>'}</div>
+  }
+  const t=item.t, meta=doTodoMeta(t);
+  const fresh=(cur.freshTodos||[]).includes(t.id);
+  return `<div class="do-row todo ${t.done?'done':''} ${t.priority==='high' && !t.done?'hot':''} ${fresh?'fresh':''}">
+    <button class="do-chk" data-dotick="t:${item.i}" aria-label="${t.done?'Вернуть в работу':'Сделано'}">${t.done? CHECK_SVG : ''}</button>
+    <button class="do-main" data-doopen="t:${item.i}"><span class="do-t">${escapeHtml(t.text||"без названия")}</span>${meta? `<span class="do-m">${meta}</span>`:""}</button>
   </div>`;
 }
-function bindTodos(){
-  document.querySelectorAll('[data-todoidx]').forEach(el=>{
-    el.onclick=()=>{
-      const i=+el.dataset.todoidx;
-      DATA.todos[i].done=!DATA.todos[i].done;
-      scheduleSave(); render();
-    };
-  });
-  document.querySelectorAll('[data-toidx]').forEach(el=>{
-    el.onchange=()=>{
-      const i=+el.dataset.toidx, f=el.dataset.tof;
-      DATA.todos[i][f]=el.value;
-      scheduleSave(); render();
-    };
-  });
-  document.querySelectorAll('[data-tododel]').forEach(b=>{
-    b.onclick=()=>{ const n=(DATA.todos[+b.dataset.tododel]||{}).text||''; deleteWithUndo(`Дело «${n}»`, ()=>DATA.todos.splice(+b.dataset.tododel,1)); };
-  });
-  // Срок и приоритет понимаются прямо из текста — тем же разбором, что и голос:
-  // «завтра позвонить в банк» ляжет на завтра. Что поняли, видно в тосте.
-  const addTodo=()=>{
-    const inp=document.getElementById("newTodoText");
-    const raw=inp.value.trim();
+function doGroups(){
+  const ts=todayStr(), now=new Date();
+  const tm=new Date(); tm.setDate(tm.getDate()+1);
+  const tomorrow=ymdOf(tm);
+  const wk=new Date(); wk.setDate(wk.getDate()+7);
+  const weekEnd=ymdOf(wk);
+  const todos=(DATA.todos||[]).map((t,i)=>({kind:"todo", t, i}));
+  const rank=x=>({high:0, medium:1, low:2})[x.t.priority||"medium"] ?? 1;
+  const byDue=(a,b)=> rank(a)-rank(b) || String(a.t.dueDate||"9").localeCompare(String(b.t.dueDate||"9")) || a.i-b.i;
+  const doneToday=x=> x.t.done && x.t.doneAt && ymdOf(new Date(x.t.doneAt))===ts;
+  const habits=activeHabitsOn(now).map(idx=>({kind:"habit", idx}));
+  const hOpen=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now))
+    .sort((a,b)=>habitStreak(b.idx)-habitStreak(a.idx));
+  const hDone=habits.filter(h=>isHabitDoneOn(h.idx,now) || isHabitFrozenOn(h.idx,now));
+  const open=x=>!x.t.done;
+  const overdue=todos.filter(x=>open(x) && x.t.dueDate && x.t.dueDate<ts).sort(byDue);
+  const dueToday=todos.filter(x=>open(x) && x.t.dueDate===ts).sort(byDue);
+  const tDone=todos.filter(doneToday);
+  const today=[...overdue, ...hOpen.filter(h=>habitStreak(h.idx)>0), ...dueToday,
+    ...hOpen.filter(h=>habitStreak(h.idx)===0), ...hDone, ...tDone];
+  const total=habits.length+overdue.length+dueToday.length+tDone.length;
+  const doneN=hDone.length+tDone.length;
+  return {total, doneN, openHabits:hOpen.length, openTodos:overdue.length+dueToday.length, groups:[
+    {id:"today", title:"Сегодня", items:today},
+    {id:"tomorrow", title:"Завтра", items:todos.filter(x=>open(x) && x.t.dueDate===tomorrow).sort(byDue)},
+    {id:"week", title:"На неделе", items:todos.filter(x=>open(x) && x.t.dueDate>tomorrow && x.t.dueDate<=weekEnd).sort(byDue)},
+    {id:"later", title:"Позже", items:todos.filter(x=>open(x) && x.t.dueDate>weekEnd).sort(byDue)},
+    {id:"nodate", title:"Без срока", items:todos.filter(x=>open(x) && !x.t.dueDate).sort(byDue)}
+  ], done: todos.filter(x=>x.t.done && !doneToday(x)).sort((a,b)=>(b.t.doneAt||0)-(a.t.doneAt||0))};
+}
+function doHeadline(G){
+  if(!G.total) return {t:"На сегодня пусто", s:"Продиктуй дела или привычки — они появятся здесь"};
+  if(G.doneN>=G.total) return {t:"Всё на сегодня сделано", s:`${G.total} из ${G.total} — можно выдохнуть`};
+  const left=G.total-G.doneN, parts=[];
+  if(G.openTodos) parts.push(`${G.openTodos} ${plural(G.openTodos,'дело','дела','дел')}`);
+  if(G.openHabits) parts.push(`${G.openHabits} ${plural(G.openHabits,'привычка','привычки','привычек')}`);
+  return {t:`Осталось ${left}`, s:parts.join(" и ")};
+}
+function renderDoWeek(){
+  const ids=activeHabitIdx();
+  if(!ids.length) return "";
+  const dates=getWeekDates(Date.now());
+  const ts=todayStr();
+  const head=dates.map(d=>`<span class="wd ${ymdOf(d)===ts?'now':''}">${WD_SHORT[(d.getDay()+6)%7]}</span>`).join("");
+  const rows=ids.map(idx=>{
+    let doneN=0, need=0;
+    const cells=dates.map(d=>{
+      const key=ymdOf(d);
+      const done=isHabitDoneOn(idx,d), frozen=!done && isHabitFrozenOn(idx,d), sched=habitScheduledOn(idx,d);
+      const future=key>ts;
+      if(sched && !frozen) need++;
+      if(done) doneN++;
+      const cls=["dw-c"];
+      if(done) cls.push("done"); else if(frozen) cls.push("frozen"); else if(!sched) cls.push("off");
+      else if(!future && key<ts) cls.push("miss");
+      if(future) cls.push("future");
+      if(key===ts) cls.push("today");
+      return future ? `<span class="${cls.join(" ")}"></span>`
+        : `<button class="${cls.join(" ")}" data-dwcell="${idx}:${d.getFullYear()}-${d.getMonth()}-${d.getDate()}" aria-label="${escapeHtml(DATA.habits.list[idx])}, ${WD_SHORT[(d.getDay()+6)%7]}">${frozen?'❄':''}</button>`;
+    }).join("");
+    const streak=habitStreak(idx);
+    return `<div class="dw-row"><button class="dw-name" data-doopen="h:${idx}">${escapeHtml(DATA.habits.list[idx])}${habitDays(idx)? `<small>${escapeHtml(habitDaysLabel(idx))}</small>`:""}</button>
+      <span class="dw-s">${streak>0? "🔥 "+streak : `${doneN} из ${need}`}</span></div>${cells}`;
+  }).join("");
+  return `<div class="card do-week">
+    <div class="dw-head"><h2>Привычки · неделя</h2><button class="fx-linkbtn" data-gohabits="1">Месяц и год ›</button></div>
+    <div class="dw-grid">${head}${rows}</div>
+    <div class="fx-hint">Клетка: сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию.</div>
+  </div>`;
+}
+function renderDoList(){
+  const G=doGroups();
+  const h=doHeadline(G);
+  const pct=G.total? Math.round(G.doneN/G.total*100) : 0;
+  const groups=G.groups.filter(g=>g.items.length || g.id==="today").map(g=>`
+    <div class="do-group">
+      <div class="dg-h ${g.id}"><span>${g.title}</span>${g.items.length? `<b>${g.items.length}</b>`:""}</div>
+      ${g.items.length? g.items.map(renderDoRow).join("") : `<div class="do-empty">На сегодня ничего — ни привычек, ни дел со сроком</div>`}
+    </div>`).join("");
+  const doneList=G.done.slice(0, cur.doneShowAll? G.done.length : 20);
+  const doneBlock=G.done.length? `<details class="card do-done" ${cur.doneOpen?'open':''}>
+      <summary>Сделано раньше · ${G.done.length}</summary>
+      ${doneList.map(renderDoRow).join("")}
+      ${G.done.length>doneList.length? `<button class="fx-linkbtn" id="doneAll">Показать все ${G.done.length}</button>`:""}
+      <button class="fx-linkbtn danger" id="doneClear">Убрать сделанные дела</button>
+    </details>` : "";
+  return `<div class="card do-head">
+      <div class="dh-row">
+        <div class="dh-ring" style="--p:${pct}"><span>${G.doneN}<small>/${G.total}</small></span></div>
+        <div class="dh-txt"><b>${escapeHtml(h.t)}</b><span>${escapeHtml(h.s)}</span></div>
+      </div>
+      <div class="add-row todo-add">
+        <input id="newDoText" placeholder="Дело или привычка…" autocomplete="off" enterkeyhint="done">
+        <button class="mic-btn" id="doMic" aria-label="Сказать голосом" title="Сказать голосом">${MIC_SVG}</button>
+        <button id="doAdd" aria-label="Добавить">+</button>
+      </div>
+      <div class="todo-hint">«Завтра позвонить в банк» — дело. «Каждое утро зарядка», «по пятницам выводить прибыль» — привычка. «Каждый месяц 10 числа платить аренду» — дело с повтором. Голосом можно списком.</div>
+    </div>
+    <div class="card do-list">${groups}</div>
+    ${renderDoWeek()}
+    ${doneBlock}`;
+}
+function bindDoList(){
+  const add=()=>{
+    const inp=document.getElementById("newDoText");
+    const raw=(inp && inp.value || "").trim();
     if(!raw) return;
-    const t=parseTodoSpeech(raw);
-    const text=t.text || raw;
-    const id=Date.now();
-    DATA.todos.push({id, text, done:false, dueDate:t.dueDate||"", priority:t.priority||"medium", createdAt:id});
+    const res=createFromText(raw, {split:false});
     inp.value="";
     scheduleSave(); render();
-    const again=document.getElementById("newTodoText");
+    const again=document.getElementById("newDoText");
     if(again) again.focus();
-    if(t.dueDate || t.priority) showActionToast(`Добавлено${t.dueDate? " · "+dueLabel(t.dueDate):""}${t.priority==="high"? " · срочно" : t.priority==="low"? " · не срочно" : ""}`);
+    createdToast(res);
   };
-  const addBtn=document.getElementById("addTodoBtn");
-  if(addBtn) addBtn.onclick=addTodo;
-  const newInp=document.getElementById("newTodoText");
-  if(newInp) newInp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); addTodo(); } };
-  const mic=document.getElementById("todoMic");
+  const b=document.getElementById("doAdd");
+  if(b) b.onclick=add;
+  const inp=document.getElementById("newDoText");
+  if(inp) inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } };
+  const mic=document.getElementById("doMic");
   if(mic) mic.onclick=()=>voiceAddTodo(mic);
+  document.querySelectorAll('[data-dotick]').forEach(el=>el.onclick=()=>{
+    const [k,v]=el.dataset.dotick.split(":");
+    if(k==="h") toggleHabitToday(+v); else toggleTodo(+v);
+    scheduleSave(); render();
+  });
+  document.querySelectorAll('[data-doopen]').forEach(el=>el.onclick=()=>openSheet({kind:"doitem", ref:el.dataset.doopen}));
+  document.querySelectorAll('[data-dwcell]').forEach(el=>el.onclick=()=>{
+    const [idx,date]=el.dataset.dwcell.split(":");
+    const [y,m,d]=date.split("-").map(Number);
+    cycleHabitDay(+idx, `${y}-${m}`, d);
+    scheduleSave(); render();
+  });
+  document.querySelectorAll('[data-gohabits]').forEach(el=>el.onclick=()=>{ cur.sub.doing="habits"; cur.habitView="month"; render(); window.scrollTo(0,0); });
+  const det=document.querySelector('.do-done');
+  if(det) det.ontoggle=()=>{ cur.doneOpen=det.open; };
+  const all=document.getElementById("doneAll");
+  if(all) all.onclick=()=>{ cur.doneShowAll=true; render(); };
+  const clr=document.getElementById("doneClear");
+  if(clr) clr.onclick=()=>{
+    const n=(DATA.todos||[]).filter(t=>t.done).length;
+    deleteWithUndo(`${n} ${plural(n,'сделанное дело','сделанных дела','сделанных дел')}`, ()=>{ DATA.todos=(DATA.todos||[]).filter(t=>!t.done); });
+  };
 }
+
+// ---------- КАРТОЧКА ПУНКТА: ДЕЛО ИЛИ ПРИВЫЧКА ----------
+function renderDoItemSheet(s){
+  const [k,v]=String(s.ref||"").split(":");
+  if(k==="h") return renderHabitItemSheet(+v);
+  const i=+v, t=DATA.todos && DATA.todos[i];
+  if(!t) return `<div class="sh-head"><div class="sh-title left"><b>Дело удалено</b></div><button class="sh-x" data-shclose="1">✕</button></div>`;
+  const ts=todayStr();
+  const tm=new Date(); tm.setDate(tm.getDate()+1);
+  const t2=new Date(); t2.setDate(t2.getDate()+2);
+  const dates=[["Сегодня",ts],["Завтра",ymdOf(tm)],["Послезавтра",ymdOf(t2)],["Без срока",""]];
+  const rep=t.repeat? t.repeat.every : "";
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Дело</b><span class="zero">${t.done? "сделано" : (t.dueDate? escapeHtml(dueLabel(t.dueDate)) : "без срока")}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <textarea class="sh-in it-text" id="itText" rows="2" placeholder="Что сделать">${escapeHtml(t.text||"")}</textarea>
+    <div class="sh-lab">Когда</div>
+    <div class="fx-pick">${dates.map(([l,d])=>`<button class="${(t.dueDate||"")===d?'on':''}" data-itdate="${d}">${l}</button>`).join("")}</div>
+    <input type="date" class="sh-in" id="itDate" value="${t.dueDate||""}">
+    <div class="sh-lab">Важность</div>
+    <div class="fx-pick">${[["high","Срочно"],["medium","Обычно"],["low","Не срочно"]].map(([p,l])=>
+      `<button class="${(t.priority||"medium")===p?'on':''}" data-itprio="${p}">${l}</button>`).join("")}</div>
+    <div class="sh-lab">Повтор</div>
+    <div class="fx-pick">
+      ${[["","Не повторять"],["week","Каждую неделю"],["month","Каждый месяц"]].map(([r,l])=>`<button class="${rep===r?'on':''}" data-itrep="${r}">${l}</button>`).join("")}
+      <button data-ithabit="1">Каждый день — сделать привычкой</button>
+    </div>
+    <div class="sh-actions">
+      <button class="btn ghost danger" id="itDel">Удалить</button>
+      <button class="btn" id="itDone">${t.done? "Вернуть в работу" : "Сделано"}</button>
+    </div>`;
+}
+function renderHabitItemSheet(idx){
+  const name=DATA.habits.list[idx];
+  if(name==null) return `<div class="sh-head"><div class="sh-title left"><b>Привычка удалена</b></div><button class="sh-x" data-shclose="1">✕</button></div>`;
+  const now=new Date();
+  const days=habitDays(idx)||[0,1,2,3,4,5,6];
+  const done=isHabitDoneOn(idx,now), frozen=!done && isHabitFrozenOn(idx,now);
+  const type=habitType(idx);
+  const streak=habitStreak(idx), best=bestStreakEver(idx);
+  const y=now.getFullYear(), m=now.getMonth();
+  const goal=habitGoal(idx,y,m), nd=daysInMonth(y,m);
+  let doneM=0; for(let d=1; d<=nd; d++) if(isHabitDoneOn(idx,new Date(y,m,d))) doneM++;
+  const pct=Math.round(Math.min(1, doneM/Math.max(1,goal))*100);
+  const state=done? "done" : frozen? "skip" : "none";
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Привычка</b><span class="zero">${escapeHtml(habitDaysLabel(idx))}${habitScheduledOn(idx,now)? "" : " · сегодня не по расписанию"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <input class="sh-in it-name" id="itName" value="${escapeHtml(name)}" placeholder="Название">
+    <div class="it-stats">
+      <div><b>${streak>0? "🔥 "+streak : "0"}</b><span>серия</span></div>
+      <div><b>${best>0? "🏆 "+best : "—"}</b><span>лучшая</span></div>
+      <div><b>${pct}%</b><span>${MONTHS_RU[m].toLowerCase()}: ${doneM} из ${goal}</span></div>
+    </div>
+    <div class="sh-lab">Сегодня</div>
+    <div class="fx-pick">
+      <button class="${state==="done"?'on':''}" data-itstate="done">✓ Сделано</button>
+      <button class="${state==="skip"?'on':''}" data-itstate="skip">❄ Пропуск без разрыва серии</button>
+      <button class="${state==="none"?'on':''}" data-itstate="none">Не сделано</button>
+    </div>
+    <div class="sh-lab">Дни<span class="it-quick">
+      <button data-itdays="0,1,2,3,4,5,6">каждый день</button><button data-itdays="0,1,2,3,4">будни</button><button data-itdays="5,6">выходные</button></span></div>
+    <div class="it-days">${WD_SHORT.map((l,i)=>`<button class="${days.includes(i)?'on':''}" data-itday="${i}">${l}</button>`).join("")}</div>
+    <div class="sh-lab">Как отмечать</div>
+    <div class="fx-pick">
+      <button class="${type!=="counter"?'on':''}" data-ittype="check">Галочкой</button>
+      <button class="${type==="counter"?'on':''}" data-ittype="counter">Счётчиком</button>
+      ${type==="counter"? `<label class="it-target">цель в день <input type="number" min="1" id="itTarget" value="${habitCounterTarget(idx)}"></label>` : ""}
+    </div>
+    <input class="sh-in" id="itNote" placeholder="Зачем эта привычка? (необязательно)" value="${escapeHtml((DATA.habits.notes && DATA.habits.notes[idx])||"")}">
+    <div class="sh-actions">
+      <button class="btn ghost" id="itArch">В архив</button>
+      <button class="btn ghost danger" id="itDel">Удалить</button>
+      <button class="btn" data-shclose="1">Готово</button>
+    </div>`;
+}
+function bindDoItemSheet(s){
+  const [k,v]=String(s.ref||"").split(":");
+  const root=sheetRoot();
+  const q=sel=>root.querySelectorAll(sel);
+  const save=()=>{ scheduleSave(); render(); };
+  if(k==="h"){
+    const idx=+v;
+    if(DATA.habits.list[idx]==null) return;
+    const name=document.getElementById("itName");
+    // поля сохраняются без перерисовки: иначе касание кнопки сразу после ввода
+    // терялось бы — кнопку заменили бы новой, пока палец ещё на экране
+    if(name) name.onchange=()=>{ const val=name.value.trim(); if(val){ DATA.habits.list[idx]=val; scheduleSave(); } else name.value=DATA.habits.list[idx]; };
+    q('[data-itstate]').forEach(b=>b.onclick=()=>{ setHabitStateToday(idx, b.dataset.itstate); save(); });
+    q('[data-itday]').forEach(b=>b.onclick=()=>{
+      const d=+b.dataset.itday;
+      const cur2=habitDays(idx)||[0,1,2,3,4,5,6];
+      const next=cur2.includes(d)? cur2.filter(x=>x!==d) : [...cur2, d];
+      if(!next.length){ showActionToast("Хотя бы один день должен остаться"); return; }
+      setHabitDays(idx, next); save();
+    });
+    q('[data-itdays]').forEach(b=>b.onclick=()=>{ setHabitDays(idx, b.dataset.itdays.split(",").map(Number)); save(); });
+    q('[data-ittype]').forEach(b=>b.onclick=()=>{
+      DATA.habits.types=DATA.habits.types||{};
+      DATA.habits.types[idx]=b.dataset.ittype;
+      if(b.dataset.ittype==="counter"){ DATA.habits.counterTargets=DATA.habits.counterTargets||{}; if(!DATA.habits.counterTargets[idx]) DATA.habits.counterTargets[idx]=2; }
+      save();
+    });
+    const tg=document.getElementById("itTarget");
+    if(tg) tg.onchange=()=>{ DATA.habits.counterTargets=DATA.habits.counterTargets||{}; DATA.habits.counterTargets[idx]=Math.max(1,+tg.value||1); scheduleSave(); };
+    const note=document.getElementById("itNote");
+    if(note) note.onchange=()=>{ DATA.habits.notes=DATA.habits.notes||{}; DATA.habits.notes[idx]=note.value; scheduleSave(); };
+    const arch=document.getElementById("itArch");
+    if(arch) arch.onclick=()=>{ DATA.habits.archived=DATA.habits.archived||{}; DATA.habits.archived[idx]=true; closeSheet(); save();
+      showActionToast(`«${DATA.habits.list[idx]}» в архиве — история сохранена`, "Вернуть", ()=>{ delete DATA.habits.archived[idx]; save(); }); };
+    const del=document.getElementById("itDel");
+    if(del) del.onclick=()=>{ const n=DATA.habits.list[idx]; closeSheet(); deleteWithUndo(`Привычка «${n}»`, ()=>removeHabit(idx)); };
+    return;
+  }
+  const i=+v, t=DATA.todos && DATA.todos[i];
+  if(!t) return;
+  const text=document.getElementById("itText");
+  if(text){
+    const commit=()=>{ const val=text.value.trim(); if(val && val!==t.text){ t.text=val; scheduleSave(); } };
+    text.onchange=commit; text.onblur=commit;
+    text.onkeydown=e=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); text.blur(); } };
+  }
+  q('[data-itdate]').forEach(b=>b.onclick=()=>{ t.dueDate=b.dataset.itdate; if(t.repeat && t.repeat.every==="month" && t.dueDate) t.repeat.day=parseLocalDate(t.dueDate).getDate(); save(); });
+  const date=document.getElementById("itDate");
+  if(date) date.onchange=()=>{ t.dueDate=date.value; save(); };
+  q('[data-itprio]').forEach(b=>b.onclick=()=>{ t.priority=b.dataset.itprio; save(); });
+  q('[data-itrep]').forEach(b=>b.onclick=()=>{
+    const r=b.dataset.itrep;
+    if(!r) delete t.repeat;
+    else{
+      if(!t.dueDate) t.dueDate=todayStr();
+      t.repeat={every:r};
+      if(r==="month") t.repeat.day=parseLocalDate(t.dueDate).getDate();
+    }
+    save();
+  });
+  const toHabit=root.querySelector('[data-ithabit]');
+  if(toHabit) toHabit.onclick=()=>{
+    const name=t.text;
+    const exist=findHabitByName(name);
+    const idx= exist>=0 ? exist : addHabitItem(name, null);
+    DATA.todos.splice(i,1);
+    cur.sheet={kind:"doitem", ref:"h:"+idx};
+    save();
+    showActionToast(exist>=0? `«${name}» уже была привычкой — дело убрано` : `«${name}» теперь привычка — каждый день`);
+  };
+  const del=document.getElementById("itDel");
+  if(del) del.onclick=()=>{ closeSheet(); deleteWithUndo(`Дело «${t.text}»`, ()=>{ const j=DATA.todos.indexOf(t); if(j>=0) DATA.todos.splice(j,1); }); };
+  const done=document.getElementById("itDone");
+  if(done) done.onclick=()=>{ toggleTodo(i); closeSheet(); save(); };
+}
+
 function ensurePlan(){
   ensurePlanCats();
   const key=mk();
@@ -6202,7 +6709,8 @@ function closeSheet(){
   }
   if(was && was.kind==="news") markNewsSeen();
   if(was && was.kind==="listen" && !was.done) voiceCancel();
-  if(was && was.scope==="fin") render();      // снять подсветку выбранного дня
+  // снять подсветку выбранного дня; из карточки пункта — показать правки в списке
+  if(was && (was.scope==="fin" || was.kind==="doitem")) render();
 }
 function renderSheet(){
   const r=sheetRoot();
@@ -6233,6 +6741,7 @@ function renderSheet(){
   else if(s.kind==="listen") body=renderListenSheet(s);
   else if(s.kind==="voicehelp") body=renderVoiceHelpSheet(s);
   else if(s.kind==="masktip") body=renderMaskTipSheet(s);
+  else if(s.kind==="doitem") body=renderDoItemSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -6267,6 +6776,7 @@ function renderSheet(){
   else if(s.kind==="listen") bindListenSheet(s);
   else if(s.kind==="voicehelp") bindVoiceHelpSheet(s);
   else if(s.kind==="masktip") bindMaskTipSheet(s);
+  else if(s.kind==="doitem") bindDoItemSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -6330,11 +6840,13 @@ function showActionToast(label, action, fn, ms){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-01-list", items:[
-  ["☰","Перечисляй — будет несколько дел","«Купить хлеб, молоко, позвонить маме» — три отдельных дела. Между пунктами можно говорить «потом» или «запятая»; пока говоришь, видно, как это разложится."],
-  ["✱","Мат без звёздочек","Звёздочки ставит распознавание Google. Приложение 2.2 просит его не прятать слова, а если Google всё равно прячет — трекер покажет, где у него выключается «Цензура»."],
-  ["🎤","Голосовой ввод в делах","Распознавание речи — часть самого приложения, поэтому ему нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.", "novoice"],
-  ["⟳","Обновления сами","Приложение проверяет новую версию при каждом открытии и сразу её включает.", "native"]
+const WHATS_NEW={id:"2026-10-01-merge", items:[
+  ["☰","«Ритм» и «Дела» — теперь одно","Вкладка «Дела»: сверху всё на сегодня — и привычки, и дела, по срочности. Дальше завтра, неделя, позже, без срока."],
+  ["↻","Привычки по дням недели","«По будням зарядка», «по пятницам выводить прибыль» — появятся в свои дни, а в остальные серия не рвётся."],
+  ["🎤","Голосом — и привычки тоже","«Каждое утро зарядка» станет привычкой, «каждый месяц 10 числа платить аренду» — делом, которое само повторяется."],
+  ["✎","Карточка любого пункта","Нажми на название: срок, важность, повтор, дни недели, пропуск без разрыва серии."],
+  ["◧","Только «Стекло»","Облики «Фокус» и «Пульт» убраны. Восемь тем «Стекла» — в настройках."],
+  ["🎤","Голосовой ввод в делах","Распознавание речи — часть самого приложения, поэтому ему нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.", "novoice"]
 ]};
 function newsItems(){
   return WHATS_NEW.items.filter(x=>{
@@ -6579,7 +7091,7 @@ function bindVoiceHelpSheet(){
   const b=document.getElementById("vhKeyboard");
   if(b) b.onclick=()=>{
     closeSheet();
-    const inp=document.getElementById("newTodoText");
+    const inp=document.getElementById("newDoText");
     if(inp){ inp.placeholder="Нажми 🎤 на клавиатуре и говори…"; inp.focus(); }
   };
 }
@@ -6754,7 +7266,7 @@ function splitTodoList(raw){
 function parseTodoList(raw, base){
   let carry=null;
   const items=[];
-  splitTodoList(raw).forEach(p=>{
+  (Array.isArray(raw)? raw : splitTodoList(raw)).forEach(p=>{
     let t=parseTodoSpeech(p.text, base);
     if(!t.text) return;
     const w=t.text.split(" ");
@@ -6870,7 +7382,7 @@ async function voiceAddTodo(btn){
   if(!voiceSupported()){ openSheet({kind:"voicehelp"}); return; }
   if(btn) btn.classList.add("listening");
   let raw="";
-  try{ raw=await voiceListen("Какие дела добавить? Можно списком"); }
+  try{ raw=await voiceListen("Что добавить? Можно списком"); }
   catch(e){
     if(btn) btn.classList.remove("listening");
     const msg=e && e.message || "";
@@ -6880,31 +7392,10 @@ async function voiceAddTodo(btn){
     return;
   }
   if(btn) btn.classList.remove("listening");
-  const split=(DATA.settings||{}).voiceSplit!==false;
-  const items=split? parseTodoList(raw) : [parseTodoSpeech(raw)].filter(x=>x.text);
-  if(!items.length){ showBanner("🎤 Не расслышал — попробуй ещё раз"); return; }
-  if(!DATA.todos) DATA.todos=[];
-  const base=Date.now();
-  const ids=items.map((t,i)=>{
-    const id=base+i;
-    DATA.todos.push({id, text:t.text, done:false, dueDate:t.dueDate||"", priority:t.priority||"medium", createdAt:id, voice:true});
-    return id;
-  });
-  cur.freshTodos=ids;
+  const res=createFromText(raw, {split:true, voice:true});
+  if(!res.habits.length && !res.todos.length && !res.dup.length){ showBanner("🎤 Не расслышал — попробуй ещё раз"); return; }
   scheduleSave(); render();
-  setTimeout(()=>{ cur.freshTodos=null; }, 2600);
-  const undo=()=>{
-    DATA.todos=(DATA.todos||[]).filter(x=>!ids.includes(x.id));
-    scheduleSave(); render();
-  };
-  if(items.length===1){
-    const t=items[0], bits=[];
-    if(t.dueDate) bits.push(dueLabel(t.dueDate));
-    if(t.priority==="high") bits.push("срочно");
-    showActionToast(`Добавлено: «${t.text}»${bits.length? " · "+bits.join(", "):""}`, "Отменить", undo);
-  } else {
-    showActionToast(`Добавлено ${items.length} ${plural(items.length,'дело','дела','дел')}: ${items.map(x=>"«"+x.text+"»").join(", ")}`, "Отменить", undo, 7000);
-  }
+  createdToast(res);
   // Google спрятал мат звёздочками — показываем, как это выключить (не чаще раза в день)
   if(hasMaskedWords(raw)){
     const st=DATA.settings||(DATA.settings={});
@@ -7652,13 +8143,13 @@ function renderSearchResults(query){
 
   DATA.habits.list.forEach(name=>{
     if(name.toLowerCase().includes(q)) searchResultItems.push({
-      icon:"✅", cat:"Привычка", title:name, sub:"", nav:()=>{ cur.tab="rhythm"; cur.sub.rhythm="habits"; }
+      icon:"✅", cat:"Привычка", title:name, sub:"", nav:()=>{ cur.tab="doing"; cur.sub.doing="habits"; }
     });
   });
   (DATA.todos||[]).forEach(t=>{
     if((t.text||"").toLowerCase().includes(q)) searchResultItems.push({
       icon:"📋", cat:"Дело", title:t.text, sub:t.dueDate? `до ${t.dueDate.split('-').reverse().join('.')}`:"",
-      nav:()=>{ cur.tab="doing"; cur.sub.doing="todos"; }
+      nav:()=>{ cur.tab="doing"; cur.sub.doing="list"; }
     });
   });
   ensureWorkouts();
@@ -7670,7 +8161,7 @@ function renderSearchResults(query){
     searchResultItems.push({
       icon:"🏋", cat:"Тренировка", title:w.type||"Тренировка",
       sub:`${w.date? w.date.split('-').reverse().join('.'):''}${w.duration? ` · ${w.duration} мин`:''}`,
-      nav:()=>{ cur.tab="rhythm"; cur.sub.rhythm="workouts"; if(d){ cur.year=d.getFullYear(); cur.monthIdx=d.getMonth(); } }
+      nav:()=>{ cur.tab="doing"; cur.sub.doing="workouts"; if(d){ cur.year=d.getFullYear(); cur.monthIdx=d.getMonth(); } }
     });
   });
   ensureInvestments();
@@ -7794,7 +8285,7 @@ function pickFocus(){
   if(overdue.length) return {kind:"todo", item:overdue[0], why:`Просрочено с ${overdue[0].dueDate.split('-').reverse().join('.')}`};
   const dueToday=todos.filter(t=>t.dueDate===ts);
   if(dueToday.length) return {kind:"todo", item:dueToday[0], why:"Срок сегодня"};
-  const habits=DATA.habits.list.map((name,idx)=>({name,idx})).filter(h=>!isHabitArchived(h.idx));
+  const habits=DATA.habits.list.map((name,idx)=>({name,idx})).filter(h=>!isHabitArchived(h.idx) && habitScheduledOn(h.idx,now));
   const risky=habits.filter(h=>habitStreak(h.idx)>0 && !isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now))
     .sort((a,b)=>habitStreak(b.idx)-habitStreak(a.idx));
   if(risky.length) return {kind:"habit", item:risky[0], why:`Серия ${habitStreak(risky[0].idx)} дн. под угрозой`};
@@ -7809,6 +8300,7 @@ function buildDayFeed(){
   const ts=todayStr(), now=new Date(), feed=[];
   DATA.habits.list.forEach((name,idx)=>{
     if(isHabitArchived(idx)) return;
+    if(!habitScheduledOn(idx,now) && !isHabitDoneOn(idx,now)) return;   // не её день
     const done=isHabitDoneOn(idx,now), frozen=!done&&isHabitFrozenOn(idx,now);
     const streak=habitStreak(idx);
     if(done) feed.push({mk:"hab",label:"привычка",text:name,note:streak>1?`${streak}-й день подряд`:"",state:"done",time:habitTimeOn(idx,now)});
@@ -7897,20 +8389,6 @@ function todayQuietSummary(){
   }
   return lines.join("<br><br>") || "Заполни финансы и цель — здесь появится сводка.";
 }
-// ---------- CONSOLE LOOK: dense single-panel dashboard (mockup Б) ----------
-function last7(idx){
-  const out=[]; const d=new Date(); d.setHours(0,0,0,0);
-  for(let i=6;i>=0;i--){
-    const dt=new Date(d); dt.setDate(d.getDate()-i);
-    out.push(isHabitDoneOn(idx,dt) ? "f" : (isHabitFrozenOn(idx,dt) ? "z" : ""));
-  }
-  return out;
-}
-function monthlySeries(fn){
-  const out=[];
-  for(let m=0;m<12;m++) out.push(fn(m));
-  return out;
-}
 // ---------- RETROSPECTIVE: week / month wrap-up ----------
 function rangeDates(mode){
   const out=[]; const d=new Date(); d.setHours(0,0,0,0);
@@ -7930,9 +8408,10 @@ function renderRetro(){
 
   const rows=activeHabitIdx().map(idx=>{
     const name=DATA.habits.list[idx];
+    const sched=dates.filter(x=>habitScheduledOn(idx,x));
     const done=dates.filter(x=>isHabitDoneOn(idx,x)).length;
-    const frozen=dates.filter(x=>!isHabitDoneOn(idx,x)&&isHabitFrozenOn(idx,x)).length;
-    const eligible=Math.max(1,dates.length-frozen);
+    const frozen=sched.filter(x=>!isHabitDoneOn(idx,x)&&isHabitFrozenOn(idx,x)).length;
+    const eligible=Math.max(1,sched.length-frozen);
     return {name, done, frozen, eligible, pct:Math.round(done/eligible*100), streak:habitStreak(idx)};
   }).sort((a,b)=>b.pct-a.pct);
 
@@ -8005,98 +8484,6 @@ function bindRetro(){
     cur.retroMode=b.dataset.retro; render();
   });
 }
-function renderConsole(){
-  ensureFinanceAccounts();
-  const now=new Date(), ts=todayStr();
-  const habAvg=Math.round(habitPctAvg()*100);
-  const habDone=activeHabitIdx().filter(i=>isHabitDoneOn(i,now)).length;
-  const openTodos=(DATA.todos||[]).filter(t=>!t.done);
-  const overdue=openTodos.filter(t=>t.dueDate && t.dueDate<ts).length;
-
-  const rubIds=rubAccountIds();
-  const rubEntries=DATA.finance.entries.filter(e=>isRubEntry(e));
-  const inc=rubEntries.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
-  const exp=rubEntries.filter(e=>e.type==="расход").reduce((s,e)=>s+(+e.amount||0),0);
-  const prefix=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
-  const spent=rubEntries.filter(e=>e.type==="расход" && e.date && e.date.slice(0,7)===prefix)
-    .reduce((s,e)=>s+(+e.amount||0),0);
-  const budget=+DATA.finance.budgetLimit||0;
-  const nd=daysInMonth(now.getFullYear(),now.getMonth());
-  const projected=now.getDate()>0? Math.round(spent/now.getDate()*nd):spent;
-
-  const other=(DATA.finance.accounts||[]).filter(a=>a.currency!=="RUB");
-  const otherCell=other.length? (()=>{ const a=other[0]; const bal=accountBalance(a.id);
-      return `<div class="cell"><div class="k">${escapeHtml(a.name)}</div>
-        <div class="v gold">${bal.toLocaleString('ru-RU',{maximumFractionDigits:2})} ${CURRENCY_SYMBOL[a.currency]||a.currency}</div>
-        <div class="sub">${escapeHtml(a.currency)}</div></div>`; })()
-    : `<div class="cell"><div class="k">Накопления</div><div class="v gold">${(()=>{ensureSavingsGoals();
-        const g=DATA.savingsGoals[0]; if(!g) return "—";
-        const c=(g.entries||[]).reduce((x,e)=>x+(+e.amount||0),0);
-        return Math.round(c/Math.max(1,+g.amount||1)*100)+"%";})()}</div>
-      <div class="sub">${escapeHtml((DATA.savingsGoals[0]||{}).name||"нет цели")}</div></div>`;
-
-  const habSpark=monthlySeries(m=>{
-    const n=DATA.habits.list.length; if(!n) return 0;
-    const ndx=daysInMonth(now.getFullYear(),m);
-    let tot=0;
-    DATA.habits.list.forEach((_,idx)=>{
-      let done=0;
-      for(let d=1;d<=ndx;d++) if(isHabitDoneOn(idx,new Date(now.getFullYear(),m,d))) done++;
-      tot+=Math.min(1,done/habitGoal(idx,now.getFullYear(),m));
-    });
-    return Math.round(tot/n*100);
-  });
-  const expSpark=monthlySeries(m=>{
-    const pre=`${now.getFullYear()}-${pad2(m+1)}`;
-    return rubEntries.filter(e=>e.type==="расход"&&e.date&&e.date.slice(0,7)===pre)
-      .reduce((x,e)=>x+(+e.amount||0),0);
-  });
-  const spark=(arr,cls)=>{ const mx=Math.max(1,...arr);
-    return `<div class="spark">${arr.map(v=>`<span class="${cls}" style="height:${Math.max(4,Math.round(v/mx*100))}%"></span>`).join("")}</div>`; };
-
-  ensureWorkouts(); ensureInvestments();
-  const wkThisMonth=workoutsInMonth(now.getFullYear(), now.getMonth()).length;
-  const wkSince=daysSinceLastWorkout();
-  const wkSpark=monthlySeries(m=>workoutsInMonth(now.getFullYear(), m).length);
-  const portfolioRub=DATA.investments.reduce((s,i)=>s+invValueRub(i),0);
-  const portfolioCount=DATA.investments.length;
-
-  const streakRows=activeHabitIdx().map(idx=>
-    `<tr><td>${escapeHtml(DATA.habits.list[idx])}</td>
-       <td><div class="streak">${last7(idx).map(c=>`<span class="${c}"></span>`).join("")}</div></td>
-       <td>${habitStreak(idx)}</td></tr>`).join("");
-
-  const soon=openTodos.filter(t=>t.dueDate).sort((a,b)=>a.dueDate<b.dueDate?-1:1).slice(0,5);
-  const soonRows=soon.map(t=>{
-    const od=t.dueDate<ts, td=t.dueDate===ts;
-    return `<tr><td>${escapeHtml(t.text||"")}</td>
-      <td><span class="tag ${od||td?'hot':''}">${od?'просрочено':(td?'сегодня':t.dueDate.split('-').reverse().join('.'))}</span></td></tr>`;
-  }).join("");
-
-  return `
-    <div class="con-grid">
-      <div class="cell"><div class="k">Привычки</div><div class="v teal">${habAvg}%</div>
-        <div class="sub">${habDone}/${activeHabitIdx().length} сегодня</div>${spark(habSpark,'teal')}</div>
-      <div class="cell"><div class="k">Дела</div><div class="v ${overdue?'warn':''}">${openTodos.length}</div>
-        <div class="sub">${overdue?`${overdue} просрочено`:'в срок'}</div>${spark(expSpark,'warn')}</div>
-      <div class="cell"><div class="k">Баланс ₽</div><div class="v">${(inc-exp).toLocaleString('ru-RU')}</div>
-        <div class="sub">−${spent.toLocaleString('ru-RU')} в этом месяце</div></div>
-      ${otherCell}
-      <div class="cell"><div class="k">Тренировки</div><div class="v teal">${wkThisMonth}</div>
-        <div class="sub">${wkSince==null?'ещё не было':(wkSince===0?'сегодня':`${wkSince} ${plural(wkSince,'день','дня','дней')} назад`)}</div>${spark(wkSpark,'teal')}</div>
-      <div class="cell"><div class="k">Портфель</div><div class="v gold">${portfolioRub? rub(portfolioRub):'—'}</div>
-        <div class="sub">${portfolioCount? `${portfolioCount} ${plural(portfolioCount,'актив','актива','активов')}`:'нет активов'}</div></div>
-      <div class="cell wide"><div class="k">Серии · 7 дней</div>
-        <table class="con-tbl">${streakRows||'<tr><td>нет привычек</td></tr>'}</table></div>
-      <div class="cell wide"><div class="k">Ближайшее</div>
-        <table class="con-tbl">${soonRows||'<tr><td>ничего не запланировано</td></tr>'}</table></div>
-      <div class="cell wide"><div class="k">Бюджет ${MONTHS_RU[now.getMonth()].toLowerCase()}</div>
-        <div class="v" style="font-size:15px;">${spent.toLocaleString('ru-RU')} <span style="color:var(--grey);font-size:11px;">/ ${budget?budget.toLocaleString('ru-RU'):'—'} ₽</span></div>
-        ${budget?`<div class="con-bar"><span style="flex:${Math.min(100,Math.round(spent/budget*100))}"></span><span class="rest" style="flex:${Math.max(0,100-Math.round(spent/budget*100))}"></span></div>
-        <div class="sub" style="margin-top:6px;">прогноз ${projected.toLocaleString('ru-RU')} ₽ — ${projected>budget?'выше лимита':'в пределах'}</div>`:'<div class="sub">лимит не задан</div>'}</div>
-    </div>
-    ${renderReminders()}`;
-}
 // Три числа на главном: сколько привычек закрыто, сколько можно потратить
 // сегодня и сколько дел висит. Раньше главный экран не показывал ни одного
 // числа — только заголовок и ленту.
@@ -8124,7 +8511,7 @@ function renderToday(){
   ensureFinanceAccounts();
   const focus=pickFocus(), feed=buildDayFeed();
   const doneCount=feed.filter(f=>f.mk==="hab"&&f.state==="done").length;
-  const habTotal=DATA.habits.list.length;
+  const habTotal=activeHabitsOn(new Date()).length;
   const openTodos=(DATA.todos||[]).filter(t=>!t.done).length;
 
   const focusHtml = focus ? `
@@ -8179,7 +8566,7 @@ function bindToday(){
   const fb=document.querySelector('[data-focus-done]');
   if(fb) fb.onclick=()=>{
     const [kind,i]=fb.dataset.focusDone.split(":");
-    if(kind==="todo") DATA.todos[+i].done=true; else tickToday(i);
+    if(kind==="todo") toggleTodo(+i); else tickToday(i);
     scheduleSave(); render();
   };
 }
@@ -8773,9 +9160,9 @@ function renderGlassPicker(){
     </button>`).join("");
   const pair=GLASS_PAIR[s.glass]||GLASS_PAIR[GLASS_DEFAULT];
   return `
-    <div class="ap-label" style="margin-top:16px;">Тема</div>
+    <div class="ap-label">Светлые темы</div>
     <div class="gt-grid">${cards("light")}</div>
-    <div class="ap-label" style="margin-top:14px;">Тёмные</div>
+    <div class="ap-label" style="margin-top:14px;">Тёмные темы</div>
     <div class="gt-grid">${cards("dark")}</div>
     <div class="gt-opts">
       <label class="gt-opt"><input type="checkbox" id="glassAuto" ${s.glassAuto?"checked":""}>
@@ -8800,27 +9187,12 @@ function bindGlassPicker(){
   if(dense) dense.onchange=()=>{ appearance().glassDense=dense.checked; applyAppearance(); scheduleSave(); render(); };
 }
 
-const LOOKS=[["focus","Фокус","Один вопрос: что делать сейчас"],["console","Пульт","Все цифры сразу, плотно"],["glass","Стекло","Матовые панели, восемь тем"]];
 function renderAppearanceCard(){
   const s=appearance();
-  const looks=LOOKS.map(([id,label,hint])=>
-    `<button class="look-card ${s.look===id?'on':''}" data-look-set="${id}">
-       <span class="lk-prev ${id}"><i></i><i></i><i></i></span>
-       <span class="lk-name">${label}</span>
-       <span class="lk-hint">${hint}</span>
-     </button>`).join("");
   return `<div class="card">
     <h2>🎨 Внешний вид</h2>
-    <div class="ap-label">Вид</div>
-    <div class="look-grid">${looks}</div>
+    ${renderGlassPicker()}
     <div class="appearance-grid" style="margin-top:16px;">
-      <div${s.look==="glass"?' style="display:none"':''}>
-        <div class="ap-label">Тема</div>
-        <div class="seg">
-          <button class="${s.theme==='dark'?'active':''}" data-theme-set="dark">🌙 Тёмная</button>
-          <button class="${s.theme==='light'?'active':''}" data-theme-set="light">☀️ Светлая</button>
-        </div>
-      </div>
       <div>
         <div class="ap-label">Плотность</div>
         <div class="seg">
@@ -8829,7 +9201,6 @@ function renderAppearanceCard(){
         </div>
       </div>
     </div>
-    ${s.look==="glass"? renderGlassPicker() : ""}
   </div>
   ${renderBotCard()}`;
 }
@@ -9115,13 +9486,13 @@ function attachSwipe(){
                          else { cur.monthIdx--; if(cur.monthIdx<0){cur.monthIdx=11;cur.year--;} } };
     const dir = dx<0 ? 1 : -1;
     const v = cur.sub ? cur.sub[cur.tab] : null;
-    if(cur.tab==="rhythm"){
-      if(v==="year") cur.year += dir;
-      else if(v==="habits" && cur.habitView==="week") cur.weekAnchor += dir*7*86400000;
-      else stepMonth(dir);
-      render();
-    } else if(cur.tab==="doing"){
-      if(v==="plan"){ stepMonth(dir); render(); }
+    if(cur.tab==="doing"){
+      if(v==="habits"){
+        if(cur.habitView==="year") cur.year += dir;
+        else if(cur.habitView==="week") cur.weekAnchor += dir*7*86400000;
+        else stepMonth(dir);
+        render();
+      } else if(v==="plan" || v==="workouts"){ stepMonth(dir); render(); }
     } else if(cur.tab==="money"){
       if(v==="savings"){ stepMonth(dir); render(); }
     } else if(cur.tab==="journal"){
