@@ -939,6 +939,35 @@
     .todo-row .todo-priority{width:auto;justify-self:start;}
   }
 
+
+  /* голос, версия 3 */
+  .add-row .mic-btn{background:linear-gradient(100deg,var(--amber),var(--amber2));color:var(--on-accent);
+    border:none;width:50px;}
+  .add-row .mic-btn svg{width:21px;height:21px;}
+  .todo-add #addTodoBtn{background:var(--card2);color:var(--grey);border:1px solid var(--border);box-shadow:none;
+    width:46px;padding:0;font-size:20px;}
+  .ls-wrap{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 2px;}
+  .ls-mic{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    color:var(--on-accent);background:linear-gradient(100deg,var(--amber),var(--amber2));margin:8px 0 14px;
+    animation:lsPulse 1.4s ease-in-out infinite;}
+  .ls-mic svg{width:32px;height:32px;}
+  .ls-mic.busy{animation:none;opacity:.7;}
+  @keyframes lsPulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--amber) 45%, transparent);}
+    50%{box-shadow:0 0 0 16px color-mix(in srgb, var(--amber) 0%, transparent);}}
+  .ls-state{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .ls-text{font-size:19px;font-weight:600;letter-spacing:-.015em;color:var(--white);line-height:1.35;
+    margin:10px 6px 4px;min-height:52px;}
+  .ls-text.empty{color:var(--grey-dim);font-weight:500;}
+  .ls-wrap .sh-actions{width:100%;}
+  .vh-p{font-size:13.5px;line-height:1.5;color:var(--grey);margin:6px 0 10px;}
+  .vh-act{display:flex;flex-direction:column;gap:6px;margin:4px 0 6px;}
+  .vh-act .btn{display:block;text-align:center;text-decoration:none;padding:13px 12px;font-size:14px;font-weight:700;border-radius:15px;}
+  .vh-note{font-size:11.5px;color:var(--grey-dim);line-height:1.45;margin:2px 2px 0;}
+  .app-upd{display:flex;align-items:center;gap:10px;margin:8px 0 2px;padding:10px 12px;border-radius:13px;
+    background:var(--info-bg);color:var(--info-fg);font-size:12px;line-height:1.4;}
+  .app-upd span{flex:1;min-width:0;}
+  .app-upd .btn{flex:0 0 auto;text-decoration:none;padding:8px 14px;font-size:12.5px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1687,7 +1716,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-09-30 15:47+92a786a0";
+window.TRACKER_BUILD = "2026-09-30 17:11+67a3ff19";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -3371,10 +3400,10 @@ function renderTodos(){
     <div class="todo-head"><h2>Дела</h2><span class="todo-count">${activeCount} ${plural(activeCount,'активное','активных','активных')}${overdueCount? ` · <b>${overdueCount} ${plural(overdueCount,'просрочено','просрочено','просрочено')}</b>`:""}</span></div>
     <div class="add-row todo-add">
       <input id="newTodoText" placeholder="Новое дело…" autocomplete="off" enterkeyhint="done">
-      ${voiceSupported()? `<button class="mic-btn" id="todoMic" aria-label="Сказать голосом" title="Сказать голосом">${MIC_SVG}</button>`:""}
+      <button class="mic-btn" id="todoMic" aria-label="Сказать голосом" title="Сказать голосом">${MIC_SVG}</button>
       <button id="addTodoBtn" aria-label="Добавить">+</button>
     </div>
-    <div class="todo-hint">${voiceSupported()? "Нажми на микрофон и скажи, например, " : "Срок понимается прямо из текста: "}<b>«завтра позвонить в банк, срочно»</b> — дело встанет на завтра с высоким приоритетом.</div>
+    <div class="todo-hint">Нажми на микрофон и скажи, например, <b>«завтра позвонить в банк, срочно»</b> — дело встанет на завтра с высоким приоритетом. Так же понимается и набранный текст.</div>
     <div class="row-wrap">${rows || '<div class="empty">Дел нет — можно отдохнуть 🙂</div>'}</div>
   </div>`;
 }
@@ -6152,6 +6181,7 @@ function closeSheet(){
     setTimeout(()=>{ if(!cur.sheet && r.dataset.closing==="1"){ r.innerHTML=""; delete r.dataset.closing; } }, 300);
   }
   if(was && was.kind==="news") markNewsSeen();
+  if(was && was.kind==="listen" && !was.done) voiceCancel();
   if(was && was.scope==="fin") render();      // снять подсветку выбранного дня
 }
 function renderSheet(){
@@ -6180,6 +6210,8 @@ function renderSheet(){
   else if(s.kind==="exp") body=renderExpenseSheet(s);
   else if(s.kind==="assign") body=renderAssignSheet(s);
   else if(s.kind==="news") body=renderNewsSheet(s);
+  else if(s.kind==="listen") body=renderListenSheet(s);
+  else if(s.kind==="voicehelp") body=renderVoiceHelpSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -6211,6 +6243,8 @@ function renderSheet(){
   else if(s.kind==="exp") bindExpenseSheet(s);
   else if(s.kind==="assign") bindAssignSheet(s);
   else if(s.kind==="news") bindNewsSheet(s);
+  else if(s.kind==="listen") bindListenSheet(s);
+  else if(s.kind==="voicehelp") bindVoiceHelpSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -6274,17 +6308,19 @@ function showActionToast(label, action, fn, ms){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-09-30-pnl", items:[
+const WHATS_NEW={id:"2026-10-01-voice", items:[
+  ["🎤","Голосовой ввод в делах","Большая кнопка с микрофоном рядом с полем. «Завтра позвонить в банк, срочно» — и дело появится со сроком и приоритетом.", "voice"],
+  ["🎤","Голосовой ввод в делах","Распознавание речи — часть самого приложения, поэтому ему нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.", "novoice"],
   ["▦","Календарь прибыли","Как в торговом журнале: плюс и минус по каждому дню, итоги недель и месяцев. Нажми на день — запишешь результат."],
   ["◐","Источники дохода","Крипто-арбитраж и фондовый арбитраж считаются отдельно: доля каждого, лучший день, серия плюсовых дней."],
   ["₮","Любая валюта","USDT, доллары, рубли — календарь сводит всё в одну валюту по курсу. Переключатель ₮ $ ₽ в шапке."],
   ["⇅","Доходы и расходы раздельно","Сверху переключатель. Расходы с лимитом, категориями и подписками — на своей вкладке."],
-  ["🎤","Голосовой ввод в делах","Кнопка с микрофоном рядом с полем. «Завтра позвонить в банк, срочно» — и дело появится со сроком и приоритетом.", "voice"],
   ["⟳","Обновления сами","Приложение проверяет новую версию при каждом открытии и сразу её включает.", "native"]
 ]};
 function newsItems(){
   return WHATS_NEW.items.filter(x=>{
     if(x[3]==="voice") return !!voiceSupported();
+    if(x[3]==="novoice") return !voiceSupported() && appOutdated();
     if(x[3]==="native") return isNativeShell();
     return true;
   });
@@ -6308,6 +6344,8 @@ function renderNewsSheet(){
     </div>
     <div class="news-list">${newsItems().map(([ic,t,p])=>`<div class="news-item">
       <span class="ic">${ic}</span><div><b>${escapeHtml(t)}</b><p>${escapeHtml(p)}</p></div></div>`).join("")}</div>
+    ${!voiceSupported() && appOutdated()? `<div class="vh-act"><a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
+      <p class="vh-note">Откроется браузер и скачает файл. Открой его и нажми «Установить» — поставится поверх, данные останутся.</p></div>` : ""}
     <div class="sh-actions">
       <button class="btn ghost" id="newsFin">Открыть финансы</button>
       <button class="btn" data-shclose="1">Понятно</button>
@@ -6325,25 +6363,48 @@ function bindNewsSheet(){
 }
 
 // ═════════ ГОЛОСОВОЙ ВВОД ═════════
-// В WebView на Android нет Web Speech API, поэтому в APK распознаёт сама система
-// (тот же диалог «Говорите», что у клавиатуры), а страница получает текст через
-// мост. В браузере — встроенное распознавание, если оно там есть.
-let voicePending=null, voiceKind=null;
+// Распознаёт речь не страница, а телефон: своего Web Speech API у WebView нет.
+// Поэтому голос зависит от версии самого приложения, а не только страницы:
+//   • приложение 2.0+ — системный диалог «Говорите» (его даёт приложение Google);
+//   • 2.1+ — если такого диалога нет, распознаёт само, с живым текстом на экране;
+//   • в браузере — встроенное распознавание, если оно там есть.
+// Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
+// и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
+// голосового ввода нет вовсе.
+const LATEST_APP={version:"2.1", size:"меньше 1 МБ",
+  url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
+let voicePending=null, voiceKind=null, voiceWeb=null;
+
+function shellInfo(){
+  if(typeof AndroidHost==="undefined") return null;
+  try{
+    if(typeof AndroidHost.appInfo!=="function") return {version:"1.0"};
+    return Object.assign({version:"2.0"}, JSON.parse(AndroidHost.appInfo()||"{}"));
+  }catch(e){ return {version:"1.0"}; }
+}
+function versionLess(a, b){
+  const pa=String(a||"0").split(".").map(x=>parseInt(x,10)||0);
+  const pb=String(b||"0").split(".").map(x=>parseInt(x,10)||0);
+  for(let i=0;i<Math.max(pa.length,pb.length);i++){
+    const x=pa[i]||0, y=pb[i]||0;
+    if(x!==y) return x<y;
+  }
+  return false;
+}
+function appOutdated(){ const s=shellInfo(); return !!s && versionLess(s.version, LATEST_APP.version); }
+
+// "native" — распознаёт телефон, "web" — браузер, "" — нечем (кнопка объяснит)
 function voiceSupported(){
   if(voiceKind!==null) return voiceKind;
+  let k="";
   if(typeof AndroidHost!=="undefined"){
-    // В оболочке — только системное распознавание: своего у WebView нет, и
-    // старая оболочка без моста к нему честно остаётся без микрофона
-    let k="";
     try{
       if(typeof AndroidHost.startVoice==="function" &&
         (typeof AndroidHost.voiceAvailable!=="function" || AndroidHost.voiceAvailable())) k="native";
     }catch(e){ k=""; }
-    voiceKind=k;
-    return k;
-  }
-  voiceKind = (typeof window!=="undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition)) ? "web" : "";
-  return voiceKind;
+  } else if(typeof window!=="undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition)) k="web";
+  voiceKind=k;
+  return k;
 }
 function voiceErrorText(code){
   return ({ "no-speech":"Ничего не расслышал", "audio-capture":"Нет доступа к микрофону",
@@ -6358,26 +6419,138 @@ function voiceListen(prompt){
       voicePending={resolve, reject};
       let ok=false;
       try{ ok=AndroidHost.startVoice(prompt||""); }catch(e){ ok=false; }
-      if(!ok){ voicePending=null; reject(new Error("Распознавание речи на телефоне недоступно")); }
+      if(!ok){ voicePending=null; reject(new Error("unavailable")); }
       return;
     }
     if(kind==="web"){
       const R=window.SpeechRecognition || window.webkitSpeechRecognition;
       const r=new R();
-      r.lang="ru-RU"; r.interimResults=false; r.maxAlternatives=1;
-      let done=false;
-      r.onresult=ev=>{ if(done) return; done=true; resolve(ev.results[0][0].transcript||""); };
-      r.onerror=ev=>{ if(done) return; done=true; reject(new Error(ev.error==="aborted"? "" : voiceErrorText(ev.error))); };
-      r.onend=()=>{ if(done) return; done=true; reject(new Error("Ничего не расслышал")); };
-      try{ r.start(); }catch(e){ done=true; reject(new Error("Не получилось включить микрофон")); }
+      r.lang="ru-RU"; r.interimResults=true; r.maxAlternatives=1; r.continuous=false;
+      let done=false, finalText="", lastText="";
+      voiceWeb=r;
+      r.onstart=()=>voiceListening();
+      r.onresult=ev=>{
+        let fin="", interim="";
+        for(let i=0;i<ev.results.length;i++){
+          const x=ev.results[i];
+          if(x.isFinal) fin+=x[0].transcript; else interim+=x[0].transcript;
+        }
+        if(fin) finalText=fin;
+        lastText=`${fin} ${interim}`.trim();
+        voicePartial(lastText);
+      };
+      const finish=(err)=>{
+        if(done) return;
+        done=true; voiceWeb=null; closeListenSheet();
+        if(err!==undefined){ reject(new Error(err)); return; }
+        const t=(finalText||lastText).trim();
+        if(t) resolve(t); else reject(new Error("Ничего не расслышал"));
+      };
+      r.onerror=ev=>finish(ev.error==="aborted"? "" : voiceErrorText(ev.error));
+      r.onend=()=>finish();
+      try{ r.start(); }catch(e){ finish("Не получилось включить микрофон"); }
       return;
     }
-    reject(new Error("Голосовой ввод здесь недоступен"));
+    reject(new Error("unavailable"));
   });
 }
+function voiceCancel(){
+  if(voiceWeb){ try{ voiceWeb.abort(); }catch(e){} voiceWeb=null; }
+  else if(typeof AndroidHost!=="undefined" && typeof AndroidHost.cancelVoice==="function"){
+    try{ AndroidHost.cancelVoice(); }catch(e){}
+  }
+  const p=voicePending; voicePending=null;
+  if(p) p.reject(new Error(""));
+}
 // Ответы от оболочки. Пустая ошибка — человек сам закрыл диалог, ругаться не на что.
-window.__voiceResult=function(text){ const p=voicePending; voicePending=null; if(p) p.resolve(String(text||"")); };
-window.__voiceError=function(msg){ const p=voicePending; voicePending=null; if(p) p.reject(new Error(msg||"")); };
+window.__voiceResult=function(text){ closeListenSheet(); const p=voicePending; voicePending=null; if(p) p.resolve(String(text||"")); };
+window.__voiceError=function(msg){ closeListenSheet(); const p=voicePending; voicePending=null; if(p) p.reject(new Error(msg||"")); };
+// Распознавание внутри приложения (без системного диалога) — показываем, что слышим
+window.__voiceState=function(st){
+  if(st==="listening") voiceListening();
+  else if(st==="processing" && cur.sheet && cur.sheet.kind==="listen"){ cur.sheet.processing=true; renderSheet(); }
+};
+window.__voicePartial=function(t){ voicePartial(String(t||"")); };
+
+function voiceListening(){
+  if(cur.sheet && cur.sheet.kind==="listen") return;
+  openSheet({kind:"listen", text:"", processing:false});
+}
+function voicePartial(text){
+  if(!(cur.sheet && cur.sheet.kind==="listen")) voiceListening();
+  if(!cur.sheet) return;
+  cur.sheet.text=text||"";
+  const el=document.getElementById("lsText");
+  if(el){ el.textContent=cur.sheet.text || "Говори — я слушаю"; el.classList.toggle("empty", !cur.sheet.text); }
+}
+function closeListenSheet(){
+  if(cur.sheet && cur.sheet.kind==="listen"){ cur.sheet.done=true; closeSheet(); }
+}
+function renderListenSheet(s){
+  return `<div class="ls-wrap">
+      <div class="ls-mic ${s.processing?'busy':''}">${MIC_SVG}</div>
+      <div class="ls-state">${s.processing? "Распознаю…" : "Слушаю"}</div>
+      <div class="ls-text ${s.text?'':'empty'}" id="lsText">${escapeHtml(s.text||"Говори — я слушаю")}</div>
+      <div class="sh-actions">
+        <button class="btn ghost" id="lsCancel">Отмена</button>
+        <button class="btn" id="lsDone">Готово</button>
+      </div>
+    </div>`;
+}
+function bindListenSheet(s){
+  const done=document.getElementById("lsDone");
+  if(done) done.onclick=()=>{
+    if(voiceWeb){ try{ voiceWeb.stop(); }catch(e){} }
+    else if(typeof AndroidHost!=="undefined" && typeof AndroidHost.stopVoice==="function"){ try{ AndroidHost.stopVoice(); }catch(e){} }
+    s.processing=true; renderSheet();
+  };
+  const cancel=document.getElementById("lsCancel");
+  if(cancel) cancel.onclick=()=>{ s.done=true; voiceCancel(); closeSheet(); };
+}
+
+// Почему микрофону нечем распознавать — и что с этим сделать прямо сейчас
+function renderVoiceHelpSheet(){
+  const s=shellInfo();
+  let why, action="";
+  if(s && versionLess(s.version, "2.0")){
+    why=`Распознавание речи — часть самого приложения, а не страницы, поэтому с обновлением страницы оно не приезжает. У тебя приложение ${escapeHtml(s.version)}, в нём моста к распознаванию ещё нет.`;
+    action=`<a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
+      <p class="vh-note">Откроется браузер и скачает файл. Открой его и нажми «Установить» — поставится поверх, все данные останутся.</p>`;
+  } else if(s){
+    why="На телефоне не нашлось службы распознавания речи. Её даёт приложение Google: если оно отключено или удалено, микрофону нечем распознавать.";
+    action = appOutdated()
+      ? `<a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
+        <p class="vh-note">Версия ${LATEST_APP.version} умеет распознавать и сама, без диалога Google, — если на телефоне есть любая служба распознавания.</p>`
+      : `<a class="btn ghost" href="https://play.google.com/store/apps/details?id=com.google.android.googlequicksearchbox">Открыть Google в магазине</a>`;
+  } else {
+    why="В этом окне распознавания речи нет.";
+  }
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Голосовой ввод</b><span class="zero">${s? "приложение "+escapeHtml(s.version) : "браузер"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <p class="vh-p">${why}</p>
+    ${action? `<div class="vh-act">${action}</div>` : ""}
+    <div class="sh-lab">А прямо сейчас</div>
+    <p class="vh-p">Продиктуй через клавиатуру — у клавиатур Google, Яндекса и Samsung есть свой микрофон. Срок и срочность я пойму из текста так же, как из голоса.</p>
+    <div class="sh-actions"><button class="btn" id="vhKeyboard">Диктовать через клавиатуру</button></div>`;
+}
+function bindVoiceHelpSheet(){
+  const b=document.getElementById("vhKeyboard");
+  if(b) b.onclick=()=>{
+    closeSheet();
+    const inp=document.getElementById("newTodoText");
+    if(inp){ inp.placeholder="Нажми 🎤 на клавиатуре и говори…"; inp.focus(); }
+  };
+}
+function renderAppVersionRow(){
+  const s=shellInfo();
+  if(!s) return "";
+  const old=appOutdated();
+  return `<div class="upd-row"><span class="k">Приложение</span><code>${escapeHtml(s.version)}${s.bundled? " · встроена "+escapeHtml(s.bundled) : ""}</code></div>
+    ${old? `<div class="app-upd"><span>Есть приложение ${LATEST_APP.version}${versionLess(s.version,"2.0")? " — с ним заработает голосовой ввод" : " — распознаёт голос и без диалога Google"}. Ставится поверх, данные остаются.</span>
+      <a class="btn" href="${LATEST_APP.url}">Скачать</a></div>` : ""}`;
+}
 
 // «завтра позвонить в банк, срочно» → {text:"Позвонить в банк", dueDate:завтра, priority:"high"}
 const RU_NUM={"один":1,"одну":1,"одна":1,"два":2,"две":2,"три":3,"четыре":4,"пять":5,"шесть":6,"семь":7,"восемь":8,"девять":9,"десять":10};
@@ -6449,12 +6622,16 @@ function dueLabel(key){
 }
 const MIC_SVG=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/></svg>`;
 async function voiceAddTodo(btn){
+  if(!voiceSupported()){ openSheet({kind:"voicehelp"}); return; }
   if(btn) btn.classList.add("listening");
   let raw="";
   try{ raw=await voiceListen("Какое дело добавить?"); }
   catch(e){
     if(btn) btn.classList.remove("listening");
-    if(e && e.message) showBanner("🎤 "+e.message);
+    const msg=e && e.message || "";
+    // распознавание пропало (например, отключили Google) — объясняем, что делать
+    if(msg==="unavailable"){ voiceKind=""; openSheet({kind:"voicehelp"}); return; }
+    if(msg) showBanner("🎤 "+msg);
     return;
   }
   if(btn) btn.classList.remove("listening");
@@ -8176,7 +8353,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ try{ maybeAppUpdate(); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
@@ -8229,8 +8406,7 @@ function renderUpdateCard(){
     </div>
 
     <div class="upd-row"><span class="k">Сейчас работает</span><code>${escapeHtml(currentBuild()||"версия не помечена")}</code></div>
-    ${(()=>{ try{ if(typeof AndroidHost.appInfo!=="function") return `<div class="upd-row"><span class="k">Приложение</span><code>старая оболочка — голосовой ввод появится после установки нового APK</code></div>`;
-      const a=JSON.parse(AndroidHost.appInfo()||"{}"); return `<div class="upd-row"><span class="k">Приложение</span><code>${escapeHtml(a.version||"?")} · встроена ${escapeHtml(a.bundled||"?")}</code></div>`; }catch(e){ return ""; } })()}
+    ${renderAppVersionRow()}
     ${pending? `<div class="upd-row"><span class="k">Скачано, ждёт включения</span><code style="color:var(--green)">${escapeHtml(waiting)}</code></div>`:""}
 
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;">
