@@ -1130,6 +1130,103 @@
   .src-cap .sh-in{margin-top:0;padding:8px 11px;font-size:13px;text-align:right;}
   .src-cap b{font:600 12px 'JetBrains Mono',monospace;color:var(--grey);flex:0 0 auto;}
 
+  /* ---- здоровье ---- */
+  html[data-look="glass"] .fd-mark.slp{background:var(--cyan);}
+  .hl-big{font-family:var(--fx-num);font-size:38px;font-weight:700;letter-spacing:-.04em;line-height:1.05;color:var(--white);}
+  .hl-sub{font-size:12.5px;color:var(--grey);margin-top:5px;line-height:1.45;}
+  .hl-sub b{color:var(--white);font-weight:600;}
+  .hl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .hl-row .btn{flex:1;min-width:120px;}
+  .hl-compact{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--grey);}
+  .hl-compact b{color:var(--white);}
+  .sl-times{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .sl-time{display:flex;flex-direction:column;gap:3px;padding:8px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);min-width:0;}
+  .sl-time span{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .sl-time input{background:transparent !important;border:none !important;box-shadow:none !important;padding:0;
+    font:700 22px 'JetBrains Mono',monospace;color:var(--white);width:100%;min-width:0;outline:none;}
+  .sl-dur{font:600 12.5px 'JetBrains Mono',monospace;color:var(--grey);margin-top:8px;text-align:center;}
+  .sl-q{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-top:10px;}
+  .sl-q button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px;border-radius:13px;
+    border:1px solid var(--border);background:var(--card);color:var(--grey);font:inherit;cursor:pointer;min-width:0;}
+  .sl-q button b{font:700 16px var(--fx-num);color:var(--white);}
+  .sl-q button small{font-size:9.5px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
+  .sl-q button.on{border-color:var(--amber);background:color-mix(in srgb, var(--amber) 18%, var(--card));color:var(--white);}
+  .hl-lab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;margin:14px 0 6px;}
+  .sl-axis{position:relative;height:14px;margin:4px 46px 2px 46px;}
+  .sl-axis span{position:absolute;transform:translateX(-50%);font:500 9.5px 'JetBrains Mono',monospace;color:var(--grey-dim);}
+  .sl-r{display:grid;grid-template-columns:46px minmax(0,1fr) 46px;align-items:center;width:100%;background:none;border:none;
+    padding:3px 0;font:inherit;color:inherit;cursor:pointer;text-align:left;}
+  .sl-r .d{font-size:11px;color:var(--grey-dim);white-space:nowrap;}
+  .sl-r .d.we{color:var(--grey);font-weight:600;}
+  .sl-r .tr{position:relative;height:14px;border-radius:7px;background:color-mix(in srgb, var(--grey-dim) 11%, transparent);}
+  .sl-r .tr i{position:absolute;top:2px;bottom:2px;border-radius:4px;background:var(--amber);}
+  .sl-r .tr i.short{background:var(--pink);}
+  .sl-r .tr b{position:absolute;top:-2px;bottom:-2px;width:0;border-left:1.5px dashed color-mix(in srgb, var(--grey) 75%, transparent);}
+  .sl-r .v{font:600 11.5px 'JetBrains Mono',monospace;color:var(--grey);text-align:right;white-space:nowrap;}
+  .sl-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--grey-dim);margin-top:9px;}
+  .sl-legend i{display:inline-block;width:14px;height:8px;border-radius:3px;margin-right:5px;}
+  .sl-legend i.t{width:0;height:10px;border-left:1.5px dashed var(--grey);border-radius:0;margin-right:7px;vertical-align:-1px;}
+  .sl-goal{display:flex;gap:5px;flex-wrap:wrap;}
+  .sl-goal button{padding:8px 12px;border-radius:14px;border:1px solid var(--border);background:var(--card);color:var(--grey);
+    font:600 13px 'JetBrains Mono',monospace;cursor:pointer;}
+  .sl-goal button.on{border-color:var(--amber);color:var(--white);background:color-mix(in srgb, var(--amber) 18%, var(--card));}
+  .hl-set{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;font-size:13.5px;color:var(--white);}
+  .hl-set input[type=time], .hl-set input.num{width:96px;padding:7px 9px;border-radius:11px;border:1px solid var(--border);
+    background:var(--card);color:var(--white);font:600 13px 'JetBrains Mono',monospace;}
+  .hl-note{font-size:12.5px;line-height:1.5;color:var(--grey);margin-top:10px;}
+  .hl-note b{color:var(--white);font-weight:600;}
+  .ev-row{display:flex;align-items:center;gap:10px;width:100%;padding:10px 0;background:none;border:none;
+    border-top:1px solid var(--hair, var(--border));font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  .ev-row:first-of-type{border-top:none;padding-top:2px;}
+  .ev-row span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .ev-row b{font-size:14px;font-weight:600;color:var(--white);}
+  .ev-row small{font-size:12px;color:var(--grey-dim);line-height:1.35;}
+  .ev-row i{font-style:normal;color:var(--amber);font-size:18px;}
+  .wt-in{display:flex;gap:8px;align-items:center;margin-top:10px;}
+  .wt-in label{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:2px 14px;border-radius:16px;border:1px solid var(--border);background:var(--card);}
+  .wt-in label:focus-within{border-color:var(--amber);}
+  .wt-in input{flex:1;min-width:0;background:transparent !important;border:none !important;box-shadow:none !important;
+    font:700 24px var(--fx-num);color:var(--white);padding:8px 0;outline:none;}
+  .wt-in span{font:600 14px 'JetBrains Mono',monospace;color:var(--grey);}
+  .wt-in .btn{flex:0 0 auto;padding:14px 16px;}
+  .wt-svg{width:100%;height:auto;display:block;margin-top:8px;}
+  .wt-leg{display:flex;gap:14px;font-size:11px;color:var(--grey-dim);margin-top:4px;}
+  .wt-leg i{display:inline-block;vertical-align:1px;margin-right:5px;}
+  .wt-leg i.dot{width:6px;height:6px;border-radius:50%;background:var(--amber);opacity:.5;}
+  .wt-leg i.ln{width:14px;height:2px;background:var(--amber);}
+  .wt-list .r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 0;
+    border-bottom:1px solid var(--hair, var(--border));font-size:13px;color:var(--grey);}
+  .wt-list .r:last-child{border-bottom:none;}
+  .wt-list .r b{font:600 13px 'JetBrains Mono',monospace;color:var(--white);}
+  .wt-list .r small{font-size:11px;color:var(--grey-dim);}
+  .wt-list .r button{border:none;background:none;color:var(--grey-dim);cursor:pointer;font-size:13px;padding:2px 6px;}
+  .fe-strip{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:4px;margin-top:8px;}
+  .fe-strip span{aspect-ratio:1;border-radius:7px;display:flex;align-items:center;justify-content:center;
+    font:500 9.5px 'JetBrains Mono',monospace;color:var(--grey-dim);background:color-mix(in srgb, var(--grey-dim) 11%, transparent);}
+  .fe-strip span.l1, .fe-leg i.l1{background:color-mix(in srgb, var(--amber) 20%, var(--card));color:var(--grey);}
+  .fe-strip span.l2, .fe-leg i.l2{background:color-mix(in srgb, var(--amber) 36%, var(--card));color:var(--grey);}
+  .fe-strip span.l3, .fe-leg i.l3{background:color-mix(in srgb, var(--amber) 54%, var(--card));color:var(--white);}
+  .fe-strip span.l4, .fe-leg i.l4{background:color-mix(in srgb, var(--amber) 76%, var(--card));color:var(--on-accent, #fff);}
+  .fe-strip span.l5, .fe-leg i.l5{background:var(--amber);color:var(--on-accent, #fff);}
+  .fe-strip span.today{outline:1.5px solid var(--white);outline-offset:1px;}
+  .fe-leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--grey-dim);margin-top:8px;}
+  .fe-leg i{width:12px;height:12px;border-radius:4px;display:inline-block;}
+  .fe-note{width:100%;margin-top:10px;padding:10px 12px;border-radius:13px;border:1px solid var(--border);background:var(--card);
+    color:var(--white);font:400 14px var(--font-body);}
+  .fe-notes .r{padding:7px 0;border-bottom:1px solid var(--hair, var(--border));font-size:13px;color:var(--white);line-height:1.4;}
+  .fe-notes .r:last-child{border-bottom:none;}
+  .fe-notes .r small{display:block;font-size:11px;color:var(--grey-dim);margin-bottom:2px;}
+  /* ---- дневник: три вопроса ---- */
+  .jq{display:flex;flex-direction:column;gap:12px;}
+  .jq label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:600;color:var(--white);}
+  .jq textarea{width:100%;min-height:54px;resize:vertical;padding:10px 12px;border-radius:13px;border:1px solid var(--border);
+    background:var(--card);color:var(--white);font:400 14px/1.45 var(--font-body);}
+  .jq textarea:focus{border-color:var(--amber);outline:none;}
+  .jq-todo{align-self:flex-start;padding:8px 13px;font-size:12.5px;}
+  .jq-ok{color:var(--green);font-weight:700;}
+  .jq-past{font-size:13.5px;line-height:1.55;color:var(--grey);white-space:pre-wrap;}
+  .jq-past b{display:block;color:var(--white);font-size:12px;margin-top:6px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1837,7 +1934,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 00:55+716769db";
+window.TRACKER_BUILD = "2026-10-02 01:13+bfe850fb";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2248,10 +2345,12 @@ async function saveData(){
 function mk(k){ return `${cur.year}-${cur.monthIdx}`; }
 
 // ---------- RENDER ----------
-const TABS=[["today","Сегодня","◎"],["doing","Дела","☰"],["money","Деньги","▤"],["journal","Дневник","✎"]];
+const TABS=[["today","Сегодня","◎"],["doing","Дела","☰"],["money","Деньги","▤"],["health","Здоровье","♡"],["journal","Дневник","✎"]];
 function subView(tab){
   if(!cur.sub) cur.sub={doing:"list", money:"finance"};
-  if(!cur.sub.doing || cur.sub.doing==="todos") cur.sub.doing="list";
+  // тренировки переехали в «Здоровье»
+  if(!cur.sub.doing || cur.sub.doing==="todos" || cur.sub.doing==="workouts") cur.sub.doing="list";
+  if(!cur.sub.health) cur.sub.health="sleep";
   return cur.sub[tab];
 }
 function renderSubNav(tab, items){
@@ -2291,7 +2390,7 @@ function render(){
 
   bindUpdateBar();
   const c=document.getElementById("content");
-  if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); }
+  if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); bindHealthToday(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
     c.innerHTML=renderNotifyCard()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
@@ -2299,7 +2398,7 @@ function render(){
   }
   else if(cur.tab==="doing"){
     const v=subView("doing");
-    const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["workouts","Тренировки"],["plan","План"],["retro","Итоги"]]);
+    const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["plan","План"],["retro","Итоги"]]);
     if(v==="habits"){
       const hv=cur.habitView==="week"||cur.habitView==="year" ? cur.habitView : "month";
       const mnav = hv==="week" ? renderWeekNav() : hv==="year" ? "" : renderMonthNav();
@@ -2312,9 +2411,6 @@ function render(){
         document.getElementById("nextY").onclick=()=>{ cur.year++; render(); };
       }
       else { bindMonthNav(); bindHabits(); }
-    } else if(v==="workouts"){
-      c.innerHTML = nav + renderMonthNav() + renderWorkouts();
-      bindSubNav(); bindMonthNav(); bindWorkouts();
     } else if(v==="plan"){
       c.innerHTML = nav + renderMonthNav() + renderPlan();
       bindSubNav(); bindMonthNav(); bindPlan();
@@ -2334,6 +2430,7 @@ function render(){
     else if(v==="invest"){ c.innerHTML=nav+renderInvest(); bindSubNav(); bindInvest(); }
     else { c.innerHTML=nav+renderMonthNav()+renderSavings(); bindSubNav(); bindMonthNav(); bindSavings(); }
   }
+  else if(cur.tab==="health"){ renderHealthTab(c); }
   else if(cur.tab==="journal"){ c.innerHTML=renderDayNav()+renderJournal(); bindDayNav(); bindJournal(); }
   afterRender();
 }
@@ -3105,6 +3202,9 @@ function weightSeries(){
     const prev=byDate[w.date];
     if(!prev || (w.time||"")>=prev.time) byDate[w.date]={kg, time:w.time||""};
   });
+  // вес, вписанный в «Здоровье → Вес», важнее веса из тренировки того же дня
+  const own=(DATA.health && DATA.health.weight) || {};
+  Object.keys(own).forEach(d=>{ const kg=parseKg(own[d]); if(kg) byDate[d]={kg, time:"99:99"}; });
   return Object.keys(byDate).sort().map(d=>({date:d, kg:byDate[d].kg}));
 }
 function dayWeight(list){
@@ -3344,7 +3444,6 @@ function renderWorkouts(){
 
   ${histCard}
 
-  ${renderWeightCard()}
 
   ${renderExerciseLibCard()}
 
@@ -7225,6 +7324,7 @@ function renderSheet(){
   else if(s.kind==="masktip") body=renderMaskTipSheet(s);
   else if(s.kind==="doitem") body=renderDoItemSheet(s);
   else if(s.kind==="pnlgoal") body=renderGoalSheet(s);
+  else if(s.kind==="sleep") body=renderSleepSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -7261,6 +7361,7 @@ function renderSheet(){
   else if(s.kind==="masktip") bindMaskTipSheet(s);
   else if(s.kind==="doitem") bindDoItemSheet(s);
   else if(s.kind==="pnlgoal") bindGoalSheet(s);
+  else if(s.kind==="sleep") bindSleepSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -7331,7 +7432,7 @@ function showActionToast(label, action, fn, ms){
 const NOTIFY_DAYS=14;
 const NOTIFY_APP="2.3";
 const NOTIFY_DEFAULTS={morning:true, morningTime:"09:00", eveningTime:"21:30",
-  result:true, resultWeekdays:false, habits:true, pay:true, reminders:true};
+  result:true, resultWeekdays:false, habits:true, pay:true, reminders:true, bed:true};
 // Меняем объект на месте: на него держат ссылки обработчики в настройках
 function notifyCfg(){
   const s=DATA.settings||(DATA.settings={});
@@ -7417,9 +7518,14 @@ function notifyMorning(day, isToday, c){
   const due=open.filter(t=>t.dueDate===key), late=open.filter(t=>t.dueDate<key);
   const habs=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day) && !(isToday && isHabitDoneOn(i,day)));
   const lines=[];
-  if(due.length) lines.push(`Дела: ${namesList(due.map(t=>t.text),3)}`);
+  // главное на сегодня — ответ на вчерашний вечерний вопрос; в «Делах» его не повторяем
+  const main=(jqOf(ymdOf(new Date(day.getFullYear(), day.getMonth(), day.getDate()-1))).next||"").trim();
+  if(main) lines.push(`Главное сегодня: ${main}`);
+  const rest=due.filter(t=>(t.text||"").trim()!==main);
+  if(rest.length) lines.push(`Дела: ${namesList(rest.map(t=>t.text),3)}`);
   if(late.length) lines.push(`Просрочено: ${namesList(late.map(t=>t.text),2)}`);
   if(habs.length) lines.push(`Привычки: ${namesList(habs.map(i=>DATA.habits.list[i]),4)}`);
+  if(sleepTracked() && !healthData().sleep[key]) lines.push("Как спал? — отметь на главном");
   const money=morningMoneyLine(day, c);
   if(money) lines.push(money);
   if(!lines.length) return null;
@@ -7496,6 +7602,10 @@ function buildNotifyPlan(){
     add(`er:${key}`, c.eveningTime, "digest", r);
     const h = c.habits ? notifyHabits(day, today) : null;
     add(`eh:${key}`, c.eveningTime, "digest", h);
+    if(c.bed){
+      const b=notifyBed(day);
+      if(b && b.at>now) items.push({key:`b:${key}`, at:b.at, ch:"digest", title:b.title, text:b.text, open:b.open});
+    }
     // уже показанное, но потерявшее смысл, — убрать из шторки
     if(today && !r) cancel.push(`er:${key}`);
     if(today && !h) cancel.push(`eh:${key}`);
@@ -7550,6 +7660,11 @@ function routeOpen(o){
   }
   if(o==="habits" || o==="doing"){ cur.tab="doing"; cur.sub.doing="list"; }
   else if(o==="money"){ cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="exp"; }
+  else if(o.indexOf("journal")===0){
+    const dt=parseLocalDate(o.slice(8))||new Date();
+    cur.tab="journal"; cur.year=dt.getFullYear(); cur.monthIdx=dt.getMonth(); cur.day=dt.getDate();
+  }
+  else if(o==="health" || o==="sleep"){ cur.tab="health"; cur.sub.health="sleep"; }
   else if(o==="settings") cur.tab="settings";
   else cur.tab="today";
   render();
@@ -7613,6 +7728,7 @@ function renderNotifyCard(){
     ${opt("result", "Вечером — результат дня", "«запиши результат», если за день ничего не записано; нажмёшь — откроется день", "eveningTime")}
     ${c.result? `<label class="vc-check sub"><input type="checkbox" data-ntopt="resultWeekdays" ${c.resultWeekdays?"checked":""}><span class="tt">Только по будням</span><small>в субботу и воскресенье не спрашивать</small></label>`:""}
     ${opt("habits", "Вечером — привычки", "какие не отмечены и чья серия под угрозой; в то же время", "")}
+    ${opt("bed", "Отбой — за 30 минут", `ложиться в ${escapeHtml(healthData().cfg.bed)} — меняется в «Здоровье → Сон»; заодно про три вопроса дня`, "")}
     ${opt("pay", "Платежи — накануне", "регулярные списания из «Финансов», утром за день", "")}
     ${opt("reminders", "Мои напоминания", `${rems? `включено: ${rems}` : "пока ни одного"} — список на главном экране, есть кнопка «Через час»`, "")}
     ${next.length? `<div class="nt-next"><div class="lab">Ближайшие</div>${next.map(x=>
@@ -7634,13 +7750,15 @@ function bindNotifyCard(){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-notify", items:[
-  ["🔔","Уведомления прямо с телефона","Утром — дела, привычки, вчерашний результат и план. Вечером — «запиши результат дня» и неотмеченные привычки. Накануне — платежи. Без бота и без интернета.","notify"],
-  ["🔔","Уведомления — в приложении 2.3","Будильники ставит сам телефон, поэтому нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.","nonotify"],
-  ["◎","План на месяц","В «Доходах»: сколько осталось до цели, сколько нужно в день и опережаешь ли график."],
-  ["%","Доходность на капитал","Укажи капитал у источника — увидишь процент за месяц, за торговый день и годовых."],
-  ["▥","Дни недели","Какие дни в среднем приносят больше, а какие уводят в минус. Внизу «Доходов», в разборе."],
-  ["−","Комиссии и фандинг","У записи результата — отдельными полями. В разборе видно, сколько они съели за месяц."]
+const WHATS_NEW={id:"2026-10-02-health", items:[
+  ["♡","Новая вкладка «Здоровье»","Сон, тренировки, вес и самочувствие — в одном месте. Тренировки переехали сюда из «Дел»."],
+  ["🌙","Сон","Утром на главном — «Как спал?»: время уже подставлено по твоему режиму, нажми оценку — и готово. Или вечером «Ложусь спать», утром «Встал». Средний сон, недосып, режим и две недели на графике."],
+  ["⚖","Вес","Вписывай вес — увидишь тренд по средней за неделю, без дневных скачков, и сколько осталось до цели."],
+  ["☀","Самочувствие","Энергия одним касанием и заметка, если что-то болит. Со временем видно, как сон влияет на энергию."],
+  ["🌆","Три вопроса дня","В дневнике: что получилось, что нет, что завтра главное. Главное на завтра одной кнопкой становится делом — и утром оно в сводке."],
+  ["🔔","Уведомления прямо с телефона","Утром — дела, привычки, «как спал», главное на день. Вечером — результат дня, привычки, за 30 минут до отбоя — напоминание.","notify"],
+  ["🔔","Уведомления — в приложении 2.3+","Будильники ставит сам телефон, поэтому нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.","nonotify"],
+  ["◎","Разбор доходов","План на месяц, доходность на капитал, комиссии и фандинг, дни недели — в «Деньги → Доходы»."]
 ]};
 function newsItems(){
   return WHATS_NEW.items.filter(x=>{
@@ -7676,7 +7794,7 @@ function renderNewsSheet(){
     ${appOutdated()? `<div class="vh-act"><a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
       <p class="vh-note">Откроется браузер и скачает файл. Открой его и нажми «Установить» — поставится поверх, данные останутся.</p></div>` : ""}
     <div class="sh-actions">
-      <button class="btn ghost" id="newsFin">Открыть финансы</button>
+      <button class="btn ghost" id="newsFin">Открыть «Здоровье»</button>
       <button class="btn" data-shclose="1">Понятно</button>
     </div>`;
 }
@@ -7686,8 +7804,7 @@ function bindNewsSheet(){
   if(b) b.onclick=()=>{
     markNewsSeen();
     cur.sheet=null;
-    cur.tab="money"; cur.sub.money="finance";
-    DATA.settings.finMode="inc";
+    cur.tab="health"; cur.sub.health="sleep";
     render(); window.scrollTo(0,0);
   };
 }
@@ -8960,7 +9077,7 @@ function renderSearchResults(query){
     searchResultItems.push({
       icon:"🏋", cat:"Тренировка", title:w.type||"Тренировка",
       sub:`${w.date? w.date.split('-').reverse().join('.'):''}${w.duration? ` · ${w.duration} мин`:''}`,
-      nav:()=>{ cur.tab="doing"; cur.sub.doing="workouts"; if(d){ cur.year=d.getFullYear(); cur.monthIdx=d.getMonth(); } }
+      nav:()=>{ cur.tab="health"; cur.sub.health="workouts"; if(d){ cur.year=d.getFullYear(); cur.monthIdx=d.getMonth(); } }
     });
   });
   ensureInvestments();
@@ -8996,6 +9113,17 @@ function renderSearchResults(query){
         nav:()=>{ cur.tab="journal"; cur.year=y; cur.monthIdx=m-1; cur.day=d; }
       });
     }
+  });
+  Object.keys(DATA.journalQ||{}).forEach(dateKey=>{
+    const jq=DATA.journalQ[dateKey]||{};
+    const text=[jq.good,jq.bad,jq.next].filter(Boolean).join(" · ");
+    if(!text || !text.toLowerCase().includes(q)) return;
+    const [y,m,d]=dateKey.split('-').map(Number);
+    if(!y || !m || !d) return;
+    searchResultItems.push({
+      icon:"🌆", cat:"Три вопроса", title:text.length>60? text.slice(0,60)+"…" : text, sub:`${pad2(d)}.${pad2(m)}.${y}`,
+      nav:()=>{ cur.tab="journal"; cur.year=y; cur.monthIdx=m-1; cur.day=d; }
+    });
   });
   DATA.finance.entries.forEach(e=>{
     const hay=`${e.comment||''} ${e.category||''}`.toLowerCase();
@@ -9108,11 +9236,12 @@ function buildDayFeed(){
   });
   const accCurr={}; (DATA.finance.accounts||[]).forEach(a=>accCurr[a.id]=a.currency);
   DATA.finance.entries.filter(e=>e.date===ts).forEach(e=>{
-    const sym=CURRENCY_SYMBOL[accCurr[e.accountId||defaultAccountId()]||"RUB"]||"";
-    feed.push({mk:"mon",label:e.type==="доход"?"доход":"расход",
-      text:e.comment||e.category||"без категории",
-      amount:`${e.type==="доход"?"+":"−"}${(+e.amount||0).toLocaleString('ru-RU')} ${sym}`,
-      pos:e.type==="доход", state:"info", time:e.time||""});
+    const sym=CURRENCY_SYMBOL[entryCurrency(e)]||entryCurrency(e);
+    const inc=e.type==="доход", v=+e.amount||0, plus=inc && v>=0;
+    feed.push({mk:"mon",label:inc? (v<0? "убыток" : "доход") : "расход",
+      text:e.comment || (inc? srcMeta(entrySource(e)).name : e.category) || "без категории",
+      amount:`${plus?"+":"−"}${Math.abs(v).toLocaleString('ru-RU',{maximumFractionDigits:2})} ${sym}`,
+      pos:plus, state:"info", time:e.time||""});
   });
   (DATA.todos||[]).forEach(t=>{
     if(!t.done && t.dueDate===ts) feed.push({mk:"todo",label:"дело",text:t.text,note:"срок сегодня",state:"info"});
@@ -9126,6 +9255,9 @@ function buildDayFeed(){
     if(vol) bits.push(`${Math.round(vol).toLocaleString('ru-RU')} кг`);
     feed.push({mk:"wrk",label:"тренировка",text:w.type||"Тренировка",note:bits.join(" · "),state:"done",time:w.time||""});
   });
+  const sl=healthData().sleep[ts];
+  if(sl && sleepMinutes(sl)) feed.push({mk:"slp", label:"сон", text:fmtSleep(sleepMinutes(sl)),
+    note:`${sl.bed} – ${sl.wake}${sl.q? " · "+SLEEP_Q[sl.q-1][1] : ""}`, state:"done", time:sl.wake});
   const jr=DATA.journal[ts];
   if(jr && jr.trim()) feed.push({mk:"note",label:"запись",text:"",quote:jr.trim(),state:"info"});
   // timed events first in clock order; everything without a stamp keeps its original grouping below
@@ -9347,6 +9479,7 @@ function renderToday(){
     </div>
     ${renderTodayStats(doneCount, habTotal, openTodos)}
     ${focusHtml}
+    ${renderHealthToday()}
     <div class="card">
       <h2>Лента дня</h2>
       <div class="day-feed">${feedHtml || '<div class="empty">За сегодня пока ничего не записано</div>'}</div>
@@ -10099,6 +10232,550 @@ function drawDashChart(){
   MONTHS_SHORT.forEach((l,i)=>ctx.fillText(l, padL+i*stepX, H-4));
 }
 
+// ═════════ ЗДОРОВЬЕ ═════════
+// Сон, тренировки, вес, самочувствие. Ночь записана по утру, в которое проснулся:
+// sleep["2026-10-02"] — ночь с 1 на 2 октября.
+const SLEEP_Q=[[1,"ужасно"],[2,"плохо"],[3,"так себе"],[4,"хорошо"],[5,"отлично"]];
+const ENERGY=[[1,"без сил"],[2,"вяло"],[3,"норм"],[4,"бодро"],[5,"огонь"]];
+function healthData(){
+  if(!DATA.health || typeof DATA.health!=="object") DATA.health={};
+  const H=DATA.health;
+  if(!H.sleep) H.sleep={};      // {bed:"23:40", wake:"07:30", q:1..5}
+  if(!H.weight) H.weight={};    // кг
+  if(!H.feel) H.feel={};        // {e:1..5, note:""}
+  if(!H.cfg) H.cfg={};
+  if(!(+H.cfg.goal>0)) H.cfg.goal=8;
+  if(!H.cfg.bed) H.cfg.bed="23:30";
+  return H;
+}
+function hmToMin(hm){
+  const m=/^(\d{1,2}):(\d{2})$/.exec(String(hm||""));
+  return m? (+m[1])*60+(+m[2]) : null;
+}
+function minToHm(x){ x=((Math.round(x)%1440)+1440)%1440; return `${pad2(Math.floor(x/60))}:${pad2(x%60)}`; }
+function sleepMinutes(s){
+  const b=hmToMin(s&&s.bed), w=hmToMin(s&&s.wake);
+  if(b==null || w==null) return 0;
+  let d=w-b;
+  if(d<=0) d+=1440;
+  return d;
+}
+function fmtSleep(min){ min=Math.round(min); const h=Math.floor(min/60), m=min%60; return m? `${h} ч ${m} мин` : `${h} ч`; }
+function fmtSleepShort(min){ min=Math.round(min); return `${Math.floor(min/60)}:${pad2(min%60)}`; }
+function fmtGoal(h){ return `${String(h).replace(".",",")} ч`; }
+function addDaysKey(key, n){ const d=parseLocalDate(key)||new Date(); d.setDate(d.getDate()+n); return ymdOf(d); }
+// Отбой считаем от 18:00, подъём — от 4:00: иначе «23:50» и «00:10» в среднем дали бы полдень
+function sleepStats(days){
+  const H=healthData(), list=[];
+  for(let i=0;i<days;i++){
+    const k=addDaysKey(todayStr(), -i), s=H.sleep[k], min=sleepMinutes(s);
+    if(min) list.push({date:k, s, min});
+  }
+  if(!list.length) return {n:0, list};
+  const avg=list.reduce((a,x)=>a+x.min,0)/list.length;
+  const bo=list.map(x=>(hmToMin(x.s.bed)-1080+1440)%1440);
+  const wo=list.map(x=>(hmToMin(x.s.wake)-240+1440)%1440);
+  const mean=a=>a.reduce((s,v)=>s+v,0)/a.length;
+  const mb=mean(bo);
+  const spread=Math.sqrt(mean(bo.map(v=>(v-mb)*(v-mb))));
+  const goal=H.cfg.goal*60;
+  const qs=list.filter(x=>x.s.q).map(x=>x.s.q);
+  return {n:list.length, list, avg, bed:minToHm(mb+1080), wake:minToHm(mean(wo)+240), spread,
+    debt:list.reduce((a,x)=>a+Math.max(0, goal-x.min),0), short:list.filter(x=>x.min<goal-30).length,
+    q: qs.length? mean(qs) : 0, longest:list.reduce((a,x)=>x.min>a.min? x : a, list[0])};
+}
+// Что подставить в «Как спал?»: обычный режим за две недели, а без него — цель
+function sleepTypical(){
+  const st=sleepStats(14), H=healthData();
+  const r5=hm=>minToHm(Math.round(hmToMin(hm)/5)*5);
+  if(st.n>=3) return {bed:r5(st.bed), wake:r5(st.wake)};
+  return {bed:H.cfg.bed, wake:minToHm(hmToMin(H.cfg.bed)+H.cfg.goal*60)};
+}
+function sleepTracked(){
+  const from=addDaysKey(todayStr(), -14);
+  return Object.keys(healthData().sleep).some(k=>k>=from);
+}
+function saveSleep(date, bed, wake, q){
+  if(hmToMin(bed)==null || hmToMin(wake)==null) return false;
+  const e={bed, wake};
+  if(q) e.q=+q;
+  healthData().sleep[date]=e;
+  scheduleSave();
+  return true;
+}
+function sleepDraft(date){
+  cur.slDraft=cur.slDraft||{};
+  if(!cur.slDraft[date]){
+    const s=healthData().sleep[date], t=sleepTypical();
+    cur.slDraft[date]={bed:s? s.bed : t.bed, wake:s? s.wake : t.wake, q:s && s.q || 0};
+  }
+  return cur.slDraft[date];
+}
+function renderSleepForm(date, where){
+  const d=sleepDraft(date), min=sleepMinutes(d);
+  const hint = where==="today" ? "Время подставлено по твоему обычному режиму. Нажми оценку — и ночь записана."
+    : where==="tab" ? "Поправь время, если нужно, и нажми оценку." : "";
+  return `<div class="sl-times">
+      <label class="sl-time"><span>Лёг</span><input type="time" data-slf="bed" data-sld="${date}" value="${escapeHtml(d.bed)}"></label>
+      <label class="sl-time"><span>Встал</span><input type="time" data-slf="wake" data-sld="${date}" value="${escapeHtml(d.wake)}"></label>
+    </div>
+    <div class="sl-dur" data-sldur="${date}">${min? fmtSleep(min) : "—"}</div>
+    <div class="sl-q">${SLEEP_Q.map(([v,l])=>`<button class="${d.q===v?'on':''}" data-slq="${v}" data-sld="${date}"><b>${v}</b><small>${l}</small></button>`).join("")}</div>
+    ${hint? `<div class="fx-hint" style="margin:8px 2px 0;">${hint}</div>` : ""}`;
+}
+function bindSleepForm(root, onSaved){
+  root.querySelectorAll('[data-slf]').forEach(el=>{
+    const upd=()=>{
+      const d=sleepDraft(el.dataset.sld);
+      d[el.dataset.slf]=el.value;
+      const box=root.querySelector(`[data-sldur="${el.dataset.sld}"]`), m=sleepMinutes(d);
+      if(box) box.textContent=m? fmtSleep(m) : "—";
+    };
+    el.oninput=upd; el.onchange=upd;
+  });
+  root.querySelectorAll('[data-slq]').forEach(b=>b.onclick=()=>{
+    const date=b.dataset.sld, d=sleepDraft(date);
+    d.q=+b.dataset.slq;
+    if(!saveSleep(date, d.bed, d.wake, d.q)){ showActionToast("Укажи время отбоя и подъёма"); return; }
+    delete cur.slDraft[date];
+    showActionToast(`Сон записан: ${fmtSleep(sleepMinutes(healthData().sleep[date]))} · ${SLEEP_Q[d.q-1][1]}`);
+    if(onSaved) onSaved(); else render();
+  });
+}
+function hmNow(t){ t=t||new Date(); return `${pad2(t.getHours())}:${pad2(t.getMinutes())}`; }
+function pendingSleep(){
+  const H=healthData();
+  if(H.pending && Date.now()-H.pending < 16*3600000) return H.pending;
+  if(H.pending){ delete H.pending; scheduleSave(); }
+  return 0;
+}
+function bindHealthCommon(root){
+  root=root||document;
+  root.querySelectorAll('[data-slbed]').forEach(b=>b.onclick=()=>{
+    healthData().pending=Date.now(); scheduleSave(); render();
+    showActionToast("Спокойной ночи. Утром нажми «Встал»");
+  });
+  root.querySelectorAll('[data-slwake]').forEach(b=>b.onclick=()=>{
+    const H=healthData(), p=pendingSleep();
+    delete H.pending;
+    if(p){
+      const date=todayStr(), prev=H.sleep[date];
+      saveSleep(date, hmNow(new Date(p)), hmNow(), prev && prev.q || 0);
+      if(cur.slDraft) delete cur.slDraft[date];
+      showActionToast(`Доброе утро: ${fmtSleep(sleepMinutes(H.sleep[date]))} сна. Оцени, как спал`);
+    }
+    scheduleSave(); render();
+  });
+  root.querySelectorAll('[data-slcancel]').forEach(b=>b.onclick=()=>{ delete healthData().pending; scheduleSave(); render(); });
+  root.querySelectorAll('[data-sledit]').forEach(b=>b.onclick=()=>openSleepSheet(b.dataset.sledit));
+  root.querySelectorAll('[data-hlgo]').forEach(b=>b.onclick=()=>{ cur.tab="health"; cur.sub.health=b.dataset.hlgo; render(); window.scrollTo(0,0); });
+  root.querySelectorAll('[data-jqgo]').forEach(b=>b.onclick=()=>{
+    const dt=parseLocalDate(b.dataset.jqgo)||new Date();
+    cur.tab="journal"; cur.year=dt.getFullYear(); cur.monthIdx=dt.getMonth(); cur.day=dt.getDate();
+    render(); window.scrollTo(0,0);
+  });
+}
+
+// ---------- на главном ----------
+function renderHealthToday(){
+  const H=healthData(), h=new Date().getHours(), key=todayStr();
+  const pend=pendingSleep(), s=H.sleep[key];
+  const out=[];
+  if(pend){
+    out.push(`<div class="card">
+      <div class="nt-head"><h2>🌙 Сон</h2><button class="fx-linkbtn" data-slcancel="1">Отменить</button></div>
+      <div class="hl-sub">Лёг в <b>${hmNow(new Date(pend))}</b>. Проснёшься — нажми «Встал», время запишется само.</div>
+      <div class="hl-row"><button class="btn" data-slwake="1">☀ Встал</button></div>
+    </div>`);
+  } else if((!s || !s.q) && h>=4 && h<17){
+    out.push(`<div class="card">
+      <div class="nt-head"><h2>🌙 Как спал?</h2><button class="fx-linkbtn" data-hlgo="sleep">Весь сон ›</button></div>
+      ${renderSleepForm(key, "today")}
+    </div>`);
+  } else if(s && h<12){
+    out.push(`<div class="card hl-compact"><span>🌙 Сон <b>${fmtSleep(sleepMinutes(s))}</b> · ${escapeHtml(s.bed)}–${escapeHtml(s.wake)}${s.q? " · "+SLEEP_Q[s.q-1][1] : ""}</span>
+      <button class="fx-linkbtn" data-sledit="${key}">Изменить</button></div>`);
+  }
+  // вечер длится до четырёх утра: после полуночи вопросы — про день, который только что кончился
+  if(h>=19 || h<4){
+    const day = h<4 ? addDaysKey(key, -1) : key;
+    const ans=jqAnswered(day);
+    out.push(`<div class="card">
+      <h2>${h<4? "🌙 Ночь" : "🌆 Вечер"}</h2>
+      <button class="ev-row" data-jqgo="${day}"><span><b>Три вопроса дня</b>
+        <small>${ans? "отвечено ✓ — можно дополнить" : "что получилось, что нет, что завтра главное"}</small></span><i>›</i></button>
+      ${pend? "" : `<button class="ev-row" data-slbed="1"><span><b>Ложусь спать</b>
+        <small>цель — лечь в ${escapeHtml(H.cfg.bed)} и спать ${fmtGoal(H.cfg.goal)}; утром нажмёшь «Встал»</small></span><i>🌙</i></button>`}
+    </div>`);
+  }
+  return out.join("");
+}
+function bindHealthToday(){
+  const c=document.getElementById("content");
+  if(!c) return;
+  bindSleepForm(c);
+  bindHealthCommon(c);
+}
+
+// ---------- сон ----------
+function sleepChartRows(days){
+  const H=healthData(), goal=H.cfg.goal*60;
+  const off=hm=>(hmToMin(hm)-1200+1440)%1440;      // минуты от 20:00
+  const pb=hm=>{ const o=off(hm); return o>960? 0 : o; };
+  const pw=hm=>{ const o=off(hm); return o>960? 960 : o; };
+  const tgt=pb(H.cfg.bed)/960*100;
+  let rows="";
+  for(let i=0;i<days;i++){
+    const k=addDaysKey(todayStr(), -i), d=parseLocalDate(k), s=H.sleep[k], min=sleepMinutes(s);
+    const wd=(d.getDay()+6)%7;
+    let bar="";
+    if(min){
+      const l=pb(s.bed)/960*100, r=pw(s.wake)/960*100;
+      bar=`<i class="${min<goal-30?'short':''}" style="left:${l.toFixed(1)}%;width:${Math.max(1.5, r-l).toFixed(1)}%"></i>`;
+    }
+    rows+=`<button class="sl-r" data-sledit="${k}" aria-label="${d.getDate()} ${MONTHS_GEN[d.getMonth()]}: ${min? fmtSleep(min) : "не записано"}">
+      <span class="d ${wd>=5?'we':''}">${WD_SHORT[wd]} ${d.getDate()}</span>
+      <span class="tr">${bar}<b style="left:${tgt.toFixed(1)}%"></b></span>
+      <span class="v">${min? fmtSleepShort(min)+(min<goal-30?" ↓":"") : "—"}</span>
+    </button>`;
+  }
+  return `<div class="sl-axis">${[["20:00",0],["00:00",25],["04:00",50],["08:00",75],["12:00",100]].map(([t,p])=>`<span style="left:${p}%">${t}</span>`).join("")}</div>${rows}`;
+}
+// В плитке «6:48» читается как время на часах, поэтому длительность — «6 ч 48 м»
+function fmtSleepTile(min){ min=Math.round(min); const h=Math.floor(min/60), m=min%60; return m? `${h} ч ${m} м` : `${h} ч`; }
+function renderSleep(){
+  const H=healthData(), key=todayStr(), s=H.sleep[key], pend=pendingSleep();
+  const st7=sleepStats(7), st30=sleepStats(30), goal=H.cfg.goal*60, h=new Date().getHours();
+  // вечером и ночью эта ночь ещё не прошла — показываем прошлую записанную
+  const lastKey=Object.keys(H.sleep).filter(k=>k<key && sleepMinutes(H.sleep[k])).sort().pop();
+  const shown=s ? {k:key, s} : (lastKey ? {k:lastKey, s:H.sleep[lastKey]} : null);
+  const night=!s && !pend && (h>=17 || h<4);
+  const lastHtml = x => { const d=parseLocalDate(x.k);
+    return `<div class="hl-big">${fmtSleep(sleepMinutes(x.s))}</div>
+      <div class="hl-sub">${x.k===key? "" : `ночь на ${d.getDate()} ${MONTHS_GEN[d.getMonth()]} · `}${escapeHtml(x.s.bed)} → ${escapeHtml(x.s.wake)}${x.s.q? ` · ${SLEEP_Q[x.s.q-1][1]}` : ""}</div>`; };
+  const hero = pend
+    ? `<div class="hl-sub">Лёг в <b>${hmNow(new Date(pend))}</b>. Проснёшься — нажми «Встал».</div>
+       <div class="hl-row"><button class="btn" data-slwake="1">☀ Встал</button><button class="btn ghost" data-slcancel="1">Отменить</button></div>`
+    : s
+      ? `${lastHtml(shown)}
+         ${!s.q? renderSleepForm(key, "tab") : ""}
+         <div class="hl-row"><button class="btn ghost" data-slbed="1">🌙 Ложусь спать</button><button class="btn ghost" data-sledit="${key}">Изменить</button></div>`
+      : night
+        ? `${shown? lastHtml(shown) : `<div class="hl-sub">Ночей пока не записано.</div>`}
+           <div class="hl-row"><button class="btn" data-slbed="1">🌙 Ложусь спать</button></div>
+           <div class="fx-hint" style="margin:8px 2px 0;">Нажми, когда ложишься, а утром — «Встал»: время запишется само.</div>`
+        : `<div class="hl-sub">Сегодняшняя ночь не записана.</div>${renderSleepForm(key, "tab")}`;
+  const tiles=`<div class="fx-tiles">
+      <div><span class="k">В среднем</span><span class="v">${st7.n? fmtSleepTile(st7.avg) : "—"}</span><span class="s">${st7.n? `за ${st7.n} ${plural(st7.n,'ночь','ночи','ночей')}` : "нет записей"}</span></div>
+      <div><span class="k">Недосып</span><span class="v ${st7.debt>=60?'neg':''}">${st7.n? (st7.debt>=5? fmtSleepTile(st7.debt) : "нет") : "—"}</span><span class="s">за неделю, цель ${fmtGoal(H.cfg.goal)}</span></div>
+      <div><span class="k">Отбой</span><span class="v">${st7.n? st7.bed : "—"}</span><span class="s">${st7.n>=3? `±${Math.round(st7.spread)} мин` : "обычно"}</span></div>
+    </div>`;
+  const month = st30.n>=5 ? `<div class="hl-note">За 30 дней: в среднем <b>${fmtSleep(st30.avg)}</b>, короче цели — ${st30.short} ${plural(st30.short,'ночь','ночи','ночей')} из ${st30.n}.
+      Самая длинная — ${fmtSleep(st30.longest.min)} (${parseLocalDate(st30.longest.date).getDate()} ${MONTHS_GEN[parseLocalDate(st30.longest.date).getMonth()]}).${st30.q? ` Средняя оценка — ${st30.q.toFixed(1).replace(".",",")} из 5.` : ""}</div>` : "";
+  const native=notifyNative();
+  return `<div class="card fx-hero"><div class="fx-hero-top"><span class="fx-k">Сон · последняя ночь</span></div>${hero}${tiles}</div>
+    <div class="card">
+      <div class="nt-head"><h2>Две недели</h2><button class="fx-linkbtn" data-sladd="1">+ Другая ночь</button></div>
+      ${sleepChartRows(14)}
+      <div class="sl-legend"><span><i style="background:var(--amber)"></i>хватило</span><span><i style="background:var(--pink)"></i>меньше цели ↓</span><span><i class="t"></i>цель отбоя</span></div>
+      ${month}
+      <div class="fx-hint" style="margin:8px 0 0;">Нажми на ночь, чтобы поправить или дописать.</div>
+    </div>
+    <div class="card">
+      <h2>Режим</h2>
+      <div class="hl-lab" style="margin-top:2px;">Цель сна</div>
+      <div class="sl-goal">${[7,7.5,8,8.5,9].map(g=>`<button class="${+H.cfg.goal===g?'on':''}" data-slgoal="${g}">${fmtGoal(g)}</button>`).join("")}</div>
+      <label class="hl-set"><span>Ложиться в</span><input type="time" data-slbedt="1" value="${escapeHtml(H.cfg.bed)}"></label>
+      <label class="vc-check"><input type="checkbox" data-slremind="1" ${notifyCfg().bed?"checked":""}><span class="tt">Напоминать за 30 минут до отбоя</span>
+        <small>${native? "заодно — про три вопроса дня, если ещё не ответил" : "уведомления приходят в приложении на телефоне (2.3+)"}</small></label>
+    </div>`;
+}
+function bindSleep(){
+  const c=document.getElementById("content");
+  bindSleepForm(c);
+  bindHealthCommon(c);
+  const H=healthData();
+  c.querySelectorAll('[data-slgoal]').forEach(b=>b.onclick=()=>{ H.cfg.goal=+b.dataset.slgoal; scheduleSave(); render(); });
+  const bt=c.querySelector('[data-slbedt]');
+  if(bt) bt.onchange=()=>{ if(/^\d{2}:\d{2}$/.test(bt.value)){ H.cfg.bed=bt.value; scheduleSave(); render(); } };
+  const rm=c.querySelector('[data-slremind]');
+  if(rm) rm.onchange=()=>{ notifyCfg().bed=rm.checked; scheduleSave(); render(); };
+  c.querySelectorAll('[data-sladd]').forEach(b=>b.onclick=()=>openSleepSheet(addDaysKey(todayStr(), -1)));
+}
+function openSleepSheet(date){
+  if(cur.slDraft) delete cur.slDraft[date];
+  cur.sheet={kind:"sleep", date};
+  render();
+}
+function renderSleepSheet(s){
+  const had=!!healthData().sleep[s.date], dt=parseLocalDate(s.date)||new Date(), last=s.date>=todayStr();
+  return `<div class="sh-head">
+      <button class="sh-nav" data-slday="-1" aria-label="Предыдущая ночь">‹</button>
+      <div class="sh-title"><b>Ночь на ${dt.getDate()} ${MONTHS_GEN[dt.getMonth()]}</b><span class="zero">${had? "записана — можно поправить" : "не записана"}</span></div>
+      <button class="sh-nav" data-slday="1" aria-label="Следующая ночь" ${last?'disabled style="opacity:.3"':''}>›</button>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    ${renderSleepForm(s.date, "sheet")}
+    <div class="sh-actions">
+      ${had? `<button class="btn ghost danger" id="slDel">Удалить</button>` : ""}
+      <button class="btn" id="slSave">Сохранить</button>
+    </div>`;
+}
+function bindSleepSheet(s){
+  const root=sheetRoot();
+  bindSleepForm(root, ()=>{ closeSheet(); render(); });
+  root.querySelectorAll('[data-slday]').forEach(b=>b.onclick=()=>{
+    const n=addDaysKey(s.date, +b.dataset.slday);
+    if(n>todayStr()) return;
+    s.date=n;
+    if(cur.slDraft) delete cur.slDraft[n];
+    renderSheet();
+  });
+  const sv=document.getElementById("slSave");
+  if(sv) sv.onclick=()=>{
+    const d=sleepDraft(s.date);
+    if(!saveSleep(s.date, d.bed, d.wake, d.q)){ showActionToast("Укажи время отбоя и подъёма"); return; }
+    delete cur.slDraft[s.date];
+    showActionToast(`Сон записан: ${fmtSleep(sleepMinutes(healthData().sleep[s.date]))}`);
+    closeSheet(); render();
+  };
+  const del=document.getElementById("slDel");
+  if(del) del.onclick=()=>{ const k=s.date; closeSheet(); deleteWithUndo("Ночь", ()=>{ delete healthData().sleep[k]; }); };
+}
+
+// ---------- вес ----------
+// Тренд — средняя за 7 дней: дневные скачки воды не выдают себя за похудение
+function weightTrend(series){
+  return series.map((p,i)=>{
+    const t=parseLocalDate(p.date).getTime();
+    let s=0, n=0;
+    for(let j=i;j>=0;j--){
+      if(t-parseLocalDate(series[j].date).getTime() > 6*86400000) break;
+      s+=series[j].kg; n++;
+    }
+    return {date:p.date, kg:s/n};
+  });
+}
+function weightChartSvg(pts, tr){
+  const W=320, Hh=132, pl=6, pr=38, pt=10, pb=20;
+  const ts=pts.map(p=>parseLocalDate(p.date).getTime());
+  const t0=ts[0], t1=ts[ts.length-1], span=Math.max(1, t1-t0);
+  const vals=pts.map(p=>p.kg).concat(tr.map(p=>p.kg));
+  let mn=Math.min(...vals), mx=Math.max(...vals);
+  if(mx-mn<1){ const c=(mx+mn)/2; mn=c-0.5; mx=c+0.5; }
+  const padv=(mx-mn)*0.12; mn-=padv; mx+=padv;
+  const x=t=> pts.length===1 ? (pl+(W-pl-pr)/2) : pl+(t-t0)/span*(W-pl-pr);
+  const y=v=> pt+(mx-v)/(mx-mn)*(Hh-pt-pb);
+  const kg=v=>v.toLocaleString('ru-RU',{maximumFractionDigits:1});
+  const dl=k=>{ const d=parseLocalDate(k); return `${d.getDate()} ${MONTHS_GEN[d.getMonth()].slice(0,3)}`; };
+  const hi=mx-padv, lo=mn+padv;
+  const grid=[hi,lo].map(v=>`<line x1="${pl}" x2="${W-pr}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" style="stroke:var(--border);stroke-width:1"/>
+    <text x="${W-pr+5}" y="${(y(v)+3.5).toFixed(1)}" style="fill:var(--grey-dim);font:500 9.5px 'JetBrains Mono',monospace">${kg(v)}</text>`).join("");
+  const dots=pts.map((p,i)=>`<circle cx="${x(ts[i]).toFixed(1)}" cy="${y(p.kg).toFixed(1)}" r="2.8" style="fill:var(--amber);opacity:.45"/>`).join("");
+  const line=tr.length>1 ? `<polyline points="${tr.map((p,i)=>`${x(ts[i]).toFixed(1)},${y(p.kg).toFixed(1)}`).join(" ")}" style="fill:none;stroke:var(--amber);stroke-width:2;stroke-linejoin:round;stroke-linecap:round"/>` : "";
+  const labels=`<text x="${pl}" y="${Hh-5}" style="fill:var(--grey-dim);font:500 9.5px 'JetBrains Mono',monospace">${dl(pts[0].date)}</text>
+    ${pts.length>1? `<text x="${W-pr}" y="${Hh-5}" text-anchor="end" style="fill:var(--grey-dim);font:500 9.5px 'JetBrains Mono',monospace">${dl(pts[pts.length-1].date)}</text>` : ""}`;
+  return `<svg class="wt-svg" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Вес за последние месяцы">${grid}${dots}${line}${labels}</svg>`;
+}
+function renderBody(){
+  const H=healthData(), key=todayStr();
+  const series=weightSeries();
+  const todayKg=parseKg(H.weight[key]);
+  const last=series[series.length-1];
+  const input=`<div class="card">
+      <h2>⚖ Вес сегодня</h2>
+      <div class="wt-in"><label><input id="wtIn" type="text" inputmode="decimal" autocomplete="off" placeholder="${last? kgPlain(last.kg) : "0"}" value="${todayKg? kgPlain(todayKg) : ""}"><span>кг</span></label>
+        <button class="btn" id="wtSave">${todayKg? "Обновить" : "Записать"}</button></div>
+      <div class="fx-hint" style="margin:8px 2px 0;">Лучше утром, натощак — тогда замеры сравнимы между собой. Вес из тренировок тоже здесь.</div>
+    </div>`;
+  if(!series.length) return input + `<div class="card"><div class="empty">Здесь появится график и тренд, как только запишешь вес</div></div>`;
+  const tr=weightTrend(series);
+  const from90=addDaysKey(key, -90);
+  let i0=series.findIndex(p=>p.date>=from90); if(i0<0) i0=Math.max(0, series.length-1);
+  const tNow=tr[tr.length-1].kg;
+  const ago=addDaysKey(key, -30);
+  let base=null; for(let i=tr.length-1;i>=0;i--){ if(tr[i].date<=ago){ base=tr[i]; break; } }
+  if(!base) base=tr[0];
+  const goal=parseKg(H.cfg.wgoal);
+  const d30=tNow-base.kg;
+  const lastDt=parseLocalDate(last.date), ago0=Math.round((new Date().setHours(0,0,0,0)-lastDt.getTime())/86400000);
+  const tiles=`<div class="fx-tiles">
+      <div><span class="k">Сейчас</span><span class="v">${kgPlain(last.kg)}</span><span class="s">${ago0===0? "сегодня" : ago0===1? "вчера" : `${ago0} ${plural(ago0,'день','дня','дней')} назад`}</span></div>
+      <div><span class="k">Тренд · 30 дн</span><span class="v">${Math.abs(d30)<0.05? "0" : (d30>0?"+":"−")+kgPlain(Math.abs(d30))}</span><span class="s">по средней за неделю</span></div>
+      <div><span class="k">До цели</span><span class="v">${goal? (Math.abs(goal-tNow)<0.05? "✓" : (goal-tNow>0?"+":"−")+kgPlain(Math.abs(goal-tNow))) : "—"}</span><span class="s">${goal? `цель ${kgPlain(goal)} кг` : "цель не задана"}</span></div>
+    </div>`;
+  const rows=series.slice(-12).reverse().map(p=>{
+    const own=parseKg(H.weight[p.date]);
+    const d=parseLocalDate(p.date);
+    return `<div class="r"><span>${d.getDate()} ${MONTHS_GEN[d.getMonth()]}${own? "" : " <small>· из тренировки</small>"}</span>
+      <span><b>${kgPlain(p.kg)} кг</b>${own? `<button data-wdel="${p.date}" aria-label="Удалить замер">✕</button>` : ""}</span></div>`;
+  }).join("");
+  return input + `<div class="card fx-hero"><div class="fx-hero-top"><span class="fx-k">Вес · тренд</span></div>
+      <div class="hl-big">${kgPlain(tNow)} <span style="font-size:18px;color:var(--grey)">кг</span></div>
+      <div class="hl-sub">средняя за неделю${goal? ` · цель ${kgPlain(goal)} кг` : ""}</div>
+      ${tiles}
+      ${weightChartSvg(series.slice(i0), tr.slice(i0))}
+      <div class="wt-leg"><span><i class="dot"></i>замеры</span><span><i class="ln"></i>тренд — средняя за 7 дней</span></div>
+      <label class="hl-set"><span>Цель, кг</span><input class="num" id="wtGoal" type="text" inputmode="decimal" placeholder="не задана" value="${goal? kgPlain(goal) : ""}"></label>
+    </div>
+    <div class="card"><h2>Замеры</h2><div class="wt-list">${rows}</div></div>`;
+}
+function kgPlain(v){ return (+v).toLocaleString('ru-RU',{maximumFractionDigits:1}); }
+function bindBody(){
+  const H=healthData();
+  const inp=document.getElementById("wtIn");
+  const save=()=>{
+    const v=parseKg(inp && inp.value);
+    if(!v || v<20 || v>400){ flashError(inp, "Вес в кг, например 82,4"); return; }
+    H.weight[todayStr()]=Math.round(v*10)/10;
+    scheduleSave(); render();
+    showActionToast(`Записано: ${kgPlain(v)} кг`);
+  };
+  if(inp) inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); save(); } };
+  const b=document.getElementById("wtSave");
+  if(b) b.onclick=save;
+  const g=document.getElementById("wtGoal");
+  if(g) g.onchange=()=>{ const v=parseKg(g.value); if(v) H.cfg.wgoal=v; else delete H.cfg.wgoal; scheduleSave(); render(); };
+  document.querySelectorAll('[data-wdel]').forEach(x=>x.onclick=()=>{ const d=x.dataset.wdel; deleteWithUndo("Замер", ()=>{ delete H.weight[d]; }); });
+}
+
+// ---------- самочувствие ----------
+function sleepEnergyInsight(){
+  const H=healthData(), goal=H.cfg.goal*60, ok=[], bad=[];
+  Object.keys(H.feel).forEach(k=>{
+    const e=+(H.feel[k]||{}).e, min=sleepMinutes(H.sleep[k]);
+    if(!e || !min) return;
+    (min>=goal-30? ok : bad).push(e);
+  });
+  if(ok.length<3 || bad.length<3) return "";
+  const avg=a=>(a.reduce((s,v)=>s+v,0)/a.length).toFixed(1).replace(".",",");
+  return `После ночей от ${fmtSleepShort(goal-30)} энергия в среднем <b>${avg(ok)}</b>, после коротких — <b>${avg(bad)}</b>.`;
+}
+function renderFeel(){
+  const H=healthData(), key=todayStr(), f=H.feel[key]||{};
+  let cells="", sum=0, n=0;
+  for(let i=29;i>=0;i--){
+    const k=addDaysKey(key, -i), e=+((H.feel[k]||{}).e)||0, d=parseLocalDate(k);
+    if(e){ sum+=e; n++; }
+    cells+=`<span class="${e? 'l'+e : ''} ${i===0?'today':''}" title="${d.getDate()} ${MONTHS_GEN[d.getMonth()]}${e? ": "+ENERGY[e-1][1] : ""}">${d.getDate()}</span>`;
+  }
+  const notes=Object.keys(H.feel).filter(k=>(H.feel[k]||{}).note).sort().reverse().slice(0,8);
+  const ins=sleepEnergyInsight();
+  return `<div class="card">
+      <h2>☀ Как ты сегодня?</h2>
+      <div class="hl-lab" style="margin-top:2px;">Энергия</div>
+      <div class="sl-q">${ENERGY.map(([v,l])=>`<button class="${+f.e===v?'on':''}" data-fe="${v}"><b>${v}</b><small>${l}</small></button>`).join("")}</div>
+      <input class="fe-note" id="feNote" autocomplete="off" placeholder="Что-то беспокоит? Голова, спина, простуда…" value="${escapeHtml(f.note||"")}">
+    </div>
+    <div class="card">
+      <h2>30 дней</h2>
+      <div class="fe-strip">${cells}</div>
+      <div class="fe-leg"><span>без сил</span>${[1,2,3,4,5].map(v=>`<i class="l${v}"></i>`).join("")}<span>огонь</span></div>
+      <div class="hl-note">${n? `Средняя энергия — <b>${(sum/n).toFixed(1).replace(".",",")}</b> из 5 за ${n} ${plural(n,'день','дня','дней')}.` : "Отмечай энергию каждый день — здесь появится картина месяца."}
+        ${ins? " "+ins : (n? " Отмечай и сон — увидишь, как он влияет на энергию." : "")}</div>
+    </div>
+    ${notes.length? `<div class="card"><h2>Заметки</h2><div class="fe-notes">${notes.map(k=>{ const d=parseLocalDate(k), e=+(H.feel[k].e)||0;
+      return `<div class="r"><small>${d.getDate()} ${MONTHS_GEN[d.getMonth()]}${e? " · "+ENERGY[e-1][1] : ""}</small>${escapeHtml(H.feel[k].note)}</div>`; }).join("")}</div></div>` : ""}`;
+}
+function bindFeel(){
+  const H=healthData(), key=todayStr();
+  const tidy=()=>{ const f=H.feel[key]; if(f && !f.e && !f.note) delete H.feel[key]; };
+  document.querySelectorAll('[data-fe]').forEach(b=>b.onclick=()=>{
+    const f=H.feel[key]||(H.feel[key]={}), v=+b.dataset.fe;
+    f.e = +f.e===v ? 0 : v;
+    tidy(); scheduleSave(); render();
+  });
+  const n=document.getElementById("feNote");
+  if(n) n.onchange=()=>{ const f=H.feel[key]||(H.feel[key]={}); f.note=n.value.trim(); tidy(); scheduleSave(); render(); };
+}
+
+// ---------- уведомление об отбое ----------
+// Вечер дня day: если отбой после полуночи, напоминание уже на следующих сутках
+function notifyBed(day){
+  const H=healthData(), bm=hmToMin(H.cfg.bed);
+  if(bm==null) return null;
+  const at=new Date(day.getFullYear(), day.getMonth(), day.getDate()+(bm<12*60? 1 : 0), Math.floor(bm/60), bm%60).getTime()-30*60000;
+  const key=ymdOf(day), ans=jqAnswered(key);
+  return {at, title:"Через 30 минут — отбой",
+    text:`Цель — лечь в ${H.cfg.bed} и спать ${fmtGoal(H.cfg.goal)}.${ans? "" : "\nПеред сном — три вопроса дня: нажми, откроется дневник."}`,
+    open: ans? "health" : `journal:${key}`};
+}
+
+// ---------- вкладка ----------
+function renderHealthTab(c){
+  const v=subView("health");
+  const nav=renderSubNav("health",[["sleep","Сон"],["workouts","Тренировки"],["body","Вес"],["feel","Самочувствие"]]);
+  if(v==="workouts"){ c.innerHTML = nav + renderMonthNav() + renderWorkouts(); bindSubNav(); bindMonthNav(); bindWorkouts(); }
+  else if(v==="body"){ c.innerHTML = nav + renderBody(); bindSubNav(); bindBody(); }
+  else if(v==="feel"){ c.innerHTML = nav + renderFeel(); bindSubNav(); bindFeel(); }
+  else { c.innerHTML = nav + renderSleep(); bindSubNav(); bindSleep(); }
+}
+
+// ═════════ ДНЕВНИК: ТРИ ВОПРОСА ДНЯ ═════════
+const JQ=[["good","Что сегодня получилось?","маленькое тоже считается"],
+  ["bad","Что не получилось или мешало?","просто факт, без самокопания"],
+  ["next","Что завтра главное?","одно дело, которое сделает день"]];
+function jqOf(key){ return (DATA.journalQ && DATA.journalQ[key]) || {}; }
+function jqAnswered(key){ const q=jqOf(key); return !!(q.good || q.bad || q.next); }
+function jqTodoExists(key){
+  const t=(jqOf(key).next||"").trim(), tomorrow=addDaysKey(key, 1);
+  return !!t && (DATA.todos||[]).some(x=>(x.text||"").trim()===t && x.dueDate===tomorrow);
+}
+function renderJournalQ(key){
+  const q=jqOf(key), has=jqTodoExists(key);
+  return `<div class="card">
+    <div class="nt-head"><h2>🌆 Три вопроса дня</h2>${jqAnswered(key)? `<span class="jq-ok">✓</span>` : ""}</div>
+    <div class="jq">${JQ.map(([f,t,ph])=>`<label>${t}<textarea data-jq="${f}" rows="2" placeholder="${ph}">${escapeHtml(q[f]||"")}</textarea></label>`).join("")}
+      <button class="btn ghost jq-todo" data-jqtodo="1" ${(q.next||"").trim() && !has? "" : "hidden"}>→ Сделать делом на завтра</button>
+      <div class="fx-hint" id="jqTodoOk" style="margin:0" ${has? "" : "hidden"}>Уже в делах на завтра ✓ — и утром будет в сводке.</div>
+    </div>
+  </div>`;
+}
+// «Год назад в этот день» — или полгода, или месяц: что найдётся первым
+function renderJournalPast(key){
+  const dt=parseLocalDate(key);
+  if(!dt) return "";
+  const cands=[["Год назад", new Date(dt.getFullYear()-1, dt.getMonth(), dt.getDate())],
+    ["Полгода назад", new Date(dt.getFullYear(), dt.getMonth()-6, dt.getDate())],
+    ["Месяц назад", new Date(dt.getFullYear(), dt.getMonth()-1, dt.getDate())]];
+  for(const [lab, d] of cands){
+    const k=ymdOf(d), text=(DATA.journal[k]||"").trim(), q=jqOf(k);
+    if(!text && !jqAnswered(k)) continue;
+    const mood=(DATA.journalMood||{})[k]||"";
+    const cut=s=>s.length>220? s.slice(0,220)+"…" : s;
+    const parts=[];
+    if(text) parts.push(escapeHtml(cut(text)));
+    JQ.forEach(([f,t])=>{ if((q[f]||"").trim()) parts.push(`<b>${t}</b>${escapeHtml(cut(q[f].trim()))}`); });
+    return `<div class="card"><h2>🕰 ${lab} · ${d.getDate()} ${MONTHS_GEN[d.getMonth()]} ${d.getFullYear()} ${mood}</h2><div class="jq-past">${parts.join("\n")}</div></div>`;
+  }
+  return "";
+}
+function bindJournalQ(){
+  const key=journalKey();
+  const store=()=>{ DATA.journalQ=DATA.journalQ||{}; return DATA.journalQ[key]||(DATA.journalQ[key]={}); };
+  const sync=()=>{
+    const q=jqOf(key), has=jqTodoExists(key);
+    const b=document.querySelector('[data-jqtodo]'), ok=document.getElementById("jqTodoOk");
+    if(b) b.hidden=!((q.next||"").trim() && !has);
+    if(ok) ok.hidden=!has;
+  };
+  document.querySelectorAll('[data-jq]').forEach(el=>el.oninput=()=>{
+    const q=store();
+    q[el.dataset.jq]=el.value;
+    if(!jqAnswered(key)) delete DATA.journalQ[key];
+    scheduleSave(); sync();
+  });
+  const b=document.querySelector('[data-jqtodo]');
+  if(b) b.onclick=()=>{
+    const t=(jqOf(key).next||"").trim();
+    if(!t) return;
+    DATA.todos=DATA.todos||[];
+    DATA.todos.push({id:Date.now(), text:t, done:false, dueDate:addDaysKey(key, 1), priority:"high", createdAt:Date.now()});
+    scheduleSave(); sync();
+    showActionToast("Добавлено в дела на завтра");
+  };
+}
+
 // ---------- JOURNAL ----------
 const MOODS=["😊","😐","😔","😡","😴"];
 function renderJournal(){
@@ -10115,17 +10792,20 @@ function renderJournal(){
     strip+=`<div class="mood-day ${d===cur.day?'today':''}" title="${d}">${m||'<span class="dim">'+d+'</span>'}</div>`;
   }
 
-  return `<div class="card">
+  return `${renderJournalQ(key)}
+  <div class="card">
     <h2>Дневник дня</h2>
     <div class="mood-row">${moodBtns}</div>
-    <textarea id="journalText" class="journal-textarea" placeholder="Как прошёл день? Что получилось, что нет, о чём подумал...">${escapeHtml(text)}</textarea>
+    <textarea id="journalText" class="journal-textarea" placeholder="Всё, что не влезло в три вопроса: мысли, события, планы...">${escapeHtml(text)}</textarea>
   </div>
+  ${renderJournalPast(key)}
   <div class="card">
     <h2>Настроение за ${MONTHS_RU[cur.monthIdx].toLowerCase()}</h2>
     <div class="mood-strip">${strip}</div>
   </div>`;
 }
 function bindJournal(){
+  bindJournalQ();
   const ta=document.getElementById("journalText");
   ta.oninput=()=>{ DATA.journal[journalKey()]=ta.value; scheduleSave(); };
   document.querySelectorAll('[data-mood]').forEach(b=>{
@@ -10296,7 +10976,9 @@ function attachSwipe(){
         else if(cur.habitView==="week") cur.weekAnchor += dir*7*86400000;
         else stepMonth(dir);
         render();
-      } else if(v==="plan" || v==="workouts"){ stepMonth(dir); render(); }
+      } else if(v==="plan"){ stepMonth(dir); render(); }
+    } else if(cur.tab==="health"){
+      if(v==="workouts"){ stepMonth(dir); render(); }
     } else if(cur.tab==="money"){
       if(v==="savings"){ stepMonth(dir); render(); }
     } else if(cur.tab==="journal"){
