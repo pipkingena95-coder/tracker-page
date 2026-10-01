@@ -1032,6 +1032,104 @@
   .hb-list.week .day-cell{width:auto;height:34px;}
   .day-cell.is-today{box-shadow:inset 0 0 0 1.5px var(--amber);}
 
+  /* ---- уведомления ---- */
+  .nt-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;}
+  .nt-off{display:flex;align-items:center;gap:12px;padding:12px 13px;border-radius:15px;margin-bottom:12px;
+    background:color-mix(in srgb, var(--amber) 12%, transparent);border:1px solid color-mix(in srgb, var(--amber) 38%, transparent);}
+  .nt-off > div{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .nt-off b{font-size:13.5px;color:var(--white);letter-spacing:-.01em;}
+  .nt-off span{font-size:12px;line-height:1.4;color:var(--grey);}
+  .nt-off .btn{flex:0 0 auto;padding:10px 15px;text-decoration:none;}
+  .nt-on{display:flex;flex-wrap:wrap;gap:3px 10px;align-items:baseline;font-size:12px;color:var(--grey);margin-bottom:12px;}
+  .nt-on .ok{color:var(--green);font-weight:600;}
+  .nt-warn{flex-basis:100%;margin:4px 0 0;font-size:11.5px;line-height:1.4;color:var(--pink);}
+  .nt-warn button{border:none;background:none;color:var(--amber);font:600 11.5px var(--font-body);padding:0 0 0 4px;cursor:pointer;}
+  .nt-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}
+  .nt-btns .btn{padding:8px 13px;font-size:12.5px;}
+  .nt-opt{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
+  .nt-opt .vc-check{flex:1;min-width:0;}
+  .vc-check .tt{flex:1;min-width:0;}
+  .nt-time{width:88px;flex:0 0 auto;margin-top:8px;padding:7px 8px;border-radius:11px;border:1px solid var(--border);
+    background:var(--card);color:var(--white);font:600 13px 'JetBrains Mono',monospace;}
+  .vc-check.sub{margin:4px 0 4px 26px;font-size:12.5px;}
+  .vc-check.sub small{padding-left:26px;}
+  .nt-next{margin-top:14px;padding-top:10px;border-top:1px solid var(--hair, var(--border));}
+  .nt-next .lab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;margin-bottom:4px;}
+  .nt-pi{display:flex;gap:10px;align-items:baseline;font-size:12.5px;padding:4px 0;color:var(--grey);}
+  .nt-pi .t{flex:0 0 104px;font:500 11px 'JetBrains Mono',monospace;color:var(--grey-dim);white-space:nowrap;}
+  .nt-pi .n{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  /* ---- доходы: план месяца ---- */
+  .fx-plan{display:block;width:100%;text-align:left;margin-top:14px;padding:11px 13px 10px;border-radius:16px;
+    border:1px solid var(--border);background:color-mix(in srgb, var(--card) 72%, transparent);color:var(--grey);
+    font:inherit;cursor:pointer;}
+  .fx-plan-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:12.5px;}
+  .fx-plan-top b{color:var(--white);font-family:var(--fx-num);font-weight:700;letter-spacing:-.01em;}
+  .fx-plan-top .pc{font:700 15px var(--fx-num);color:var(--white);letter-spacing:-.02em;}
+  .fx-meter.plan{position:relative;margin:9px 0 8px;}
+  .fx-meter.plan b{position:absolute;top:0;bottom:0;width:2px;margin-left:-1px;background:var(--white);opacity:.55;}
+  .fx-plan-row{font-size:12px;line-height:1.45;color:var(--grey);}
+  .fx-plan-row b{color:var(--white);font-weight:600;}
+  .fx-plan-note{font-size:11.5px;line-height:1.4;margin-top:3px;color:var(--grey-dim);}
+  .fx-plan-add{display:block;width:100%;margin-top:12px;border:1px dashed color-mix(in srgb, var(--amber) 55%, transparent);
+    background:none;color:var(--amber);font:600 12.5px var(--font-body);padding:10px 13px;border-radius:14px;
+    cursor:pointer;text-align:left;}
+
+  /* ---- доходы: разбор ---- */
+  .fx-sec + .fx-sec{margin-top:16px;padding-top:14px;border-top:1px solid var(--hair, var(--border));}
+  .fx-sec-h{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .fx-sec-h .t{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .fx-cta{display:flex;flex-direction:column;align-items:flex-start;gap:6px;font-size:12px;line-height:1.45;color:var(--grey);}
+  .yl-grid{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,auto);align-items:center;}
+  .yl-grid .h{font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-dim);text-align:right;padding:0 0 2px 12px;}
+  .yl-grid .v{padding-left:12px;align-self:stretch;display:flex;align-items:center;justify-content:flex-end;}
+  .yl-grid .n{min-width:0;display:flex;flex-direction:column;gap:1px;padding:7px 0;}
+  .yl-grid .n b{font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .yl-grid .n b i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;}
+  .yl-grid .n small{font:500 10.5px 'JetBrains Mono',monospace;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .yl-grid .v{font:600 12.5px 'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:var(--grey);letter-spacing:-.02em;}
+  .yl-grid .v.pos{color:var(--pnl-up);} .yl-grid .v.neg{color:var(--pnl-down);}
+  .yl-grid .tot{border-top:1px solid var(--hair, var(--border));}
+  .yl-grid .n.tot b{color:var(--grey);}
+  .cs-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:5px 0;font-size:13px;color:var(--grey);}
+  .cs-row .v{font:600 13px 'JetBrains Mono',monospace;white-space:nowrap;letter-spacing:-.02em;}
+  .cs-row .v.pos{color:var(--pnl-up);} .cs-row .v.neg{color:var(--pnl-down);}
+  .cs-row.tot{border-top:1px solid var(--hair, var(--border));margin-top:3px;padding-top:8px;color:var(--white);font-weight:600;}
+  .cs-note{font-size:11.5px;line-height:1.45;color:var(--grey-dim);margin-top:4px;}
+  .wd-chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;margin-top:8px;}
+  .wd-col{display:flex;flex-direction:column;align-items:stretch;background:none;border:none;padding:4px 0 5px;
+    font:inherit;color:inherit;cursor:pointer;border-radius:10px;min-width:0;}
+  .wd-col.sel{background:color-mix(in srgb, var(--grey-dim) 14%, transparent);}
+  .wd-z{display:flex;justify-content:center;}
+  .wd-z.up{align-items:flex-end;border-bottom:1px solid color-mix(in srgb, var(--grey-dim) 45%, transparent);}
+  .wd-z.dn{align-items:flex-start;}
+  .wd-z i{display:block;width:58%;max-width:24px;}
+  .wd-z.up i{background:var(--pnl-up);border-radius:4px 4px 0 0;}
+  .wd-z.dn i{background:var(--pnl-down);border-radius:0 0 4px 4px;}
+  .wd-col .v{font:600 10px 'JetBrains Mono',monospace;color:var(--grey);text-align:center;margin-top:5px;white-space:nowrap;letter-spacing:-.04em;}
+  .wd-col .k{font-size:10.5px;color:var(--grey-dim);text-align:center;margin-top:1px;}
+  .wd-col .c{font:500 9px 'JetBrains Mono',monospace;color:var(--grey-dim);text-align:center;opacity:.85;min-height:11px;}
+  .wd-say{font-size:12px;line-height:1.5;color:var(--grey);margin-top:9px;}
+  .wd-say b{color:var(--white);font-weight:600;}
+
+  /* ---- доходы: комиссия и фандинг в листе дня ---- */
+  .fx-costs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;}
+  .fx-cost{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:13px;border:1px solid var(--border);
+    background:var(--card);min-width:0;}
+  .fx-cost:focus-within{border-color:var(--amber);}
+  .fx-cost .k{font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--grey-dim);flex:0 0 auto;}
+  .fx-cost .s{font:700 15px var(--fx-num);flex:0 0 auto;}
+  .fx-cost .s.pos{color:var(--pnl-up);} .fx-cost .s.neg{color:var(--pnl-down);}
+  .fx-cost button.s{width:26px;height:26px;border-radius:50%;border:1px solid var(--border);background:none;
+    padding:0;cursor:pointer;line-height:1;}
+  .fx-cost input{flex:1;min-width:0;width:100%;background:transparent !important;border:none !important;box-shadow:none !important;
+    padding:6px 0;font:600 15px 'JetBrains Mono',monospace;color:var(--white);text-align:right;outline:none;}
+  .fx-costs-add{display:block;margin-top:10px;}
+  .src-cap{grid-column:2 / 5;display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--grey);margin-top:-2px;}
+  .src-cap span{flex:0 0 auto;}
+  .src-cap .sh-in{margin-top:0;padding:8px 11px;font-size:13px;text-align:right;}
+  .src-cap b{font:600 12px 'JetBrains Mono',monospace;color:var(--grey);flex:0 0 auto;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1739,7 +1837,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-01 00:37+dfaf6d39";
+window.TRACKER_BUILD = "2026-10-02 00:42+be7d97a4";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2037,6 +2135,8 @@ async function loadData(){
   maybeAppUpdate();
   pullPendingMarks();
   maybeShowNews();
+  scheduleNotifyPlan();
+  handleAndroidOpen();
 }
 
 // Every migration a save needs, whether it came from storage or from a restored
@@ -2140,6 +2240,7 @@ async function saveData(){
     n.classList.add("show");
     setTimeout(()=>n.classList.remove("show"), 900);
     syncToBot(false);
+    scheduleNotifyPlan();
     return true;
   }catch(e){ console.error("save failed", e); return false; }
 }
@@ -2193,8 +2294,8 @@ function render(){
   if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
-    c.innerHTML=renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
-    bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
+    c.innerHTML=renderNotifyCard()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
+    bindNotifyCard(); bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
   }
   else if(cur.tab==="doing"){
     const v=subView("doing");
@@ -6022,6 +6123,7 @@ function renderPnlHero(){
     </div>
     <div class="fx-big ${pnlClass(P.total)}">${P.n? fmtPnl(P.total,to) : `0 ${CURRENCY_SYMBOL[to]||to}`}</div>
     <div class="fx-sub">${P.n? subParts.join(" · ") : "Записей за этот месяц нет — нажми на день в календаре"}</div>
+    ${renderPnlPlan(y,m)}
     ${bar}
     ${rows? `<div class="fx-srows">${rows}</div>` : ""}
     ${assignNote}
@@ -6181,7 +6283,7 @@ function incomeRecordsList(){
         const curr=entryCurrency(e);
         return `<button class="fx-row" data-fxinc="${i}">
           <i class="dot" style="background:${meta.color}"></i>
-          <span class="t"><b>${escapeHtml(meta.name)}</b>${e.comment? `<small>${escapeHtml(e.comment)}</small>`:""}</span>
+          <span class="t"><b>${escapeHtml(meta.name)}</b>${incomeNote(e)? `<small>${escapeHtml(incomeNote(e))}</small>`:""}</span>
           <span class="a ${pnlClass(+e.amount)}">${fmtPnl(+e.amount||0,curr)}</span>
         </button>`;
       }).join("")}
@@ -6300,7 +6402,9 @@ function incomeDraftFor(editIdx, keep){
   if(editIdx!=null){
     const e=DATA.finance.entries[editIdx];
     if(e) return {src:entrySource(e), sign:(+e.amount<0)?-1:1, amount:String(Math.abs(+e.amount||0)).replace(".",","),
-      currency:entryCurrency(e), comment:e.comment||"", accountId:String(e.accountId||defaultAccountId())};
+      currency:entryCurrency(e), comment:e.comment||"", accountId:String(e.accountId||defaultAccountId()),
+      fee: +e.fee? String(+e.fee).replace(".",",") : "", fund: +e.fund? String(Math.abs(+e.fund)).replace(".",",") : "",
+      fundSign: (+e.fund<0)? -1 : 1, costs: !!(+e.fee || +e.fund)};
   }
   const last = keep && keep.src ? keep.src
     : (DATA.finance.lastSource && (srcById(DATA.finance.lastSource) || DATA.finance.lastSource==="other") ? DATA.finance.lastSource
@@ -6308,7 +6412,8 @@ function incomeDraftFor(editIdx, keep){
   const meta=srcMeta(last);
   const accountId = keep && keep.accountId ? keep.accountId : srcAccount(meta);
   return {src:last, sign: keep && keep.sign ? keep.sign : 1, amount:"",
-    currency: (keep && keep.currency) || meta.currency || accountCurrency(accountId), comment:"", accountId};
+    currency: (keep && keep.currency) || meta.currency || accountCurrency(accountId), comment:"", accountId,
+    fee:"", fund:"", fundSign:1, costs: !!(keep && keep.costs)};
 }
 function openDaySheet(date, editIdx, fromFab){
   // Клавиатура сразу — только когда ясно, что будут вводить: день пустой или
@@ -6339,7 +6444,7 @@ function renderDaySheet(s){
       const meta=srcMeta(entrySource(e));
       return `<button class="fx-row ${s.edit===i?'editing':''}" data-shedit="${i}">
         <i class="dot" style="background:${meta.color}"></i>
-        <span class="t"><b>${escapeHtml(meta.name)}</b>${e.comment? `<small>${escapeHtml(e.comment)}</small>`:""}</span>
+        <span class="t"><b>${escapeHtml(meta.name)}</b>${incomeNote(e)? `<small>${escapeHtml(incomeNote(e))}</small>`:""}</span>
         <span class="a ${pnlClass(+e.amount)}">${fmtPnl(+e.amount||0, entryCurrency(e))}</span>
       </button>`; }).join("")
     : `<div class="fx-empty sm">В этот день результатов нет</div>`;
@@ -6366,6 +6471,7 @@ function renderDaySheet(s){
       </label>
       <div class="fx-pick cur">${["USDT","USD","RUB","EUR"].filter(c=>CURRENCY_LIST.includes(c)).map(c=>
         `<button class="${d.currency===c?'on':''}" data-shcur="${c}">${CURRENCY_SYMBOL[c]||c} ${c}</button>`).join("")}</div>
+      ${renderFeeFields(d)}
       ${accRow}
       <input class="sh-in" id="shComment" placeholder="Комментарий: пара, биржа, стратегия…" value="${escapeHtml(d.comment||"")}" autocomplete="off">
       <div class="sh-actions">
@@ -6378,6 +6484,9 @@ function syncDayDraft(s){
   const a=document.getElementById("shAmount"), c=document.getElementById("shComment");
   if(a) s.draft.amount=a.value;
   if(c) s.draft.comment=c.value;
+  const f=document.getElementById("shFee"), u=document.getElementById("shFund");
+  if(f) s.draft.fee=f.value;
+  if(u) s.draft.fund=u.value;
 }
 function bindDaySheet(s){
   const root=sheetRoot();
@@ -6410,6 +6519,7 @@ function bindDaySheet(s){
     render();
   });
   q('[data-shsources]').forEach(b=>b.onclick=()=>{ syncDayDraft(s); cur.sheet={kind:"sources", scope:"fin", back:s}; renderSheet(); });
+  bindFeeFields(s, q);
   const a=document.getElementById("shAmount");
   const c=document.getElementById("shComment");
   if(a){ a.oninput=()=>{ s.draft.amount=a.value; }; a.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); saveDaySheet(s); } }; }
@@ -6448,6 +6558,11 @@ function saveDaySheet(s){
   // «Прочее» тоже пишем явно: так выбранное руками не путается с записями,
   // у которых источник ещё никто не указывал
   e.source=d.src||"other";
+  const costNum=x=>{ const v=parseFloat(String(x||"").replace(/\s/g,"").replace(",",".")); return isFinite(v) && v>0 ? v : 0; };
+  const fee=costNum(d.fee), fund=costNum(d.fund)*(d.fundSign<0? -1 : 1);
+  if(fee) e.fee=fee; else delete e.fee;
+  if(fund) e.fund=fund; else delete e.fund;
+  if(fee || fund) DATA.finance.costsUsed=true;
   if(d.currency && d.currency!==accCur) e.currency=d.currency; else delete e.currency;
   const isNew = s.edit==null;
   if(isNew) DATA.finance.entries.push(e);
@@ -6480,13 +6595,14 @@ function renderSourcesSheet(s){
         <select class="sh-sel" data-srccur="${i}">${CURRENCY_LIST.map(c=>`<option value="${c}" ${c===x.currency?'selected':''}>${c}</option>`).join("")}</select>
         <button class="src-del" data-srcdel="${i}" aria-label="Удалить">✕</button>
         <span class="src-cnt">${counts[x.id]? `${counts[x.id]} ${plural(counts[x.id],'запись','записи','записей')}` : "записей нет"}</span>
+        ${renderSrcCap(x,i)}
       </div>`).join("")}
     </div>
     <div class="sh-actions">
       <button class="btn ghost" id="srcAdd">+ Источник</button>
       <button class="btn" data-shback="1">Готово</button>
     </div>
-    <div class="fx-hint">Валюта — та, что подставится при выборе источника. Удалённый источник не стирает записи: они уйдут в «Прочее».</div>`;
+    <div class="fx-hint">Валюта — та, что подставится при выборе источника. Капитал — сколько денег крутится в источнике: от него считается доходность в процентах. Удалённый источник не стирает записи: они уйдут в «Прочее».</div>`;
 }
 function bindSourcesSheet(s){
   const root=sheetRoot();
@@ -6503,6 +6619,7 @@ function bindSourcesSheet(s){
     if(!v){ el.value=x.name; return; }
     x.name=v; scheduleSave(); render();
   });
+  bindSrcCap(root, list);
   root.querySelectorAll('[data-srccur]').forEach(el=>el.onchange=()=>{
     const x=list[+el.dataset.srccur];
     if(x){ x.currency=el.value; scheduleSave(); render(); }
@@ -6615,7 +6732,7 @@ function renderFinanceV3(){
   ensureFinanceCats(); ensureFinanceAccounts(); incomeSources();
   const mode=finMode();
   const fab=`<button class="fx-fab" id="fxFab" aria-label="${mode==="inc"? "Записать результат":"Записать расход"}"><span>+</span>${mode==="inc"? "Результат" : "Расход"}</button>`;
-  if(mode==="inc") return renderFinModeSwitch() + renderPnlHero() + renderPnlCalendar() + renderIncomeRecords() + fab + `<div class="fx-spacer"></div>`;
+  if(mode==="inc") return renderFinModeSwitch() + renderPnlHero() + renderPnlCalendar() + renderPnlInsights() + renderIncomeRecords() + fab + `<div class="fx-spacer"></div>`;
   return renderFinModeSwitch() + renderSpendHero() + renderFinPanels() + renderExpenseRecords() + fab + `<div class="fx-spacer"></div>`;
 }
 // Кнопка «+» прячется, когда листаешь вниз, и возвращается при движении вверх:
@@ -6650,6 +6767,7 @@ function bindFinanceV3(){
     const inView = now.getFullYear()===y && now.getMonth()===m;
     openDaySheet(inView? todayStr() : `${y}-${pad2(m+1)}-${pad2(daysInMonth(y,m))}`, null, true);
   };
+  bindPnlInsights();
   document.querySelectorAll('[data-pncur]').forEach(b=>b.onclick=()=>{ DATA.finance.pnlCur=b.dataset.pncur; scheduleSave(); render(); });
   document.querySelectorAll('[data-fxrates]').forEach(b=>b.onclick=()=>refreshPrices(true));
   document.querySelectorAll('[data-pcmode]').forEach(b=>b.onclick=()=>{ cur.calMode=b.dataset.pcmode; render(); });
@@ -6680,6 +6798,370 @@ function bindFinanceV3(){
   if(fr) fr.onclick=()=>{ cur.finFilter={type:"",accountId:"",category:"",q:"",from:"",to:""}; cur.finLimit=null; render(); };
   // курс нужен, как только где-то есть что-то не в рублях; частить не даст сама refreshPrices
   if(needsRates()) refreshPrices(false);
+}
+
+// ═════════ ДОХОДЫ: ПЛАН, ДОХОДНОСТЬ, КОМИССИИ, ДНИ НЕДЕЛИ ═════════
+function pnlGoal(){
+  const g=DATA.finance.pnlGoal;
+  return g && +g.amount>0 ? g : null;
+}
+// Темп плана на месяц (y, m), если смотреть из дня ref: сколько торговых дней
+// прошло и осталось, сколько нужно в день, где по графику должен быть результат.
+// День ref считается прошедшим, только если его результат уже записан.
+function pnlPlanStatus(y, m, ref){
+  const g=pnlGoal();
+  if(!g) return null;
+  const C=CURRENCY_LIST.includes(g.currency)? g.currency : pnlCurrency();
+  const P=pnlMonth(y, m, "all", C);
+  const now=ref||new Date();
+  const refMonth=ymdOf(now).slice(0,7), monthKey=`${y}-${pad2(m+1)}`;
+  const isCur=refMonth===monthKey, past=refMonth>monthKey;
+  const refDone=isCur && !!P.days[now.getDate()];
+  let total=0, passed=0, left=0;
+  for(let d=1; d<=daysInMonth(y,m); d++){
+    const dt=new Date(y,m,d);
+    if(g.weekdays && isWeekend(dt)) continue;
+    total++;
+    if(past || (isCur && (d<now.getDate() || (d===now.getDate() && refDone)))) passed++;
+    else left++;
+  }
+  const done=P.total, remaining=g.amount-done;
+  const avg=passed? done/passed : 0;
+  const expected=total? g.amount*passed/total : 0;
+  return {goal:g.amount, cur:C, done, remaining, left, passed, total, isCur, past,
+    perDay: left>0 && remaining>0 ? remaining/left : 0,
+    expected, diff:done-expected, forecast:done+avg*left, pct:done/g.amount};
+}
+function renderPnlPlan(y, m){
+  const nowMonth=todayStr().slice(0,7), monthKey=`${y}-${pad2(m+1)}`;
+  if(monthKey>nowMonth) return "";
+  const s=pnlPlanStatus(y, m, new Date());
+  if(!s) return monthKey===nowMonth ? `<button class="fx-plan-add" data-pnlgoal="1">◎ Поставить план на месяц — увидишь, сколько нужно в день</button>` : "";
+  const money=v=>fmtMoney(v, s.cur, 0);
+  const pct=Math.round(s.pct*100);
+  const fill=Math.max(0, Math.min(100, s.pct*100));
+  const mark=s.isCur && s.total ? s.passed/s.total*100 : null;
+  let row="", note="";
+  if(s.isCur){
+    if(s.remaining<=0) row=`<span class="pos">План выполнен${pct>100? ` на ${pct}%`:""} ✓</span>`;
+    else {
+      row=`Осталось <b>${money(s.remaining)}</b> — по <b>${money(s.perDay)}</b> в день · ${s.left} ${plural(s.left,'день','дня','дней')}`;
+      const tol=s.goal*0.01;
+      const pace = !s.passed ? "" : s.diff>=tol ? `<span class="pos">Опережаешь график на ${money(s.diff)}</span>`
+        : s.diff<=-tol ? `<span class="neg">Отстаёшь от графика на ${money(-s.diff)}</span>` : "Идёшь ровно по графику";
+      note = pace + (s.passed>=3 && pace? ` · прогноз ≈ ${money(s.forecast)}` : "");
+    }
+  } else {
+    row = s.remaining<=0 ? `<span class="pos">План выполнен на ${pct}% ✓</span>` : `Выполнен на ${pct}% · не хватило <b>${money(s.remaining)}</b>`;
+  }
+  return `<button class="fx-plan" data-pnlgoal="1" aria-label="План на месяц — изменить">
+    <div class="fx-plan-top"><span>План <b>${money(s.goal)}</b>${s.isCur? "" : " · был"}</span><span class="pc">${pct}%</span></div>
+    <div class="fx-meter plan"><i style="width:${fill.toFixed(1)}%"></i>${mark!=null? `<b style="left:${mark.toFixed(1)}%" title="где нужно быть сегодня"></b>`:""}</div>
+    <div class="fx-plan-row">${row}</div>
+    ${note? `<div class="fx-plan-note">${note}</div>`:""}
+  </button>`;
+}
+
+// ---------- лист: план на месяц ----------
+function openGoalSheet(){
+  const g=pnlGoal();
+  cur.sheet={kind:"pnlgoal", scope:"fin", had:!!g, focus:true,
+    draft:{amount: g? String(g.amount).replace(".",",") : "", currency: g? g.currency : pnlCurrency(), weekdays: g? !!g.weekdays : false}};
+  render();
+}
+function renderGoalSheet(s){
+  const d=s.draft;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>План на месяц</b><span class="zero">сколько хочешь зарабатывать — каждый месяц</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <label class="fx-amt pos">
+      <span class="s">◎</span>
+      <input id="goalAmount" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.amount||"")}">
+      <span class="c">${CURRENCY_SYMBOL[d.currency]||d.currency}</span>
+    </label>
+    <div class="fx-pick cur">${pnlCurList().map(c=>
+      `<button class="${d.currency===c?'on':''}" data-gcur="${c}">${CURRENCY_SYMBOL[c]||c} ${c}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:16px;">Торговые дни</div>
+    <div class="fx-sign" style="margin-top:6px;">
+      <button class="${!d.weekdays?'on pos':''}" data-gwd="0">Все дни</button>
+      <button class="${d.weekdays?'on pos':''}" data-gwd="1">Только будни</button>
+    </div>
+    <div class="fx-hint" style="margin:8px 2px 0;">От этого зависит, сколько нужно в день. Крипта идёт и в выходные, биржа — только по будням. Доход в другой валюте пересчитается по курсу.</div>
+    <div class="sh-actions">
+      ${s.had? `<button class="btn ghost danger" id="goalDel">Убрать</button>`:""}
+      <button class="btn" id="goalSave">Сохранить</button>
+    </div>`;
+}
+function bindGoalSheet(s){
+  const root=sheetRoot(), d=s.draft;
+  const a=document.getElementById("goalAmount");
+  if(a){ a.oninput=()=>{ d.amount=a.value; }; a.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); saveGoal(s); } }; }
+  root.querySelectorAll('[data-gcur]').forEach(b=>b.onclick=()=>{ if(a) d.amount=a.value; d.currency=b.dataset.gcur; renderSheet(); });
+  root.querySelectorAll('[data-gwd]').forEach(b=>b.onclick=()=>{ if(a) d.amount=a.value; d.weekdays=b.dataset.gwd==="1"; renderSheet(); });
+  const sv=document.getElementById("goalSave");
+  if(sv) sv.onclick=()=>saveGoal(s);
+  const del=document.getElementById("goalDel");
+  if(del) del.onclick=()=>{ delete DATA.finance.pnlGoal; scheduleSave(); closeSheet(); showActionToast("План убран"); };
+  if(s.focus && a){ s.focus=false; a.focus(); }
+}
+function saveGoal(s){
+  const a=document.getElementById("goalAmount");
+  if(a) s.draft.amount=a.value;
+  const v=parseFloat(String(s.draft.amount||"").replace(/\s/g,"").replace(",","."));
+  if(!isFinite(v) || v<=0){ flashError(a, "Введи сумму плана"); return; }
+  DATA.finance.pnlGoal={amount:v, currency:s.draft.currency, weekdays:!!s.draft.weekdays};
+  scheduleSave();
+  closeSheet();
+  showActionToast(`План на месяц: ${fmtMoney(v, s.draft.currency, 0)}`);
+}
+
+// ---------- капитал источника ----------
+// Капитал меняется — довнёс, вывел. История нужна, чтобы прошлые месяцы
+// считались от того капитала, что был тогда, а не от сегодняшнего.
+function srcCapital(src, key){
+  const h=Array.isArray(src.cap)? src.cap : [];
+  if(!h.length) return null;
+  let x=h[0];
+  h.forEach(e=>{ if(!e.from || e.from<=key) x=e; });
+  return +x.v>0 ? {v:+x.v, c:x.c||src.currency||"RUB"} : null;
+}
+function setSrcCapital(src, v){
+  const t=todayStr(), c=src.currency||"RUB";
+  if(!(v>0)){ delete src.cap; return; }
+  // первый раз — на всю историю; правка в тот же день — исправление, а не новая точка
+  if(!Array.isArray(src.cap) || !src.cap.length){ src.cap=[{from:"", v, c, at:t}]; return; }
+  const last=src.cap[src.cap.length-1];
+  if(last.at===t){ last.v=v; last.c=c; return; }
+  src.cap.push({from:t, v, c, at:t});
+}
+function renderSrcCap(x, i){
+  const cap=srcCapital(x, todayStr());
+  return `<label class="src-cap"><span>Капитал в работе</span>
+    <input class="sh-in" data-srccap="${i}" type="text" inputmode="decimal" autocomplete="off" placeholder="не указан" value="${cap? cap.v.toLocaleString('ru-RU',{maximumFractionDigits:2}):""}">
+    <b>${CURRENCY_SYMBOL[cap? cap.c : x.currency]||x.currency}</b></label>`;
+}
+function bindSrcCap(root, list){
+  root.querySelectorAll('[data-srccap]').forEach(el=>el.onchange=()=>{
+    const x=list[+el.dataset.srccap];
+    if(!x) return;
+    const raw=String(el.value).replace(/\s/g,"").replace(",",".");
+    const v=raw? parseFloat(raw) : 0;
+    if(raw && !(isFinite(v) && v>=0)){ flashError(el, "Число, например 10000"); return; }
+    setSrcCapital(x, v); scheduleSave(); render();
+  });
+}
+
+// ---------- комиссия и фандинг у записи ----------
+// Сумма записи — чистый итог, он и идёт в баланс. Комиссия и фандинг — для
+// разбора: сколько ушло биржам и сколько принёс фандинг.
+function incomeNote(e){
+  const c=entryCurrency(e), bits=[];
+  if(e.comment) bits.push(e.comment);
+  if(+e.fee) bits.push(`комиссия ${fmtMoney(+e.fee,c)}`);
+  if(+e.fund) bits.push(`фандинг ${+e.fund>0?"+":"−"}${fmtMoney(Math.abs(+e.fund),c)}`);
+  return bits.join(" · ");
+}
+function renderFeeFields(d){
+  if(!(d.costs || d.fee || d.fund || DATA.finance.costsUsed))
+    return `<button class="fx-linkbtn fx-costs-add" data-shcosts="1">+ комиссия и фандинг</button>`;
+  const neg=d.fundSign<0;
+  return `<div class="fx-costs">
+      <div class="fx-cost"><span class="k">Комиссия</span><span class="s neg">−</span>
+        <input id="shFee" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.fee||"")}"></div>
+      <div class="fx-cost"><span class="k">Фандинг</span><button type="button" class="s ${neg?'neg':'pos'}" data-shfsign="1" aria-label="${neg?'Заплатил фандинг':'Получил фандинг'} — сменить">${neg?'−':'+'}</button>
+        <input id="shFund" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.fund||"")}"></div>
+    </div>`;
+}
+function bindFeeFields(s, q){
+  q('[data-shcosts]').forEach(b=>b.onclick=()=>{
+    syncDayDraft(s); s.draft.costs=true; renderSheet();
+    const f=document.getElementById("shFee"); if(f) f.focus();
+  });
+  q('[data-shfsign]').forEach(b=>b.onclick=()=>{ syncDayDraft(s); s.draft.fundSign = s.draft.fundSign<0 ? 1 : -1; renderSheet(); });
+  [["shFee","fee"],["shFund","fund"]].forEach(([id,f])=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.oninput=()=>{ s.draft[f]=el.value; };
+    el.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); saveDaySheet(s); } };
+  });
+}
+
+// ---------- разбор месяца ----------
+function fmtPct(p, digits){
+  const d = digits!=null ? digits : (Math.abs(p)>=10 ? 1 : 2);
+  const a=Math.abs(p).toLocaleString('ru-RU', {minimumFractionDigits:0, maximumFractionDigits:d});
+  return `${p>0.00005? "+" : p<-0.00005? "−" : ""}${a}%`;
+}
+function pnlYield(y, m, src){
+  const nowKey=todayStr(), monthKey=`${y}-${pad2(m+1)}`;
+  const isCur=monthKey===nowKey.slice(0,7);
+  const endKey=isCur? nowKey : `${monthKey}-${pad2(daysInMonth(y,m))}`;
+  const elapsed=isCur? new Date().getDate() : daysInMonth(y,m);
+  const rows=[];
+  incomeSources().forEach(s=>{
+    if(src && src!=="all" && src!==s.id) return;
+    const cap=srcCapital(s, endKey);
+    if(!cap) return;
+    let v=0;
+    const dates=new Set();
+    (DATA.finance.entries||[]).forEach(e=>{
+      if(e.type!=="доход" || !e.date || e.date.slice(0,7)!==monthKey || entrySource(e)!==s.id) return;
+      const x=pnlIn(e, cap.c);
+      if(x==null) return;
+      v+=x; dates.add(e.date);
+    });
+    const pct=v/cap.v*100;
+    rows.push({s, cap:cap.v, C:cap.c, v, pct, dates, n:dates.size,
+      day: dates.size? pct/dates.size : 0, year: elapsed? pct/elapsed*365 : 0});
+  });
+  let total=null;
+  if(rows.length>1){
+    const to=pnlCurrency();
+    let cap=0, v=0, ok=true;
+    const dates=new Set();
+    rows.forEach(r=>{
+      const c=pnlIn({amount:r.cap, currency:r.C}, to), x=pnlIn({amount:r.v, currency:r.C}, to);
+      if(c==null || x==null){ ok=false; return; }
+      cap+=c; v+=x; r.dates.forEach(d=>dates.add(d));
+    });
+    if(ok && cap>0){
+      const pct=v/cap*100;
+      total={cap, C:to, pct, n:dates.size, day: dates.size? pct/dates.size : 0, year: elapsed? pct/elapsed*365 : 0};
+    }
+  }
+  return {rows, total};
+}
+function pnlCosts(y, m, src, to){
+  const prefix=`${y}-${pad2(m+1)}`;
+  let fee=0, fund=0, net=0, n=0, withCosts=0;
+  (DATA.finance.entries||[]).forEach(e=>{
+    if(e.type!=="доход" || !e.date || e.date.slice(0,7)!==prefix) return;
+    if(src && src!=="all" && entrySource(e)!==src) return;
+    const k=pnlIn({amount:1, currency:entryCurrency(e)}, to);
+    if(k==null) return;
+    net+=(+e.amount||0)*k; n++;
+    if(+e.fee || +e.fund){ withCosts++; fee+=(+e.fee||0)*k; fund+=(+e.fund||0)*k; }
+  });
+  return {fee, fund, net, gross:net+fee-fund, n, withCosts};
+}
+// Дни недели: средний результат торгового дня. Шаблоны (зарплата и т. п.) не в счёт —
+// они приходят в свой день месяца и исказили бы картину.
+function pnlWeekdays(per, src, to){
+  let from="", till=todayStr();
+  if(per==="month"){ const {y,m}=calMonth(); from=`${y}-${pad2(m+1)}-01`; till=`${y}-${pad2(m+1)}-31`; }
+  else if(per==="q") from=ymdOf(new Date(Date.now()-91*86400000));
+  const byDate={};
+  (DATA.finance.entries||[]).forEach(e=>{
+    if(e.type!=="доход" || e.recurringId || !e.date || e.date<from || e.date>till) return;
+    if(src && src!=="all" && entrySource(e)!==src) return;
+    const v=pnlIn(e, to);
+    if(v==null) return;
+    byDate[e.date]=(byDate[e.date]||0)+v;
+  });
+  const wd=Array.from({length:7}, ()=>({n:0, sum:0, win:0, avg:0}));
+  Object.keys(byDate).forEach(k=>{
+    const d=parseLocalDate(k);
+    if(!d) return;
+    const x=wd[(d.getDay()+6)%7], v=byDate[k];
+    x.n++; x.sum+=v; if(v>0.004) x.win++;
+  });
+  wd.forEach(x=>{ x.avg=x.n? x.sum/x.n : 0; });
+  return {wd, days:Object.keys(byDate).length};
+}
+
+function yieldSection(Y){
+  const head=`<div class="fx-sec-h"><span class="t">Доходность на капитал</span>${Y.rows.length? `<button class="fx-linkbtn" data-fxcap="1">Капитал ›</button>`:""}</div>`;
+  if(!Y.rows.length) return `<div class="fx-sec">${head}<div class="fx-cta">
+      <span>Укажи, сколько денег в работе у источника, — появится доходность в процентах: за месяц, за торговый день и годовых.</span>
+      <button class="fx-linkbtn" data-fxcap="1">Указать капитал ›</button></div></div>`;
+  const pc=(p, d)=>`<span class="v ${pnlClass(p)}">${fmtPct(p, d)}</span>`;
+  const yd=p=>Math.abs(p)>=100? 0 : 1;
+  const rows=Y.rows.map(r=>`<span class="n"><b><i style="background:${r.s.color}"></i>${escapeHtml(r.s.name)}</b>
+      <small>${fmtMoney(r.cap, r.C, 0)} · ${r.n} ${plural(r.n,'день','дня','дней')}</small></span>
+    ${pc(r.pct)}${pc(r.day)}${pc(r.year, yd(r.year))}`).join("");
+  const t=Y.total;
+  const tot=t? `<span class="n tot"><b>Всего</b><small>${fmtMoney(t.cap, t.C, 0)}</small></span>
+    <span class="v tot ${pnlClass(t.pct)}">${fmtPct(t.pct)}</span><span class="v tot ${pnlClass(t.day)}">${fmtPct(t.day)}</span><span class="v tot ${pnlClass(t.year)}">${fmtPct(t.year, yd(t.year))}</span>` : "";
+  return `<div class="fx-sec">${head}
+    <div class="yl-grid"><span></span><span class="h">месяц</span><span class="h">в день</span><span class="h">годовых</span>${rows}${tot}</div>
+    <div class="fx-hint" style="margin:8px 0 0;">«В день» — в среднем за торговый день. «Годовых» — если весь год идти темпом этого месяца, без реинвестирования.</div>
+  </div>`;
+}
+function costsSection(K, to){
+  const head=`<div class="fx-sec-h"><span class="t">Комиссии и фандинг</span></div>`;
+  if(!K.withCosts) return `<div class="fx-sec">${head}<div class="fx-cta"><span>У записи результата можно указать комиссию и фандинг — здесь будет видно, сколько съедают комиссии и сколько приносит фандинг.</span></div></div>`;
+  const share=K.gross>0.004 ? Math.round(K.fee/K.gross*100) : null;
+  const partial=K.withCosts<K.n ? `Учтены ${K.withCosts} из ${K.n} ${plural(K.n,'записи','записей','записей')} — у остальных комиссия не указана.` : "";
+  return `<div class="fx-sec">${head}
+    <div class="cs-row"><span>Сделки, до комиссий</span><span class="v ${pnlClass(K.gross)}">${fmtPnl(K.gross,to)}</span></div>
+    <div class="cs-row"><span>Комиссии</span><span class="v ${K.fee>0.004?'neg':''}">${K.fee>0.004? fmtPnl(-K.fee,to) : "0"}</span></div>
+    <div class="cs-row"><span>Фандинг</span><span class="v ${pnlClass(K.fund)}">${Math.abs(K.fund)>0.004? fmtPnl(K.fund,to) : "0"}</span></div>
+    <div class="cs-row tot"><span>Итог</span><span class="v ${pnlClass(K.net)}">${fmtPnl(K.net,to)}</span></div>
+    ${share!=null || partial? `<div class="cs-note">${share!=null? `Комиссии съели ${share}% заработанного на сделках. ` : ""}${partial}</div>` : ""}
+  </div>`;
+}
+function weekdaySection(W, per, to){
+  const seg=`<div class="seg fx-seg">${[["month","Месяц"],["q","3 мес"],["all","Всё время"]].map(([k,l])=>
+    `<button class="${per===k?'active':''}" data-wdper="${k}">${l}</button>`).join("")}</div>`;
+  const head=`<div class="fx-sec-h"><span class="t">Дни недели</span>${seg}</div>`;
+  if(!W.days) return `<div class="fx-sec">${head}<div class="fx-cta"><span>За этот период результатов нет.</span></div></div>`;
+  const maxPos=Math.max(0, ...W.wd.map(x=>x.n? x.avg : 0));
+  const maxNeg=Math.max(0, ...W.wd.map(x=>x.n? -x.avg : 0));
+  const H=80, span=(maxPos+maxNeg)||1;
+  const posH=Math.round(H*maxPos/span), negH=H-posH;
+  const sel=cur.wdSel!=null && W.wd[cur.wdSel] ? cur.wdSel : null;
+  const cols=W.wd.map((x,i)=>{
+    const up=x.n && x.avg>0.004 ? Math.max(2, Math.round(x.avg/span*H)) : 0;
+    const dn=x.n && x.avg<-0.004 ? Math.max(2, Math.round(-x.avg/span*H)) : 0;
+    return `<button class="wd-col ${sel===i?'sel':''}" data-wdsel="${i}" aria-label="${WEEKDAYS_FULL[i]}: ${x.n? fmtPnl(x.avg,to,0)+" в среднем" : "нет данных"}">
+      <span class="wd-z up" style="height:${posH}px">${up? `<i style="height:${up}px"></i>`:""}</span>
+      ${negH? `<span class="wd-z dn" style="height:${negH}px">${dn? `<i style="height:${dn}px"></i>`:""}</span>`:""}
+      <span class="v">${x.n? shortPnl(x.avg) : "—"}</span>
+      <span class="k">${WEEKDAYS[i]}</span>
+      <span class="c">${x.n? `${x.win}/${x.n}` : ""}</span>
+    </button>`;
+  }).join("");
+  let say;
+  if(sel!=null){
+    const x=W.wd[sel];
+    say = x.n ? `<b>${capFirst(WEEKDAYS_FULL[sel])}</b>: в среднем ${fmtPnl(x.avg,to,0)} за день, всего ${fmtPnl(x.sum,to,0)} за ${x.n} ${plural(x.n,'день','дня','дней')}, в плюсе ${x.win} из ${x.n}.`
+      : `<b>${capFirst(WEEKDAYS_FULL[sel])}</b>: за этот период записей нет.`;
+  } else {
+    const ok=W.wd.map((x,i)=>({...x, i})).filter(x=>x.n>=2);
+    if(ok.length>=2){
+      const best=ok.slice().sort((a,b)=>b.avg-a.avg)[0], worst=ok.slice().sort((a,b)=>a.avg-b.avg)[0];
+      say=`Лучше всего — <b>${WEEKDAYS_FULL[best.i]}</b>: в среднем ${fmtPnl(best.avg,to,0)}, в плюсе ${best.win} из ${best.n}.`;
+      if(worst.i!==best.i) say += worst.avg<-0.004
+        ? ` В минус чаще уводит <b>${WEEKDAYS_FULL[worst.i]}</b>: ${fmtPnl(worst.avg,to,0)} в среднем.`
+        : ` Слабее всего — <b>${WEEKDAYS_FULL[worst.i]}</b>: ${fmtPnl(worst.avg,to,0)}.`;
+    } else say="Пока мало данных: нужно хотя бы по два торговых дня на день недели. Можно взять период длиннее.";
+  }
+  return `<div class="fx-sec">${head}
+    <div class="wd-chart">${cols}</div>
+    <div class="wd-say">${say}</div>
+    <div class="fx-hint" style="margin:6px 0 0;">Столбик — средний результат торгового дня, под ним — сколько дней в плюсе. Нажми на день — подробнее.</div>
+  </div>`;
+}
+function renderPnlInsights(){
+  const {y,m}=calMonth();
+  const to=pnlCurrency(), src=pnlSrcFilter();
+  const future=`${y}-${pad2(m+1)}`>todayStr().slice(0,7);
+  const per=["month","q","all"].includes(cur.wdPer)? cur.wdPer : "q";
+  const secs=[];
+  if(!future){
+    secs.push(yieldSection(pnlYield(y, m, src)));
+    secs.push(costsSection(pnlCosts(y, m, src, to), to));
+  }
+  secs.push(weekdaySection(pnlWeekdays(per, src, to), per, to));
+  const srcName = src!=="all" ? ` · ${escapeHtml(srcShort(srcMeta(src)))}` : "";
+  return `<div class="card fx-ins"><h2>Разбор${future? "" : ` · ${MONTHS_RU[m].toLowerCase()}`}${srcName}</h2>${secs.join("")}</div>`;
+}
+function bindPnlInsights(){
+  document.querySelectorAll('[data-pnlgoal]').forEach(b=>b.onclick=openGoalSheet);
+  document.querySelectorAll('[data-wdper]').forEach(b=>b.onclick=()=>{ cur.wdPer=b.dataset.wdper; cur.wdSel=null; render(); });
+  document.querySelectorAll('[data-wdsel]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.wdsel; cur.wdSel = cur.wdSel===i ? null : i; render(); });
+  document.querySelectorAll('[data-fxcap]').forEach(b=>b.onclick=()=>{ cur.sheet={kind:"sources", scope:"fin", back:null}; render(); });
 }
 
 // ═════════ ЛИСТ СНИЗУ ═════════
@@ -6742,6 +7224,7 @@ function renderSheet(){
   else if(s.kind==="voicehelp") body=renderVoiceHelpSheet(s);
   else if(s.kind==="masktip") body=renderMaskTipSheet(s);
   else if(s.kind==="doitem") body=renderDoItemSheet(s);
+  else if(s.kind==="pnlgoal") body=renderGoalSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -6777,6 +7260,7 @@ function renderSheet(){
   else if(s.kind==="voicehelp") bindVoiceHelpSheet(s);
   else if(s.kind==="masktip") bindMaskTipSheet(s);
   else if(s.kind==="doitem") bindDoItemSheet(s);
+  else if(s.kind==="pnlgoal") bindGoalSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -6838,21 +7322,333 @@ function showActionToast(label, action, fn, ms){
   undoTimer=setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),350); }, ms||(action? 6000 : 3200));
 }
 
+// ═════════ УВЕДОМЛЕНИЯ ═════════
+// Будильники ставит сам телефон (приложение 2.3+), а что и когда сказать, решает
+// страница: раскладывает расписание на две недели вперёд с готовыми текстами и
+// отдаёт его оболочке при каждом сохранении. Данные меняются только здесь, поэтому
+// текст, посчитанный при последнем сохранении, к моменту показа верен: отметил
+// привычку — вечернее «не отмечено» тут же пересчитано или снято из шторки.
+const NOTIFY_DAYS=14;
+const NOTIFY_APP="2.3";
+const NOTIFY_DEFAULTS={morning:true, morningTime:"09:00", eveningTime:"21:30",
+  result:true, resultWeekdays:false, habits:true, pay:true, reminders:true};
+// Меняем объект на месте: на него держат ссылки обработчики в настройках
+function notifyCfg(){
+  const s=DATA.settings||(DATA.settings={});
+  if(!s.notify || typeof s.notify!=="object") s.notify={};
+  Object.keys(NOTIFY_DEFAULTS).forEach(k=>{ if(s.notify[k]===undefined) s.notify[k]=NOTIFY_DEFAULTS[k]; });
+  return s.notify;
+}
+function notifyNative(){
+  return typeof AndroidHost!=="undefined" && typeof AndroidHost.notifyPlan==="function";
+}
+let notifyStatusCache=null;
+function notifyState(){
+  if(!notifyNative()) return null;
+  if(!notifyStatusCache){
+    try{ notifyStatusCache=JSON.parse(AndroidHost.notifyStatus()||"{}"); }catch(e){ notifyStatusCache={}; }
+  }
+  return notifyStatusCache;
+}
+function notifyOn(){ const s=notifyState(); return !!(s && s.granted); }
+
+function hmAt(day, hm){
+  const p=String(hm||"").split(":");
+  return new Date(day.getFullYear(), day.getMonth(), day.getDate(), parseInt(p[0],10)||0, parseInt(p[1],10)||0, 0, 0).getTime();
+}
+function namesList(names, max){
+  const shown=names.slice(0, max||3);
+  const rest=names.length-shown.length;
+  return shown.join(", ")+(rest>0? ` и ещё ${rest}` : "");
+}
+function capFirst(s){ s=String(s||""); return s? s[0].toUpperCase()+s.slice(1) : s; }
+function whenLabel(ms){
+  const d=new Date(ms), t=new Date(); t.setHours(0,0,0,0);
+  const day=new Date(d); day.setHours(0,0,0,0);
+  const diff=Math.round((day-t)/86400000);
+  const hm=`${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  if(diff===0) return `сегодня ${hm}`;
+  if(diff===1) return `завтра ${hm}`;
+  return `${d.getDate()} ${MONTHS_GEN[d.getMonth()].slice(0,3)} ${hm}`;
+}
+
+// Доход «ведётся», если за полтора месяца есть хоть одна запись не из шаблона:
+// иначе «запиши результат дня» было бы спамом для того, кто им не пользуется.
+function incomeTracked(){
+  const from=ymdOf(new Date(Date.now()-45*86400000));
+  return (DATA.finance.entries||[]).some(e=>e.type==="доход" && !e.recurringId && e.date && e.date>=from);
+}
+function incomeOn(key){
+  return (DATA.finance.entries||[]).some(e=>e.type==="доход" && !e.recurringId && e.date===key);
+}
+function dayResult(key, to){
+  let v=0, n=0;
+  (DATA.finance.entries||[]).forEach(e=>{
+    if(e.type!=="доход" || e.date!==key) return;
+    const x=pnlIn(e,to);
+    if(x==null) return;
+    v+=x; n++;
+  });
+  return n? v : null;
+}
+function isWeekend(d){ return d.getDay()===0 || d.getDay()===6; }
+
+function morningMoneyLine(day, c){
+  if(!incomeTracked()) return "";
+  const to=pnlCurrency();
+  const y=new Date(day.getFullYear(), day.getMonth(), day.getDate()-1);
+  const bits=[];
+  const r=dayResult(ymdOf(y), to);
+  if(r!=null) bits.push(`Вчера ${fmtPnl(r,to)}`);
+  else if(!(c.resultWeekdays && isWeekend(y))) bits.push("Вчерашний результат не записан");
+  const ps=pnlPlanStatus(day.getFullYear(), day.getMonth(), day);
+  if(ps){
+    if(ps.remaining>0 && ps.left>0) bits.push(`до плана ${fmtMoney(ps.remaining,ps.cur,0)}, по ${fmtMoney(ps.perDay,ps.cur,0)} в день`);
+    else if(ps.remaining<=0) bits.push("план месяца выполнен ✓");
+  } else if(day.getDate()>2){        // второго числа «за месяц» — это и есть «вчера»
+    const P=pnlMonth(day.getFullYear(), day.getMonth(), "all", to);
+    if(P.n) bits.push(`за месяц ${fmtPnl(P.total,to)}`);
+  }
+  return bits.join(" · ");
+}
+function notifyMorning(day, isToday, c){
+  const key=ymdOf(day);
+  const open=(DATA.todos||[]).filter(t=>!t.done && t.dueDate && t.dueDate<=key);
+  const due=open.filter(t=>t.dueDate===key), late=open.filter(t=>t.dueDate<key);
+  const habs=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day) && !(isToday && isHabitDoneOn(i,day)));
+  const lines=[];
+  if(due.length) lines.push(`Дела: ${namesList(due.map(t=>t.text),3)}`);
+  if(late.length) lines.push(`Просрочено: ${namesList(late.map(t=>t.text),2)}`);
+  if(habs.length) lines.push(`Привычки: ${namesList(habs.map(i=>DATA.habits.list[i]),4)}`);
+  const money=morningMoneyLine(day, c);
+  if(money) lines.push(money);
+  if(!lines.length) return null;
+  const parts=[], nt=open.length;
+  if(nt) parts.push(`${nt} ${plural(nt,'дело','дела','дел')}`);
+  if(habs.length) parts.push(`${habs.length} ${plural(habs.length,'привычка','привычки','привычек')}`);
+  return {title: parts.length? `На сегодня: ${parts.join(" и ")}` : "Доброе утро", text:lines.join("\n"), open:"today"};
+}
+function notifyResult(day, c){
+  const key=ymdOf(day);
+  if(c.resultWeekdays && isWeekend(day)) return null;
+  if(incomeOn(key)) return null;
+  const to=pnlCurrency();
+  const P=pnlMonth(day.getFullYear(), day.getMonth(), "all", to);
+  const tdays=Object.keys(P.days).length;
+  const lines=[];
+  if(P.n) lines.push(`За ${MONTHS_RU[day.getMonth()].toLowerCase()} — ${fmtPnl(P.total,to)} за ${tdays} ${plural(tdays,'день','дня','дней')}`);
+  const ps=pnlPlanStatus(day.getFullYear(), day.getMonth(), day);
+  if(ps && ps.remaining>0) lines.push(`До плана ${fmtMoney(ps.remaining,ps.cur,0)} — по ${fmtMoney(ps.perDay,ps.cur,0)} в день`);
+  else if(ps) lines.push("План месяца уже выполнен ✓");
+  lines.push("Нажми — откроется сегодняшний день");
+  return {title:"Запиши результат дня", text:lines.join("\n"), open:`income:${key}`};
+}
+function notifyHabits(day, isToday){
+  const sched=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day));
+  const left=sched.filter(i=>!isHabitDoneOn(i,day));
+  if(!left.length) return null;
+  let text=namesList(left.map(i=>DATA.habits.list[i]),4);
+  if(isToday){
+    // серия под угрозой — самая длинная из неотмеченных
+    let best=null;
+    left.forEach(i=>{ const s=habitStreak(i); if(s>=3 && (!best || s>best.s)) best={i, s}; });
+    if(best) text+=`\nСерия «${DATA.habits.list[best.i]}» — ${best.s} ${plural(best.s,'день','дня','дней')}, не прерви`;
+  }
+  return {title:`Не отмечено ${left.length} из ${sched.length} ${plural(sched.length,'привычки','привычек','привычек')}`, text, open:"habits"};
+}
+function notifyPay(day){
+  const t=new Date(day.getFullYear(), day.getMonth(), day.getDate()+1);
+  const nd=daysInMonth(t.getFullYear(), t.getMonth());
+  const prefix=`${t.getFullYear()}-${pad2(t.getMonth()+1)}`;
+  const list=(DATA.finance.recurring||[]).filter(r=>r.type!=="доход" && (+r.amount||0)>0
+    && (!r.since || r.since<=prefix) && Math.max(1, Math.min(31, +r.day||1, nd))===t.getDate());
+  if(!list.length) return null;
+  const parts=list.map(r=>`${r.comment||r.category||"Платёж"} — ${fmtMoney(+r.amount, accountCurrency(r.accountId||defaultAccountId()), 0)}`);
+  return {title: list.length>1? `Завтра ${list.length} ${plural(list.length,'списание','списания','списаний')}` : "Завтра списание",
+    text:parts.join("\n"), open:"money"};
+}
+
+function buildNotifyPlan(){
+  const c=notifyCfg();
+  const now=Date.now();
+  const items=[], cancel=[];
+  const base=new Date(); base.setHours(0,0,0,0);
+  const tracked=incomeTracked();
+  for(let i=0;i<NOTIFY_DAYS;i++){
+    const day=new Date(base.getFullYear(), base.getMonth(), base.getDate()+i);
+    const key=ymdOf(day), today=i===0;
+    const add=(k, hm, ch, n, extra)=>{
+      if(!n) return;
+      const at=hmAt(day, hm);
+      if(at<=now) return;
+      items.push(Object.assign({key:k, at, ch, title:n.title, text:n.text||"", open:n.open||"today"}, extra||{}));
+    };
+    if(c.reminders) (DATA.reminders||[]).forEach(r=>{
+      if(r.enabled && r.time) add(`r:${r.id}:${key}`, r.time, "remind", {title:r.label||"Напоминание", text:"", open:"today"}, {snooze:true});
+    });
+    // платёж на завтра — строкой в утренней сводке, а не вторым уведомлением в ту же минуту
+    const mo = c.morning ? notifyMorning(day, today, c) : null;
+    const pay = c.pay ? notifyPay(day) : null;
+    if(mo && pay) mo.text+=`\n${pay.title}: ${pay.text.split("\n").join(", ")}`;
+    add(`m:${key}`, c.morningTime, "digest", mo);
+    if(!mo) add(`p:${key}`, c.morningTime, "digest", pay);
+    const r = c.result && tracked ? notifyResult(day, c) : null;
+    add(`er:${key}`, c.eveningTime, "digest", r);
+    const h = c.habits ? notifyHabits(day, today) : null;
+    add(`eh:${key}`, c.eveningTime, "digest", h);
+    // уже показанное, но потерявшее смысл, — убрать из шторки
+    if(today && !r) cancel.push(`er:${key}`);
+    if(today && !h) cancel.push(`eh:${key}`);
+  }
+  items.sort((a,b)=>a.at-b.at);
+  return {items, cancel};
+}
+
+let notifyTimer=null, notifyLast="";
+function scheduleNotifyPlan(){
+  if(!notifyNative()) return;
+  clearTimeout(notifyTimer);
+  notifyTimer=setTimeout(pushNotifyPlan, 1200);
+}
+function pushNotifyPlan(){
+  if(!notifyNative() || !DATA) return;
+  let json;
+  try{ json=JSON.stringify(buildNotifyPlan()); }catch(e){ console.error("notify plan", e); return; }
+  if(json===notifyLast) return;
+  try{ if(AndroidHost.notifyPlan(json)) notifyLast=json; }catch(e){}
+  notifyStatusCache=null;
+}
+function notifyOnResume(){
+  if(!notifyNative() || !DATA) return;
+  const was=!!(notifyStatusCache && notifyStatusCache.granted);
+  notifyStatusCache=null;
+  scheduleNotifyPlan();
+  handleAndroidOpen();
+  // вернулись из настроек телефона, где включили или выключили уведомления
+  if(notifyOn()!==was && (cur.tab==="settings" || cur.tab==="today") && !cur.sheet) render();
+}
+window.__notifyChanged=function(){
+  notifyStatusCache=null;
+  notifyLast="";
+  scheduleNotifyPlan();
+  if(cur.tab==="settings" || cur.tab==="today" || (cur.sheet && cur.sheet.kind==="news")) render();
+  if(notifyOn()) showActionToast("Уведомления включены ✓");
+};
+
+// Нажали на уведомление — открываем то, о чём оно
+function routeOpen(o){
+  if(!o || !DATA) return;
+  if(cur.sheet && cur.sheet.kind==="news") markNewsSeen();
+  cur.sheet=null;
+  if(o.indexOf("income:")===0){
+    const key=o.slice(7), dt=parseLocalDate(key);
+    cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="inc";
+    if(dt){ cur.calY=dt.getFullYear(); cur.calM=dt.getMonth(); cur.calMode="days"; }
+    window.scrollTo(0,0);
+    openDaySheet(dt? key : todayStr(), null, true);
+    return;
+  }
+  if(o==="habits" || o==="doing"){ cur.tab="doing"; cur.sub.doing="list"; }
+  else if(o==="money"){ cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="exp"; }
+  else if(o==="settings") cur.tab="settings";
+  else cur.tab="today";
+  render();
+  window.scrollTo(0,0);
+}
+function handleAndroidOpen(){
+  if(!DATA || typeof AndroidHost==="undefined" || typeof AndroidHost.takeOpen!=="function") return;
+  let o="";
+  try{ o=AndroidHost.takeOpen()||""; }catch(e){ return; }
+  if(o) routeOpen(o);
+}
+window.onAndroidOpen=function(){ try{ handleAndroidOpen(); }catch(e){} };
+
+// ---------- карточки ----------
+// Одна и та же строка состояния — на главном и в настройках
+function notifyStatusBlock(){
+  if(notifyNative()){
+    const s=notifyState()||{};
+    if(!s.granted) return `<div class="nt-off">
+        <div><b>Уведомления выключены</b><span>Утром — дела и привычки, вечером — результат дня. Без бота и без интернета.</span></div>
+        <button class="btn" data-ntask="1">Включить</button></div>`;
+    const off=s.off||[];
+    return `<div class="nt-on"><span class="ok">✓ Уведомления включены</span>
+        <span>${s.next? `следующее — ${escapeHtml(whenLabel(s.next))}` : "пока ничего не запланировано"}</span>
+        ${off.length? `<p class="nt-warn">${off.includes("digest")? (off.includes("remind")? "Сводки и напоминания" : "Сводки") : "Напоминания"} выключены в настройках телефона<button data-ntsys="1">Открыть</button></p>`:""}
+        ${s.exact===false? `<p class="nt-warn">Телефон не даёт ставить точное время — уведомления могут немного опаздывать</p>`:""}
+      </div>`;
+  }
+  if(isNativeShell()) return `<div class="nt-off">
+      <div><b>Уведомлениям нужно приложение ${NOTIFY_APP}</b><span>Будильники ставит сам телефон. Новая версия ставится поверх, данные сохранятся.</span></div>
+      <a class="btn" href="${LATEST_APP.url}">Скачать</a></div>`;
+  return `<div style="font-size:11.5px;margin-bottom:10px;">${notifStatusHtml()}</div>`;
+}
+function bindNotifyButtons(root){
+  root=root||document;
+  root.querySelectorAll('[data-ntask]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.notifyAsk(); }catch(e){} });
+  root.querySelectorAll('[data-ntsys]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.notifySettings(); }catch(e){} });
+  root.querySelectorAll('[data-ntsettings]').forEach(b=>b.onclick=()=>{ cur.tab="settings"; render(); window.scrollTo(0,0); });
+  root.querySelectorAll('[data-nttest]').forEach(b=>b.onclick=()=>{
+    const c=notifyCfg();
+    let ok=false;
+    try{ ok=AndroidHost.notifyTest("Трекер", `Так выглядят уведомления. Утренняя сводка — в ${c.morningTime}, вечерняя — в ${c.eveningTime}.`); }catch(e){}
+    showActionToast(ok? "Отправил — загляни в шторку" : "Не вышло: уведомления не разрешены");
+  });
+}
+function renderNotifyCard(){
+  if(typeof TG!=="undefined" && TG) return "";        // в Telegram напоминает бот
+  const c=notifyCfg();
+  const opt=(id, title, sub, time)=>`<div class="nt-opt">
+      <label class="vc-check"><input type="checkbox" data-ntopt="${id}" ${c[id]?"checked":""}><span class="tt">${title}</span><small>${sub}</small></label>
+      ${time? `<input type="time" class="nt-time" data-nttime="${time}" value="${escapeHtml(c[time])}" aria-label="Время">`:""}
+    </div>`;
+  let next=[];
+  try{ next=buildNotifyPlan().items.slice(0,5); }catch(e){}
+  const rems=(DATA.reminders||[]).filter(r=>r.enabled).length;
+  return `<div class="card" id="notifyCard">
+    <h2>🔔 Уведомления</h2>
+    ${notifyStatusBlock()}
+    ${notifyNative() && notifyOn()? `<div class="nt-btns"><button class="btn ghost" data-nttest="1">Прислать пробное</button><button class="btn ghost" data-ntsys="1">Настройки телефона</button></div>`:""}
+    ${opt("morning", "Утренняя сводка", "дела на сегодня, привычки, вчерашний результат и план месяца", "morningTime")}
+    ${opt("result", "Вечером — результат дня", "«запиши результат», если за день ничего не записано; нажмёшь — откроется день", "eveningTime")}
+    ${c.result? `<label class="vc-check sub"><input type="checkbox" data-ntopt="resultWeekdays" ${c.resultWeekdays?"checked":""}><span class="tt">Только по будням</span><small>в субботу и воскресенье не спрашивать</small></label>`:""}
+    ${opt("habits", "Вечером — привычки", "какие не отмечены и чья серия под угрозой; в то же время", "")}
+    ${opt("pay", "Платежи — накануне", "регулярные списания из «Финансов», утром за день", "")}
+    ${opt("reminders", "Мои напоминания", `${rems? `включено: ${rems}` : "пока ни одного"} — список на главном экране, есть кнопка «Через час»`, "")}
+    ${next.length? `<div class="nt-next"><div class="lab">Ближайшие</div>${next.map(x=>
+      `<div class="nt-pi"><span class="t">${escapeHtml(whenLabel(x.at))}</span><span class="n">${escapeHtml(x.title)}</span></div>`).join("")}</div>` : ""}
+  </div>`;
+}
+function bindNotifyCard(){
+  const card=document.getElementById("notifyCard");
+  if(!card) return;
+  bindNotifyButtons(card);
+  card.querySelectorAll('[data-ntopt]').forEach(el=>el.onchange=()=>{
+    notifyCfg()[el.dataset.ntopt]=el.checked; scheduleSave(); render();
+  });
+  card.querySelectorAll('[data-nttime]').forEach(el=>el.onchange=()=>{
+    if(!/^\d{2}:\d{2}$/.test(el.value)) return;
+    notifyCfg()[el.dataset.nttime]=el.value; scheduleSave(); render();
+  });
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-01-merge", items:[
-  ["☰","«Ритм» и «Дела» — теперь одно","Вкладка «Дела»: сверху всё на сегодня — и привычки, и дела, по срочности. Дальше завтра, неделя, позже, без срока."],
-  ["↻","Привычки по дням недели","«По будням зарядка», «по пятницам выводить прибыль» — появятся в свои дни, а в остальные серия не рвётся."],
-  ["🎤","Голосом — и привычки тоже","«Каждое утро зарядка» станет привычкой, «каждый месяц 10 числа платить аренду» — делом, которое само повторяется."],
-  ["✎","Карточка любого пункта","Нажми на название: срок, важность, повтор, дни недели, пропуск без разрыва серии."],
-  ["◧","Только «Стекло»","Облики «Фокус» и «Пульт» убраны. Восемь тем «Стекла» — в настройках."],
-  ["🎤","Голосовой ввод в делах","Распознавание речи — часть самого приложения, поэтому ему нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.", "novoice"]
+const WHATS_NEW={id:"2026-10-02-notify", items:[
+  ["🔔","Уведомления прямо с телефона","Утром — дела, привычки, вчерашний результат и план. Вечером — «запиши результат дня» и неотмеченные привычки. Накануне — платежи. Без бота и без интернета.","notify"],
+  ["🔔","Уведомления — в приложении 2.3","Будильники ставит сам телефон, поэтому нужна новая версия. Кнопка ниже скачает её: ставится поверх, данные сохранятся.","nonotify"],
+  ["◎","План на месяц","В «Доходах»: сколько осталось до цели, сколько нужно в день и опережаешь ли график."],
+  ["%","Доходность на капитал","Укажи капитал у источника — увидишь процент за месяц, за торговый день и годовых."],
+  ["▥","Дни недели","Какие дни в среднем приносят больше, а какие уводят в минус. Внизу «Доходов», в разборе."],
+  ["−","Комиссии и фандинг","У записи результата — отдельными полями. В разборе видно, сколько они съели за месяц."]
 ]};
 function newsItems(){
   return WHATS_NEW.items.filter(x=>{
     if(x[3]==="voice") return !!voiceSupported();
     if(x[3]==="novoice") return !voiceSupported() && appOutdated();
     if(x[3]==="native") return isNativeShell();
+    if(x[3]==="notify") return notifyNative();
+    if(x[3]==="nonotify") return isNativeShell() && !notifyNative();
     return true;
   });
 }
@@ -6875,6 +7671,8 @@ function renderNewsSheet(){
     </div>
     <div class="news-list">${newsItems().map(([ic,t,p])=>`<div class="news-item">
       <span class="ic">${ic}</span><div><b>${escapeHtml(t)}</b><p>${escapeHtml(p)}</p></div></div>`).join("")}</div>
+    ${notifyNative() && !notifyOn()? `<div class="vh-act"><button class="btn" data-ntask="1">Включить уведомления</button>
+      <p class="vh-note">Телефон спросит разрешение. Что и когда присылать — в настройках, по шестерёнке.</p></div>` : ""}
     ${appOutdated()? `<div class="vh-act"><a class="btn" href="${LATEST_APP.url}">Скачать приложение ${LATEST_APP.version} · ${LATEST_APP.size}</a>
       <p class="vh-note">Откроется браузер и скачает файл. Открой его и нажми «Установить» — поставится поверх, данные останутся.</p></div>` : ""}
     <div class="sh-actions">
@@ -6883,6 +7681,7 @@ function renderNewsSheet(){
     </div>`;
 }
 function bindNewsSheet(){
+  bindNotifyButtons(sheetRoot());
   const b=document.getElementById("newsFin");
   if(b) b.onclick=()=>{
     markNewsSeen();
@@ -6902,7 +7701,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.2", size:"меньше 1 МБ",
+const LATEST_APP={version:"2.3", size:"меньше 1 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -9005,7 +9804,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
@@ -9359,10 +10158,11 @@ function renderReminders(){
         style="flex:1;background:transparent;border:none;color:var(--white);font-size:13px;">
       <button class="del" data-remdel="${i}">✕</button>
     </div>`).join("");
+  const native=notifyNative();
   return `<div class="card">
-    <h2>⏰ Напоминания</h2>
-    <div style="font-size:11.5px;margin-bottom:10px;">${notifStatusHtml()}</div>
-    <div class="row-wrap" id="remRows">${rows || '<div class="empty">Пока нет напоминаний</div>'}</div>
+    <div class="nt-head"><h2>🔔 Напоминания</h2>${native? `<button class="fx-linkbtn" data-ntsettings="1">Что присылать ›</button>`:""}</div>
+    ${notifyStatusBlock()}
+    <div class="row-wrap" id="remRows">${rows || `<div class="empty">${native? "Своих напоминаний нет — утренняя и вечерняя сводки работают и без них" : "Пока нет напоминаний"}</div>`}</div>
     <button class="btn ghost" id="addRem" style="margin-top:10px;">+ Добавить напоминание</button>
   </div>`;
 }
@@ -9383,11 +10183,15 @@ function bindReminders(){
   };
   const enBtn=document.getElementById("enableNotif");
   if(enBtn) enBtn.onclick=()=>{ Notification.requestPermission().then(()=>render()); };
+  const c=document.getElementById("content");
+  if(c) bindNotifyButtons(c);
 }
 
 const firedToday = new Set();
 function checkReminders(){
   if(!DATA || !DATA.reminders || !DATA.reminders.length) return;
+  // напоминания показывает телефон — баннер внутри приложения их бы только дублировал
+  if(notifyOn() && notifyCfg().reminders) return;
   const now=new Date();
   const curHM=`${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
   const todayStr=`${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
