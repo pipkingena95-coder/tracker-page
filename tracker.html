@@ -1384,6 +1384,31 @@
     color:var(--white);font:600 14px 'JetBrains Mono',monospace;}
   .acc2-rec .btn{flex:0 0 auto;padding:11px 14px;}
 
+  /* ---- привычка «не смог» ---- */
+  .do-row.failed .do-t{text-decoration:line-through;color:var(--grey-dim);}
+  .do-row.failed .do-chk{color:var(--pink);border-color:color-mix(in srgb, var(--pink) 55%, transparent);font-weight:700;}
+  .hc.fail{border-color:var(--pink);background:color-mix(in srgb, var(--pink) 14%, transparent);color:var(--pink);}
+  .hm-strip i.fail{background:var(--pink);}
+  .dw-c.fail{border-color:var(--pink);background:color-mix(in srgb, var(--pink) 14%, transparent);color:var(--pink);font-weight:700;}
+  .it-why{margin-top:10px;}
+  .it-why .sh-in{margin-top:8px;}
+  .it-fail{font-size:12px;color:var(--grey);margin-top:8px;line-height:1.45;}
+  .it-fail b{color:var(--pink);font-weight:600;}
+  /* ---- итоги ---- */
+  .rt-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:12px 0;
+    border-top:1px solid var(--hair, var(--border));}
+  .rt-row:first-of-type{border-top:none;padding-top:4px;}
+  .rt-row .ic{font-size:18px;text-align:center;}
+  .rt-row .l{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .rt-row .l b{font-size:14px;color:var(--white);font-weight:600;}
+  .rt-row .l small{font-size:11.5px;color:var(--grey-dim);line-height:1.35;}
+  .rt-row .v{display:flex;flex-direction:column;align-items:flex-end;gap:2px;}
+  .rt-row .v b{font:700 16px var(--fx-num);color:var(--white);white-space:nowrap;letter-spacing:-.02em;}
+  .rt-d{font:600 11px 'JetBrains Mono',monospace;white-space:nowrap;color:var(--grey-dim);}
+  .rt-d.good{color:var(--pnl-up);} .rt-d.bad{color:var(--pnl-down);}
+  .rt-say{font-size:13px;line-height:1.5;color:var(--grey);margin-top:12px;}
+  .rt-say b{color:var(--white);font-weight:600;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2091,7 +2116,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 12:24+18bcea3c";
+window.TRACKER_BUILD = "2026-10-02 12:37+3ef400fa";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2676,6 +2701,7 @@ function habitPlanStat(idx, from, to){
     if(k>ts) break;
     const isDone=isHabitDoneOn(idx,d);
     if(isDone){ done++; need++; }
+    else if(isHabitFailedOn(idx,d)) need++;
     else if(k<ts && k>=start && habitScheduledOn(idx,d) && !isHabitFrozenOn(idx,d)) need++;
     d.setDate(d.getDate()+1);
   }
@@ -2698,12 +2724,13 @@ function hbCell(idx, dt, withNum){
   const cls=["hc"];
   if(done) cls.push("done");
   else if(frozen) cls.push("frozen");
+  else if(isHabitFailedOn(idx,dt)) cls.push("fail");
   else if(cnt>0) cls.push("part");
   else if(!sched) cls.push("off");
   else if(k<ts) cls.push("miss");
   if(k>ts) cls.push("future");
   if(k===ts) cls.push("today");
-  const label = done? "✓" : frozen? "❄" : cnt>0? `${cnt}/${habitCounterTarget(idx)}` : (withNum? dt.getDate() : "");
+  const label = done? "✓" : frozen? "❄" : isHabitFailedOn(idx,dt)? "✕" : cnt>0? `${cnt}/${habitCounterTarget(idx)}` : (withNum? dt.getDate() : "");
   const name=escapeHtml(DATA.habits.list[idx]||"");
   if(k>ts) return `<span class="${cls.join(" ")}">${withNum? dt.getDate() : ""}</span>`;
   return `<button class="${cls.join(" ")}" data-hc="${idx}:${dt.getFullYear()}-${dt.getMonth()}-${dt.getDate()}" aria-label="${name}, ${dt.getDate()} ${MONTHS_GEN[dt.getMonth()]}">${label}</button>`;
@@ -2715,6 +2742,7 @@ function hbStripCell(idx, dt){
   const cls=[];
   if(done) cls.push("done");
   else if(frozen) cls.push("frozen");
+  else if(isHabitFailedOn(idx,dt)) cls.push("fail");
   else if(cnt>0) cls.push("part");
   else if(!habitScheduledOn(idx,dt)) cls.push("off");
   else if(k<ts) cls.push("miss");
@@ -2783,7 +2811,7 @@ function renderHabitsWeek2(){
       </button>${dates.map(d=>hbCell(idx, d, false)).join("")}`;
   }).join("");
   return `<div class="card"><div class="hw-grid">${head}${rows}</div>
-    <div class="fx-hint">Клетка: сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию, красная рамка — пропущено. Нажми на название — настройки.</div></div>`;
+    <div class="fx-hint">Клетка: ✓ сделано → ❄ пропуск, серия цела → ✕ не смог → пусто. Пунктир — не по расписанию, красная рамка — не отмечено. Нажми на название — настройки.</div></div>`;
 }
 
 // ---------- месяц ----------
@@ -2815,7 +2843,7 @@ function renderHabitsMonth2(){
         <div class="hm-strip" style="grid-template-columns:repeat(${nd},minmax(0,1fr))">${strip}</div>
       </button>
       ${open? `<div class="hm-cal"><div class="hw-grid">${cal}</div>
-        <div class="hm-cal-act"><span class="fx-hint" style="margin:0;">Тап: сделано → пропуск → пусто</span>
+        <div class="hm-cal-act"><span class="fx-hint" style="margin:0;">Тап: ✓ → ❄ пропуск → ✕ не смог → пусто</span>
           <button class="fx-linkbtn" data-hsheet="${idx}">Настройки ›</button></div></div>` : ""}
     </div>`;
   }).join("");
@@ -3076,11 +3104,13 @@ function habitPct(idx){
 // but they don't add to the count either.
 function habitStreak(idx){
   let d=new Date(); d.setHours(0,0,0,0);
+  if(isHabitFailedOn(idx,d)) return 0;          // сорвался сегодня — серия кончилась
   if(!isHabitDoneOn(idx,d) && !isHabitFrozenOn(idx,d)) d.setDate(d.getDate()-1);
   let streak=0, guard=0;
   while(guard<3660){
     guard++;
     if(isHabitDoneOn(idx,d)){ streak++; d.setDate(d.getDate()-1); continue; }
+    if(isHabitFailedOn(idx,d)) break;
     // заморозка и дни не по расписанию серию не рвут, но и не удлиняют
     if(isHabitFrozenOn(idx,d) || !habitScheduledOn(idx,d)){ d.setDate(d.getDate()-1); continue; }
     break;
@@ -3155,6 +3185,48 @@ function habitTimeOn(idx,date){
   const key=`${date.getFullYear()}-${date.getMonth()}`;
   return (DATA.habits.times && DATA.habits.times[key] && DATA.habits.times[key][idx] && DATA.habits.times[key][idx][date.getDate()])||"";
 }
+// «Не смог»: честный срыв — в отличие от пропуска ❄ серия обнуляется и день
+// считается невыполненным, но привычка больше не висит в «осталось» и вечером
+// о ней не напоминают. Причину можно записать: потом видно, что мешает чаще всего.
+const FAIL_REASONS=["проснулся поздно","не было времени","плохо себя чувствовал","забыл","лень"];
+function habitFailArr(idx, key){
+  const H=DATA.habits;
+  H.failed=H.failed||{}; H.failed[key]=H.failed[key]||{}; H.failed[key][idx]=H.failed[key][idx]||[];
+  return H.failed[key][idx];
+}
+function isHabitFailedOn(idx, date){
+  const key=`${date.getFullYear()}-${date.getMonth()}`;
+  const arr=(DATA.habits.failed && DATA.habits.failed[key] && DATA.habits.failed[key][idx]) || [];
+  return arr.includes(date.getDate());
+}
+function habitFailWhy(idx, date){
+  const key=`${date.getFullYear()}-${date.getMonth()}`;
+  const w=DATA.habits.failWhy && DATA.habits.failWhy[key] && DATA.habits.failWhy[key][idx];
+  return (w && w[date.getDate()]) || "";
+}
+function setHabitFailWhy(idx, date, why){
+  const H=DATA.habits, key=`${date.getFullYear()}-${date.getMonth()}`, day=date.getDate();
+  H.failWhy=H.failWhy||{}; H.failWhy[key]=H.failWhy[key]||{}; H.failWhy[key][idx]=H.failWhy[key][idx]||{};
+  if(why) H.failWhy[key][idx][day]=why; else delete H.failWhy[key][idx][day];
+}
+function clearHabitFail(idx, key, day){
+  const arr=DATA.habits.failed && DATA.habits.failed[key] && DATA.habits.failed[key][idx];
+  if(arr){ const i=arr.indexOf(day); if(i>=0) arr.splice(i,1); }
+  const w=DATA.habits.failWhy && DATA.habits.failWhy[key] && DATA.habits.failWhy[key][idx];
+  if(w) delete w[day];
+}
+// Сколько срывов за последние N дней и какая причина чаще всего
+function habitFailStats(idx, days){
+  let n=0;
+  const why={};
+  const d=new Date(); d.setHours(0,0,0,0);
+  for(let i=0;i<(days||90);i++){
+    if(isHabitFailedOn(idx,d)){ n++; const w=habitFailWhy(idx,d); if(w) why[w]=(why[w]||0)+1; }
+    d.setDate(d.getDate()-1);
+  }
+  const top=Object.keys(why).sort((a,b)=>why[b]-why[a])[0];
+  return {n, top, topN: top? why[top] : 0};
+}
 function cycleHabitDay(idx, key, day){
   const wasDone=(()=>{ const [y,m]=key.split('-').map(Number); return isHabitDoneOn(idx,new Date(y,m,day)); })();
   DATA.habits.frozen=DATA.habits.frozen||{}; DATA.habits.frozen[key]=DATA.habits.frozen[key]||{}; DATA.habits.frozen[key][idx]=DATA.habits.frozen[key][idx]||[];
@@ -3165,15 +3237,21 @@ function cycleHabitDay(idx, key, day){
     const counts=DATA.habits.counts[key][idx];
     const curC=counts[day]||0;
     const fi=frozenArr.indexOf(day);
-    if(fi>=0){ frozenArr.splice(fi,1); delete counts[day]; }
+    const failArr=habitFailArr(idx,key), xi=failArr.indexOf(day);
+    // …→ цель → пропуск ❄ → не смог ✕ → 0
+    if(fi>=0){ frozenArr.splice(fi,1); delete counts[day]; failArr.push(day); }
+    else if(xi>=0){ clearHabitFail(idx,key,day); }
     else if(curC>=target){ frozenArr.push(day); delete counts[day]; }
     else { counts[day]=curC+1; }
   } else {
     DATA.habits.checks[key]=DATA.habits.checks[key]||{}; DATA.habits.checks[key][idx]=DATA.habits.checks[key][idx]||[];
     const doneArr=DATA.habits.checks[key][idx];
     const di=doneArr.indexOf(day), fi=frozenArr.indexOf(day);
+    const failArr=habitFailArr(idx,key), xi=failArr.indexOf(day);
+    // пусто → сделано → пропуск ❄ → не смог ✕ → пусто
     if(di>=0){ doneArr.splice(di,1); frozenArr.push(day); }
-    else if(fi>=0){ frozenArr.splice(fi,1); }
+    else if(fi>=0){ frozenArr.splice(fi,1); failArr.push(day); }
+    else if(xi>=0){ clearHabitFail(idx,key,day); }
     else { doneArr.push(day); }
   }
   const [y,m]=key.split('-').map(Number);
@@ -3221,6 +3299,7 @@ function applyHabitMark(idx, dateStr, sig){
   }
   const fr=DATA.habits.frozen && DATA.habits.frozen[key] && DATA.habits.frozen[key][idx];
   if(fr){ const fi=fr.indexOf(d); if(fi>=0) fr.splice(fi,1); }
+  clearHabitFail(idx, key, d);
   markHabitTime(idx, key, d);
   return true;
 }
@@ -4597,7 +4676,7 @@ function removeHabit(idx){
     return out;
   };
   ["types","counterTargets","goals","notes","archived","days"].forEach(f=>{ if(H[f]) H[f]=shift(H[f]); });
-  ["checks","counts","frozen","times"].forEach(f=>{
+  ["checks","counts","frozen","times","failed","failWhy"].forEach(f=>{
     if(!H[f]) return;
     Object.keys(H[f]).forEach(mkey=>{ H[f][mkey]=shift(H[f][mkey]); });
   });
@@ -4610,6 +4689,7 @@ function toggleHabitToday(idx){
   const H=DATA.habits;
   const fr=H.frozen && H.frozen[key] && H.frozen[key][idx];
   if(fr){ const fi=fr.indexOf(day); if(fi>=0) fr.splice(fi,1); }
+  clearHabitFail(idx, key, day);
   const clearTime=()=>{ if(H.times && H.times[key] && H.times[key][idx]) delete H.times[key][idx][day]; };
   if(habitType(idx)==='counter'){
     H.counts=H.counts||{}; H.counts[key]=H.counts[key]||{}; H.counts[key][idx]=H.counts[key][idx]||{};
@@ -4630,6 +4710,7 @@ function setHabitStateToday(idx, state){
   drop(H.checks[key] && H.checks[key][idx]);
   if(H.counts && H.counts[key] && H.counts[key][idx]) delete H.counts[key][idx][day];
   drop(H.frozen && H.frozen[key] && H.frozen[key][idx]);
+  clearHabitFail(idx, key, day);
   if(H.times && H.times[key] && H.times[key][idx]) delete H.times[key][idx][day];
   if(state==="done"){
     if(habitType(idx)==='counter'){
@@ -4643,6 +4724,8 @@ function setHabitStateToday(idx, state){
   } else if(state==="skip"){
     H.frozen=H.frozen||{}; H.frozen[key]=H.frozen[key]||{}; H.frozen[key][idx]=H.frozen[key][idx]||[];
     H.frozen[key][idx].push(day);
+  } else if(state==="fail"){
+    habitFailArr(idx, key).push(day);
   }
 }
 function addHabitItem(name, days){
@@ -4827,6 +4910,7 @@ function renderDoRow(item){
   if(item.kind==="habit"){
     const idx=item.idx, now=new Date();
     const done=isHabitDoneOn(idx,now), frozen=!done && isHabitFrozenOn(idx,now);
+    const failed=!done && !frozen && isHabitFailedOn(idx,now);
     const streak=habitStreak(idx), type=habitType(idx);
     const cnt=type==="counter"? habitDailyCount(idx,now) : 0;
     // «каждый день» — это норма, её не подписываем; подписываем только расписание
@@ -4835,9 +4919,10 @@ function renderDoRow(item){
     // серия, которую сегодня ещё можно потерять, — красным числом, без лишних слов
     if(streak>0) bits.push(!done && !frozen ? `<b class="hot" title="Серия прервётся, если не отметить сегодня">🔥 ${streak}</b>` : `🔥 ${streak}`);
     if(frozen) bits.push("пропуск, серия цела");
+    if(failed){ const w=habitFailWhy(idx,now); bits.push(`не смог${w? " — "+escapeHtml(w) : ""}`); }
     const fresh=(cur.freshHabits||[]).includes(idx);
-    return `<div class="do-row habit ${done?'done':''} ${frozen?'frozen':''} ${fresh?'fresh':''}">
-      <button class="do-chk ${cnt>0 && !done?'part':''}" data-dotick="h:${idx}" aria-label="${done?'Снять отметку':'Отметить'}">${done? CHECK_SVG : frozen? '❄' : (cnt>0? cnt : '')}</button>
+    return `<div class="do-row habit ${done?'done':''} ${frozen?'frozen':''} ${failed?'failed':''} ${fresh?'fresh':''}">
+      <button class="do-chk ${cnt>0 && !done?'part':''}" data-dotick="h:${idx}" aria-label="${done?'Снять отметку':'Отметить'}">${done? CHECK_SVG : frozen? '❄' : failed? '✕' : (cnt>0? cnt : '')}</button>
       <button class="do-main" data-doopen="h:${idx}"><span class="do-t">${escapeHtml(DATA.habits.list[idx]||"")}</span>${bits.length? `<span class="do-m">${bits.join(" · ")}</span>`:""}</button>
     </div>`;
   }
@@ -4859,15 +4944,16 @@ function doGroups(){
   const byDue=(a,b)=> rank(a)-rank(b) || String(a.t.dueDate||"9").localeCompare(String(b.t.dueDate||"9")) || a.i-b.i;
   const doneToday=x=> x.t.done && x.t.doneAt && ymdOf(new Date(x.t.doneAt))===ts;
   const habits=activeHabitsOn(now).map(idx=>({kind:"habit", idx}));
-  const hOpen=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now))
+  const hOpen=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now) && !isHabitFailedOn(h.idx,now))
     .sort((a,b)=>habitStreak(b.idx)-habitStreak(a.idx));
   const hDone=habits.filter(h=>isHabitDoneOn(h.idx,now) || isHabitFrozenOn(h.idx,now));
+  const hFail=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now) && isHabitFailedOn(h.idx,now));
   const open=x=>!x.t.done;
   const overdue=todos.filter(x=>open(x) && x.t.dueDate && x.t.dueDate<ts).sort(byDue);
   const dueToday=todos.filter(x=>open(x) && x.t.dueDate===ts).sort(byDue);
   const tDone=todos.filter(doneToday);
   const today=[...overdue, ...hOpen.filter(h=>habitStreak(h.idx)>0), ...dueToday,
-    ...hOpen.filter(h=>habitStreak(h.idx)===0), ...hDone, ...tDone];
+    ...hOpen.filter(h=>habitStreak(h.idx)===0), ...hDone, ...hFail, ...tDone];
   const total=habits.length+overdue.length+dueToday.length+tDone.length;
   const doneN=hDone.length+tDone.length;
   return {total, doneN, openHabits:hOpen.length, openTodos:overdue.length+dueToday.length, groups:[
@@ -4901,12 +4987,12 @@ function renderDoWeek(){
       if(sched && !frozen) need++;
       if(done) doneN++;
       const cls=["dw-c"];
-      if(done) cls.push("done"); else if(frozen) cls.push("frozen"); else if(!sched) cls.push("off");
+      if(done) cls.push("done"); else if(frozen) cls.push("frozen"); else if(isHabitFailedOn(idx,d)) cls.push("fail"); else if(!sched) cls.push("off");
       else if(!future && key<ts) cls.push("miss");
       if(future) cls.push("future");
       if(key===ts) cls.push("today");
       return future ? `<span class="${cls.join(" ")}"></span>`
-        : `<button class="${cls.join(" ")}" data-dwcell="${idx}:${d.getFullYear()}-${d.getMonth()}-${d.getDate()}" aria-label="${escapeHtml(DATA.habits.list[idx])}, ${WD_SHORT[(d.getDay()+6)%7]}">${frozen?'❄':''}</button>`;
+        : `<button class="${cls.join(" ")}" data-dwcell="${idx}:${d.getFullYear()}-${d.getMonth()}-${d.getDate()}" aria-label="${escapeHtml(DATA.habits.list[idx])}, ${WD_SHORT[(d.getDay()+6)%7]}">${frozen?'❄' : isHabitFailedOn(idx,d)? '✕' : ''}</button>`;
     }).join("");
     const streak=habitStreak(idx);
     return `<div class="dw-row"><button class="dw-name" data-doopen="h:${idx}">${escapeHtml(DATA.habits.list[idx])}${habitDays(idx)? `<small>${escapeHtml(habitDaysLabel(idx))}</small>`:""}</button>
@@ -4915,7 +5001,7 @@ function renderDoWeek(){
   return `<div class="card do-week">
     <div class="dw-head"><h2>Неделя</h2><button class="fx-linkbtn" data-gohabits="1">Месяц и год ›</button></div>
     <div class="dw-grid">${head}${todosWeekRow(dates)}${rows}</div>
-    <div class="fx-hint">Дела — сколько закрыто за день. Привычки: клетка сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию.</div>
+    <div class="fx-hint">Дела — сколько закрыто за день. Привычки: ✓ → ❄ пропуск → ✕ не смог → пусто. Пунктир — не по расписанию.</div>
   </div>`;
 }
 function renderDoList(){
@@ -5034,7 +5120,9 @@ function renderHabitItemSheet(idx){
   const goal=habitGoal(idx,y,m), nd=daysInMonth(y,m);
   let doneM=0; for(let d=1; d<=nd; d++) if(isHabitDoneOn(idx,new Date(y,m,d))) doneM++;
   const pct=Math.round(Math.min(1, doneM/Math.max(1,goal))*100);
-  const state=done? "done" : frozen? "skip" : "none";
+  const failed=!done && !frozen && isHabitFailedOn(idx,now);
+  const state=done? "done" : frozen? "skip" : failed? "fail" : "none";
+  const fs=habitFailStats(idx, 90);
   return `<div class="sh-head">
       <div class="sh-title left"><b>Привычка</b><span class="zero">${escapeHtml(habitDaysLabel(idx))}${habitScheduledOn(idx,now)? "" : " · сегодня не по расписанию"}</span></div>
       <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
@@ -5049,8 +5137,13 @@ function renderHabitItemSheet(idx){
     <div class="fx-pick">
       <button class="${state==="done"?'on':''}" data-itstate="done">✓ Сделано</button>
       <button class="${state==="skip"?'on':''}" data-itstate="skip">❄ Пропуск без разрыва серии</button>
-      <button class="${state==="none"?'on':''}" data-itstate="none">Не сделано</button>
+      <button class="${state==="fail"?'on':''}" data-itstate="fail">✕ Не смог — уже не успеть</button>
+      <button class="${state==="none"?'on':''}" data-itstate="none">Не отмечено</button>
     </div>
+    ${state==="fail"? `<div class="it-why"><div class="fx-pick sm">${FAIL_REASONS.map(r=>`<button class="${habitFailWhy(idx,now)===r?'on':''}" data-itwhy="${r}">${r}</button>`).join("")}</div>
+      <input class="sh-in" id="itWhy" placeholder="Почему не получилось — своими словами" value="${escapeHtml(habitFailWhy(idx,now))}" autocomplete="off"></div>` : ""}
+    ${fs.n? `<div class="it-fail">За 90 дней сорвалась <b>${fs.n} ${plural(fs.n,'раз','раза','раз')}</b>${fs.top? ` · чаще всего — ${escapeHtml(fs.top)} (${fs.topN})` : ""}. ${state==="fail"? "Серия начнётся заново с завтрашней отметки." : ""}</div>`
+      : (state==="fail"? `<div class="it-fail">Серия начнётся заново с завтрашней отметки.</div>` : "")}
     <div class="sh-lab">Дни<span class="it-quick">
       <button data-itdays="0,1,2,3,4,5,6">каждый день</button><button data-itdays="0,1,2,3,4">будни</button><button data-itdays="5,6">выходные</button></span></div>
     <div class="it-days">${WD_SHORT.map((l,i)=>`<button class="${days.includes(i)?'on':''}" data-itday="${i}">${l}</button>`).join("")}</div>
@@ -5080,6 +5173,9 @@ function bindDoItemSheet(s){
     // терялось бы — кнопку заменили бы новой, пока палец ещё на экране
     if(name) name.onchange=()=>{ const val=name.value.trim(); if(val){ DATA.habits.list[idx]=val; scheduleSave(); } else name.value=DATA.habits.list[idx]; };
     q('[data-itstate]').forEach(b=>b.onclick=()=>{ setHabitStateToday(idx, b.dataset.itstate); save(); });
+    q('[data-itwhy]').forEach(b=>b.onclick=()=>{ const n=new Date(); setHabitFailWhy(idx, n, habitFailWhy(idx,n)===b.dataset.itwhy? "" : b.dataset.itwhy); save(); });
+    const why=document.getElementById("itWhy");
+    if(why) why.onchange=()=>{ setHabitFailWhy(idx, new Date(), why.value.trim()); scheduleSave(); };
     q('[data-itday]').forEach(b=>b.onclick=()=>{
       const d=+b.dataset.itday;
       const cur2=habitDays(idx)||[0,1,2,3,4,5,6];
@@ -8432,7 +8528,7 @@ function showActionToast(label, action, fn, ms){
 const NOTIFY_DAYS=14;
 const NOTIFY_APP="2.3";
 const NOTIFY_DEFAULTS={morning:true, morningTime:"09:00", eveningTime:"21:30",
-  result:true, resultWeekdays:false, habits:true, pay:true, reminders:true, bed:true};
+  result:true, resultWeekdays:false, habits:true, pay:true, reminders:true, bed:true, weekly:true};
 // Меняем объект на месте: на него держат ссылки обработчики в настройках
 function notifyCfg(){
   const s=DATA.settings||(DATA.settings={});
@@ -8516,7 +8612,7 @@ function notifyMorning(day, isToday, c){
   const key=ymdOf(day);
   const open=(DATA.todos||[]).filter(t=>!t.done && t.dueDate && t.dueDate<=key);
   const due=open.filter(t=>t.dueDate===key), late=open.filter(t=>t.dueDate<key);
-  const habs=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day) && !(isToday && isHabitDoneOn(i,day)));
+  const habs=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day) && !(isToday && (isHabitDoneOn(i,day) || isHabitFailedOn(i,day))));
   const lines=[];
   // главное на сегодня — ответ на вчерашний вечерний вопрос; в «Делах» его не повторяем
   const main=(jqOf(ymdOf(new Date(day.getFullYear(), day.getMonth(), day.getDate()-1))).next||"").trim();
@@ -8551,7 +8647,7 @@ function notifyResult(day, c){
 }
 function notifyHabits(day, isToday){
   const sched=activeHabitIdx().filter(i=>habitScheduledOn(i,day) && !isHabitFrozenOn(i,day));
-  const left=sched.filter(i=>!isHabitDoneOn(i,day));
+  const left=sched.filter(i=>!isHabitDoneOn(i,day) && !isHabitFailedOn(i,day));
   if(!left.length) return null;
   let text=namesList(left.map(i=>DATA.habits.list[i]),4);
   if(isToday){
@@ -8602,6 +8698,7 @@ function buildNotifyPlan(){
     add(`er:${key}`, c.eveningTime, "digest", r);
     const h = c.habits ? notifyHabits(day, today) : null;
     add(`eh:${key}`, c.eveningTime, "digest", h);
+    if(c.weekly) add(`w:${key}`, "20:00", "digest", notifyWeekly(day));
     if(c.bed){
       const b=notifyBed(day);
       if(b && b.at>now) items.push({key:`b:${key}`, at:b.at, ch:"digest", title:b.title, text:b.text, open:b.open});
@@ -8665,6 +8762,7 @@ function routeOpen(o){
     cur.tab="journal"; cur.year=dt.getFullYear(); cur.monthIdx=dt.getMonth(); cur.day=dt.getDate();
   }
   else if(o==="health" || o==="sleep"){ cur.tab="health"; cur.sub.health="sleep"; }
+  else if(o==="retro"){ cur.tab="doing"; cur.sub.doing="retro"; cur.retroMode="week"; cur.retroOff=0; }
   else if(o==="settings") cur.tab="settings";
   else cur.tab="today";
   render();
@@ -8729,6 +8827,7 @@ function renderNotifyCard(){
     ${c.result? `<label class="vc-check sub"><input type="checkbox" data-ntopt="resultWeekdays" ${c.resultWeekdays?"checked":""}><span class="tt">Только по будням</span><small>в субботу и воскресенье не спрашивать</small></label>`:""}
     ${opt("habits", "Вечером — привычки", "какие не отмечены и чья серия под угрозой; в то же время", "")}
     ${opt("bed", "Отбой — за 30 минут", `ложиться в ${escapeHtml(healthData().cfg.bed)} — меняется в «Здоровье → Сон»; заодно про три вопроса дня`, "")}
+    ${opt("weekly", "Итоги недели", "в воскресенье в 20:00 — привычки, дела, сон, доход и сравнение с прошлой неделей", "")}
     ${opt("pay", "Платежи — накануне", "регулярные списания из «Финансов», утром за день", "")}
     ${opt("reminders", "Мои напоминания", `${rems? `включено: ${rems}` : "пока ни одного"} — список на главном экране, есть кнопка «Через час»`, "")}
     ${next.length? `<div class="nt-next"><div class="lab">Ближайшие</div>${next.map(x=>
@@ -8763,6 +8862,7 @@ function habitStateLabel(idx, d){
   const when = ymdOf(d)===todayStr() ? "" : ` · ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
   if(isHabitDoneOn(idx,d)) return `✓ ${name}${when}`;
   if(isHabitFrozenOn(idx,d)) return `❄ Пропуск: ${name}${when}`;
+  if(isHabitFailedOn(idx,d)) return `✕ Не смог: ${name}${when}`;
   if(habitType(idx)==='counter'){ const c=habitDailyCount(idx,d); if(c) return `${name}: ${c} из ${habitCounterTarget(idx)}${when}`; }
   return `Отметка снята: ${name}${when}`;
 }
@@ -8827,7 +8927,9 @@ function todosWeekRow(dates){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-wk-acc", items:[
+const WHATS_NEW={id:"2026-10-02-fail", items:[
+  ["✕","Привычка: «Не смог»","Проспал ранний подъём — нажми на привычку и «✕ Не смог». В отличие от пропуска ❄ серия начнётся заново, но привычка не висит в «осталось» и вечером о ней не напоминают. Можно указать причину — увидишь, что мешает чаще всего."],
+  ["Σ","Итоги заново","Дела → Итоги: неделя или месяц одним экраном — привычки, срывы, дела, сон, вес, тренировки, доход, расходы — и сравнение с тем же днём прошлого периода. В воскресенье в 20:00 — уведомление.", ""],
   ["🏋","Тренировки заново","Сверху — месяц, четыре цифры в ряд и календарь. Журнал строками, тренировка правится листом снизу: тип, время, подходы, самочувствие."],
   ["💳","Счета заново","Все деньги одной суммой с переключателем ₽ ₮ $ € и долями по счетам. Счета и переводы строками, правка и сверка — листом снизу."],
   ["₮","Курс USDT с Rapira","Расходы, доходы и счета в USDT пересчитываются по курсу Rapira. Рядом с курсом всегда видно, откуда он.","rapira"],
@@ -10311,7 +10413,7 @@ function pickFocus(){
   const risky=habits.filter(h=>habitStreak(h.idx)>0 && !isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now))
     .sort((a,b)=>habitStreak(b.idx)-habitStreak(a.idx));
   if(risky.length) return {kind:"habit", item:risky[0], why:`Серия ${habitStreak(risky[0].idx)} дн. под угрозой`};
-  const undone=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now));
+  const undone=habits.filter(h=>!isHabitDoneOn(h.idx,now) && !isHabitFrozenOn(h.idx,now) && !isHabitFailedOn(h.idx,now));
   if(undone.length) return {kind:"habit", item:undone[0], why:"Ещё не отмечено сегодня"};
   const soon=byDate(todos.filter(t=>t.dueDate));
   if(soon.length) return {kind:"todo", item:soon[0], why:`Срок ${soon[0].dueDate.split('-').reverse().join('.')}`};
@@ -10326,6 +10428,7 @@ function buildDayFeed(){
     const done=isHabitDoneOn(idx,now), frozen=!done&&isHabitFrozenOn(idx,now);
     const streak=habitStreak(idx);
     if(done) feed.push({mk:"hab",label:"привычка",text:name,note:streak>1?`${streak}-й день подряд`:"",state:"done",time:habitTimeOn(idx,now)});
+    else if(isHabitFailedOn(idx,now)) feed.push({mk:"hab",label:"не смог",text:name,note:habitFailWhy(idx,now)||"серия начнётся заново",state:"info"});
     else if(frozen) feed.push({mk:"hab",label:"пауза",text:name,note:"заморожено, серия не рвётся",state:"frozen"});
     else feed.push({mk:"hab",label:"привычка",text:name,note:streak>0?`серия ${streak} дн. под угрозой`:"не отмечено",state:"open",habitIdx:idx});
   });
@@ -10426,89 +10529,154 @@ function rangeDates(mode){
   }
   return out;
 }
+// ═════════ ИТОГИ ═════════
+// Неделя или месяц одним экраном: всё, что ведётся в трекере, и рядом — как было
+// к тому же дню прошлого периода (идущую неделю честно сравнивать только так).
+function retroRange(mode, off){
+  const t=new Date(); t.setHours(0,0,0,0);
+  if(mode==="month"){
+    const a=new Date(t.getFullYear(), t.getMonth()+off, 1), b=new Date(a.getFullYear(), a.getMonth()+1, 0);
+    return {from:a, to:b, label:`${MONTHS_RU[a.getMonth()]} ${a.getFullYear()}`, cur:off===0};
+  }
+  const s=getWeekStart(t); s.setDate(s.getDate()+7*off);
+  const e=new Date(s); e.setDate(s.getDate()+6);
+  return {from:s, to:e, label:hbWeekLabel([s,0,0,0,0,0,e]), cur:off===0};
+}
+function retroMetrics(r, limitDays){
+  if(!cur._hbStart) cur._hbStart=hbStartKey();
+  const ts=todayStr(), fromK=ymdOf(r.from);
+  let end=new Date(r.to);
+  if(limitDays){ const lim=new Date(r.from); lim.setDate(lim.getDate()+limitDays-1); if(lim<end) end=lim; }
+  let endK=ymdOf(end); if(endK>ts){ endK=ts; end=parseLocalDate(ts); }
+  const inR=k=>k>=fromK && k<=endK;
+  const m={};
+  const ids=activeHabitIdx();
+  const st=ids.map(idx=>({idx, st:habitPlanStat(idx, r.from, end)}));
+  m.hab=hbAvg(st.map(x=>x.st));
+  const ranked=st.filter(x=>x.st.pct!=null && x.st.need>=2).sort((a,b)=>b.st.pct-a.st.pct);
+  m.habBest=ranked[0]||null; m.habWorst=ranked.length>1? ranked[ranked.length-1] : null;
+  let fails=0; const why={};
+  for(const d=new Date(r.from); ymdOf(d)<=endK; d.setDate(d.getDate()+1)){
+    ids.forEach(idx=>{ if(isHabitFailedOn(idx,d)){ fails++; const w=habitFailWhy(idx,d); if(w) why[w]=(why[w]||0)+1; } });
+  }
+  m.fails=fails; m.failTop=Object.keys(why).sort((a,b)=>why[b]-why[a])[0]||"";
+  m.todos=(DATA.todos||[]).filter(t=>t.done && t.doneAt && inR(ymdOf(new Date(t.doneAt)))).length;
+  const H=healthData(), sl=[];
+  for(const d=new Date(r.from); ymdOf(d)<=endK; d.setDate(d.getDate()+1)){ const min=sleepMinutes(H.sleep[ymdOf(d)]); if(min) sl.push(min); }
+  m.sleep=sl.length? sl.reduce((a,b)=>a+b,0)/sl.length : null; m.sleepN=sl.length;
+  const ser=weightSeries();
+  if(ser.length){
+    const tr=weightTrend(ser);
+    let last=null, before=null;
+    tr.forEach(p=>{ if(p.date<=endK) last=p; if(p.date<fromK) before=p; });
+    if(!before) before=tr.find(p=>inR(p.date))||null;
+    if(last && inR(last.date)){ m.weight=last.kg; m.weightD = before && before!==last ? last.kg-before.kg : null; }
+  }
+  const wk=(DATA.workouts||[]).filter(w=>w.date && inR(w.date));
+  m.wk=wk.length; m.wkMin=wk.reduce((a,w)=>a+(+w.duration||0),0);
+  m.incCur=pnlCurrency(); m.inc=0; m.incN=0;
+  (DATA.finance.entries||[]).forEach(e=>{
+    if(e.type!=="доход" || e.recurringId || !e.date || !inR(e.date)) return;
+    const v=pnlIn(e, m.incCur); if(v==null) return; m.inc+=v; m.incN++;
+  });
+  m.exp=entriesInRub().filter(e=>e.type==="расход" && e.date && inR(e.date)).reduce((a,e)=>a+(+e.amount||0),0);
+  let notes=0;
+  for(const d=new Date(r.from); ymdOf(d)<=endK; d.setDate(d.getDate()+1)){
+    const k=ymdOf(d); if((DATA.journal[k]||"").trim() || jqAnswered(k)) notes++;
+  }
+  m.notes=notes;
+  return m;
+}
+// Стрелка сравнения: зелёная — лучше, красная — хуже, серая — без оценки
+function rtDelta(a, b, better, fmt){
+  if(a==null || b==null) return "";
+  const d=a-b;
+  if(Math.abs(d)<1e-9) return `<span class="rt-d">= как было</span>`;
+  const cls = better===0 ? "" : ((d>0)===(better>0) ? "good" : "bad");
+  return `<span class="rt-d ${cls}">${d>0? "▲" : "▼"} ${fmt(Math.abs(d))}</span>`;
+}
 function renderRetro(){
-  const mode=cur.retroMode||"week";
-  const dates=rangeDates(mode);
-  const dstr=x=>`${x.getFullYear()}-${pad2(x.getMonth()+1)}-${pad2(x.getDate())}`;
-  const inRange=new Set(dates.map(dstr));
-
-  const rows=activeHabitIdx().map(idx=>{
-    const name=DATA.habits.list[idx];
-    const sched=dates.filter(x=>habitScheduledOn(idx,x));
-    const done=dates.filter(x=>isHabitDoneOn(idx,x)).length;
-    const frozen=sched.filter(x=>!isHabitDoneOn(idx,x)&&isHabitFrozenOn(idx,x)).length;
-    const eligible=Math.max(1,sched.length-frozen);
-    return {name, done, frozen, eligible, pct:Math.round(done/eligible*100), streak:habitStreak(idx)};
-  }).sort((a,b)=>b.pct-a.pct);
-
-  const best=rows.filter(r=>r.pct>=70);
-  const weak=rows.filter(r=>r.pct<50);
-
-  const habHtml=rows.length? rows.map(r=>`
-    <div class="retro-row">
-      <div class="rr-name">${escapeHtml(r.name)}</div>
-      <div class="rr-bar"><span style="width:${Math.min(100,r.pct)}%;background:${r.pct>=70?'var(--green)':r.pct>=50?'var(--purple)':'var(--pink)'}"></span></div>
-      <div class="rr-num">${r.done}/${r.eligible}</div>
-    </div>`).join("") : '<div class="empty">Привычек пока нет</div>';
-
-  const doneTodos=(DATA.todos||[]).filter(t=>t.done).length;
-  const openTodos=(DATA.todos||[]).filter(t=>!t.done);
-  const overdue=openTodos.filter(t=>t.dueDate && t.dueDate<todayStr()).length;
-
-  const rubIds=rubAccountIds();
-  const ent=entriesInRub().filter(e=>e.date && inRange.has(e.date));
-  const spent=ent.filter(e=>e.type==="расход").reduce((x,e)=>x+(+e.amount||0),0);
-  const earned=ent.filter(e=>e.type==="доход").reduce((x,e)=>x+(+e.amount||0),0);
-  const byCat={};
-  ent.filter(e=>e.type==="расход").forEach(e=>{ const k=e.category||"без категории"; byCat[k]=(byCat[k]||0)+(+e.amount||0); });
-  const topCats=Object.entries(byCat).sort((a,b)=>b[1]-a[1]).slice(0,4);
-  const maxCat=Math.max(1,...topCats.map(c=>c[1]));
-
-  const notes=Object.keys(DATA.journal||{}).filter(k=>inRange.has(k) && (DATA.journal[k]||"").trim()).length;
-
-  const verdict=(()=>{
-    const bits=[];
-    if(best.length) bits.push(`Держится: <b>${best.slice(0,3).map(r=>escapeHtml(r.name)).join(", ")}</b>.`);
-    if(weak.length) bits.push(`Просело: <b>${weak.slice(0,3).map(r=>escapeHtml(r.name)).join(", ")}</b>.`);
-    if(overdue) bits.push(`Просрочено дел: <b>${overdue}</b>.`);
-    if(spent) bits.push(`Потрачено <b>${spent.toLocaleString('ru-RU')} ₽</b>${earned?`, получено ${earned.toLocaleString('ru-RU')} ₽`:''}.`);
-    if(notes) bits.push(`Записей в дневнике: <b>${notes}</b>.`);
-    return bits.length? bits.join(" ") : "Пока нечего подводить — данных за период нет.";
-  })();
-
-  return `
-    <div class="seg" style="margin-bottom:14px;">
-      <button class="${mode==='week'?'active':''}" data-retro="week">Неделя</button>
-      <button class="${mode==='month'?'active':''}" data-retro="month">Месяц</button>
+  cur._hbStart=hbStartKey();
+  const mode=cur.retroMode==="month" ? "month" : "week";
+  const off=Math.min(0, cur.retroOff||0);
+  const r=retroRange(mode, off), p=retroRange(mode, off-1);
+  const t0=new Date(); t0.setHours(0,0,0,0);
+  const days = r.cur ? Math.round((t0-r.from)/86400000)+1 : null;
+  const M=retroMetrics(r), P=retroMetrics(p, days);
+  const H=healthData(), goal=H.cfg.goal*60, wgoal=parseKg(H.cfg.wgoal);
+  const good=[], bad=[];
+  const mark=(name, a, b, better)=>{ if(a==null || b==null || better===0 || Math.abs(a-b)<1e-9) return; ((a-b>0)===(better>0) ? good : bad).push(name); };
+  const rows=[];
+  const row=(ic, label, sub, val, delta)=>rows.push(`<div class="rt-row"><span class="ic">${ic}</span>
+    <span class="l"><b>${label}</b>${sub? `<small>${sub}</small>` : ""}</span>
+    <span class="v"><b>${val}</b>${delta||""}</span></div>`);
+  const pp=v=>`${Math.round(v*100)} п.п.`;
+  row("✓", "Привычки", [M.habBest? `лучше всего — ${escapeHtml(DATA.habits.list[M.habBest.idx])}` : "", M.habWorst && M.habWorst.st.pct<M.habBest.st.pct? `проседает — ${escapeHtml(DATA.habits.list[M.habWorst.idx])}` : ""].filter(Boolean).join(", ") || "по плану",
+    hbPct(M.hab), rtDelta(M.hab, P.hab, 1, pp));
+  mark("привычки", M.hab, P.hab, 1);
+  if(M.fails || P.fails){
+    row("✕", "Срывы", M.failTop? `чаще всего — ${escapeHtml(M.failTop)}` : "отмечено «не смог»", String(M.fails), rtDelta(M.fails, P.fails, -1, v=>String(v)));
+    mark("срывы", -M.fails, -P.fails, 1);
+  }
+  row("☰", "Дела", "закрыто", String(M.todos), rtDelta(M.todos, P.todos, 1, v=>String(v)));
+  mark("дела", M.todos, P.todos, 1);
+  if(M.sleep!=null || P.sleep!=null){
+    const below = M.sleep!=null && M.sleep<goal;
+    row("🌙", "Сон", M.sleepN? `в среднем за ${M.sleepN} ${plural(M.sleepN,'ночь','ночи','ночей')} · цель ${fmtGoal(H.cfg.goal)}` : "ночи не записаны",
+      M.sleep!=null? fmtSleepTile(M.sleep) : "—", rtDelta(M.sleep, P.sleep, below? 1 : 0, v=>fmtSleepTile(v)));
+    if(below) mark("сон", M.sleep, P.sleep, 1);
+  }
+  if(M.weight!=null){
+    const dir = wgoal ? (wgoal<M.weight ? -1 : 1) : 0;
+    row("⚖", "Вес", M.weightD!=null? `тренд за период ${M.weightD>0?"+":"−"}${kgPlain(Math.abs(M.weightD))} кг` : "тренд по средней за неделю",
+      `${kgPlain(M.weight)} кг`, rtDelta(M.weightD, 0, dir, v=>`${kgPlain(v)} кг`).replace("= как было","без изменений"));
+  }
+  if(M.wk || P.wk){
+    row("🏋", "Тренировки", M.wkMin? fmtDuration(M.wkMin) : "", String(M.wk), rtDelta(M.wk, P.wk, 1, v=>String(v)));
+    mark("тренировки", M.wk, P.wk, 1);
+  }
+  if(M.incN || P.incN){
+    row(CURRENCY_SYMBOL[M.incCur]||"₮", "Результат", M.incN? `${M.incN} ${plural(M.incN,'запись','записи','записей')}` : "", fmtPnl(M.inc, M.incCur, 0), rtDelta(M.inc, P.inc, 1, v=>fmtPnl(v, M.incCur, 0).replace(/^[+−]/,"")));
+    mark("доход", M.inc, P.inc, 1);
+  }
+  if(M.exp || P.exp){
+    row("₽", "Расходы", "в рублях по курсу", fmtRub(M.exp), rtDelta(M.exp, P.exp, -1, v=>fmtRub(v)));
+    mark("расходы", -M.exp, -P.exp, 1);
+  }
+  row("✎", "Дневник", "дней с записью или ответами на вопросы", String(M.notes), rtDelta(M.notes, P.notes, 1, v=>String(v)));
+  const per = mode==="week" ? "прошлой недели" : "прошлого месяца";
+  const say = good.length || bad.length
+    ? `${good.length? `Лучше, чем ${days? "к этому дню " : ""}${per}: <b>${good.join(", ")}</b>.` : ""} ${bad.length? `Хуже: <b>${bad.join(", ")}</b>.` : ""}`
+    : `Примерно как ${per}.`;
+  return `<div class="card hb2-hero">
+      <div class="hb2-seg" style="grid-template-columns:1fr 1fr;">${[["week","Неделя"],["month","Месяц"]].map(([k,l])=>
+        `<button class="${mode===k?'on':''}" data-retro="${k}">${l}</button>`).join("")}</div>
+      <div class="hb2-nav"><button data-rtnav="-1" aria-label="Назад">‹</button><span>${r.label}</span><button data-rtnav="1" aria-label="Вперёд" ${off>=0? 'disabled style="opacity:.3"' : ""}>›</button></div>
+      <div class="rt-say">${say}</div>
+      <div class="fx-hint" style="margin:6px 0 0;">${days? `Сравнение — с тем же днём ${per}: идущий период честно сравнивать только так.` : `Сравнение — с ${mode==="week"? "предыдущей неделей" : "предыдущим месяцем"}.`}</div>
     </div>
-    <div class="card">
-      <h2>Итоги · ${mode==='week'?'эта неделя':MONTHS_RU[new Date().getMonth()]}</h2>
-      <div class="quiet-summary" style="margin:0;">${verdict}</div>
-    </div>
-    <div class="card">
-      <h2>Привычки за период</h2>
-      ${habHtml}
-    </div>
-    <div class="card">
-      <h2>Дела и деньги</h2>
-      <div class="kpi-grid">
-        <div class="kpi" style="border-top-color:var(--green)"><div class="t">Выполнено дел</div><div class="v">${doneTodos}</div><div class="s">${openTodos.length} открыто</div></div>
-        <div class="kpi" style="border-top-color:var(--pink)"><div class="t">Расход</div><div class="v">${spent.toLocaleString('ru-RU')} ₽</div><div class="s">${mode==='week'?'за неделю':'за месяц'}</div></div>
-        <div class="kpi" style="border-top-color:var(--cyan)"><div class="t">Доход</div><div class="v">${earned.toLocaleString('ru-RU')} ₽</div><div class="s">в ₽ по курсу</div></div>
-        <div class="kpi" style="border-top-color:var(--purple)"><div class="t">Записей</div><div class="v">${notes}</div><div class="s">в дневнике</div></div>
-      </div>
-      ${topCats.length?`<div style="margin-top:12px;">${topCats.map(([n,v])=>`
-        <div class="retro-row">
-          <div class="rr-name">${escapeHtml(n)}</div>
-          <div class="rr-bar"><span style="width:${Math.round(v/maxCat*100)}%;background:var(--amber)"></span></div>
-          <div class="rr-num">${v.toLocaleString('ru-RU')} ₽</div>
-        </div>`).join("")}</div>`:''}
-    </div>`;
+    <div class="card">${rows.join("")}</div>`;
 }
 function bindRetro(){
-  document.querySelectorAll('[data-retro]').forEach(b=>b.onclick=()=>{
-    cur.retroMode=b.dataset.retro; render();
+  document.querySelectorAll('[data-retro]').forEach(b=>b.onclick=()=>{ cur.retroMode=b.dataset.retro; cur.retroOff=0; render(); });
+  document.querySelectorAll('[data-rtnav]').forEach(b=>b.onclick=()=>{
+    const n=(cur.retroOff||0)+(+b.dataset.rtnav);
+    if(n>0) return;
+    cur.retroOff=n; render();
   });
+}
+// Уведомление в воскресенье вечером: неделя, которая кончается в этот день
+function notifyWeekly(day){
+  if(day.getDay()!==0) return null;
+  const s=getWeekStart(day), r={from:s, to:new Date(day)};
+  const ps=new Date(s); ps.setDate(ps.getDate()-7);
+  const pe=new Date(s); pe.setDate(pe.getDate()-1);
+  const M=retroMetrics(r), P=retroMetrics({from:ps, to:pe});
+  const arrow=(a,b)=> a==null || b==null || Math.abs(a-b)<1e-9 ? "" : (a>b? " ▲" : " ▼");
+  const bits=[`Привычки ${hbPct(M.hab)}${arrow(M.hab,P.hab)}`, `дел закрыто ${M.todos}${arrow(M.todos,P.todos)}`];
+  if(M.sleep!=null) bits.push(`сон ${fmtSleepTile(M.sleep)}`);
+  if(M.incN) bits.push(`результат ${fmtPnl(M.inc, M.incCur, 0)}${arrow(M.inc,P.inc)}`);
+  return {title:"Итоги недели", text:bits.join(" · ")+"\nНажми — откроется вся неделя со сравнением", open:"retro"};
 }
 // Три числа на главном: сколько привычек закрыто, сколько можно потратить
 // сегодня и сколько дел висит. Раньше главный экран не показывал ни одного
