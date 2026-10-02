@@ -1600,6 +1600,29 @@
   .sh-raw{margin-top:12px;font-size:12px;color:var(--grey-dim);}
   .sh-raw pre{white-space:pre-wrap;font:12px/1.4 'JetBrains Mono',monospace;color:var(--grey);margin:6px 0 0;max-height:220px;overflow:auto;}
 
+  /* ---- режимы дня ---- */
+  .md-chip{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 13px;border-radius:16px;border:1px solid var(--border);
+    background:var(--card);color:var(--grey);font:600 12.5px var(--font-body);cursor:pointer;max-width:100%;}
+  .md-chip.on{color:var(--white);border-color:var(--amber);background:color-mix(in srgb, var(--amber) 14%, var(--card));}
+  .md-chip i{font-style:normal;opacity:.6;font-size:10px;}
+  .md-opt{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:14px;border:1px solid var(--border);
+    background:var(--card);margin-top:8px;text-align:left;font:inherit;color:inherit;cursor:pointer;}
+  .md-opt.on{border-color:var(--amber);background:color-mix(in srgb, var(--amber) 14%, var(--card));}
+  .md-opt .i{font-size:22px;width:30px;text-align:center;flex:0 0 auto;}
+  .md-opt .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .md-opt .t b{font-size:14px;font-weight:600;color:var(--white);}
+  .md-opt .t small{font-size:11.5px;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .md-opt .ed{border:none;background:none;color:var(--amber);font:600 12px var(--font-body);cursor:pointer;padding:6px 2px 6px 8px;flex:0 0 auto;}
+  .md-week{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;margin-top:8px;}
+  .md-week button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 0;border-radius:12px;border:1px solid var(--border);
+    background:var(--card);cursor:pointer;font:inherit;color:var(--grey);}
+  .md-week button.on{border-color:var(--amber);}
+  .md-week button small{font-size:10.5px;}
+  .md-week button b{font-size:16px;font-weight:400;min-height:20px;line-height:20px;}
+  .md-icons{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .md-icons button{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--card);font-size:20px;cursor:pointer;}
+  .md-icons button.on{border-color:var(--amber);background:color-mix(in srgb, var(--amber) 16%, var(--card));}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2307,7 +2330,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 22:47+925e9da6";
+window.TRACKER_BUILD = "2026-10-03 00:14+0a45bdb2";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -4830,6 +4853,7 @@ function habitDays(idx){
   return Array.isArray(d) && d.length && d.length<7 ? d.slice().sort((a,b)=>a-b) : null;
 }
 function habitScheduledOn(idx, date){
+  if(modeOffHabit(idx, date)) return false;
   const d=habitDays(idx);
   return !d || d.includes((date.getDay()+6)%7);
 }
@@ -4861,6 +4885,7 @@ function removeHabit(idx){
   idx=+idx;
   if(!(idx>=0 && idx<H.list.length)) return;
   H.list.splice(idx,1);
+  try{ modesShiftHabit(idx); }catch(e){}
   const shift=obj=>{
     if(!obj || typeof obj!=="object") return obj;
     const out={};
@@ -8619,6 +8644,8 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="mode") body=renderModeSheet(s);
+  else if(s.kind==="modeedit") body=renderModeEditSheet(s);
   else if(s.kind==="shot") body=renderShotSheet(s);
   else if(s.kind==="bankinbox") body=renderBankInboxSheet(s);
   else if(s.kind==="receipt") body=renderReceiptSheet(s);
@@ -8669,6 +8696,8 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="mode") bindModeSheet(s);
+  else if(s.kind==="modeedit") bindModeEditSheet(s);
   else if(s.kind==="shot") bindShotSheet(s);
   else if(s.kind==="bankinbox") bindBankInboxSheet(s);
   else if(s.kind==="receipt") bindReceiptSheet(s);
@@ -8901,8 +8930,10 @@ function buildNotifyPlan(){
   for(let i=0;i<NOTIFY_DAYS;i++){
     const day=new Date(base.getFullYear(), base.getMonth(), base.getDate()+i);
     const key=ymdOf(day), today=i===0;
+    const mq=modeQuiet(key);
     const add=(k, hm, ch, n, extra)=>{
       if(!n) return;
+      if((mq.morning && /^(?:m|p):/.test(k)) || (mq.result && /^er:/.test(k)) || (mq.habits && /^eh:/.test(k))) return;
       const at=hmAt(day, hm);
       if(at<=now) return;
       items.push(Object.assign({key:k, at, ch, title:n.title, text:n.text||"", open:n.open||"today"}, extra||{}));
@@ -8921,7 +8952,7 @@ function buildNotifyPlan(){
     const h = c.habits ? notifyHabits(day, today) : null;
     add(`eh:${key}`, c.eveningTime, "digest", h);
     if(c.weekly) add(`w:${key}`, "20:00", "digest", notifyWeekly(day));
-    if(c.bed){
+    if(c.bed && !mq.bed){
       const b=notifyBed(day);
       if(b && b.at>now) items.push({key:`b:${key}`, at:b.at, ch:"digest", title:b.title, text:b.text, open:b.open});
     }
@@ -11289,9 +11320,162 @@ function bindShotSheet(s){
   };
 }
 
+// ═════════ РЕЖИМЫ ДНЯ ═════════
+// В режиме — привычки на паузе (в этот день не в плане: серия не рвётся, процент
+// не падает) и уведомления, которые молчат. Режим на день ставится руками или сам —
+// по дню недели (правило действует с того дня, как его завели, прошлое не трогает).
+const MODE_ICONS=["📈","🌿","🧳","🤒","🏖","💼","🏠","🎉","🏋","📚"];
+const MODE_QUIET=[["morning","утренняя сводка"],["result","вопрос про результат дня"],["habits","привычки вечером"],["bed","напоминание об отбое"]];
+function modesData(){
+  if(!DATA.modes || typeof DATA.modes!=="object") DATA.modes={};
+  const M=DATA.modes;
+  if(!Array.isArray(M.list)) M.list=[
+    {id:"work", name:"Торговый день", icon:"📈", off:[], quiet:{}},
+    {id:"rest", name:"Выходной", icon:"🌿", off:[], quiet:{result:true}},
+    {id:"trip", name:"В дороге", icon:"🧳", off:[], quiet:{result:true, bed:true}}];
+  if(!M.days || typeof M.days!=="object") M.days={};
+  if(!M.week || typeof M.week!=="object") M.week={};
+  return M;
+}
+function modeById(id){ const M=DATA.modes; return M && Array.isArray(M.list) ? M.list.find(m=>m.id===id)||null : null; }
+// вызывается часто (серии, проценты) — без инициализации и лишней работы
+function modeOn(date){
+  const M=DATA && DATA.modes;
+  if(!M || !Array.isArray(M.list) || !M.list.length) return null;
+  const key= typeof date==="string"? date : ymdOf(date);
+  const d=M.days && M.days[key];
+  if(d==="none") return null;
+  if(d) return modeById(d);
+  if(!M.week) return null;
+  const dt= typeof date==="string"? parseLocalDate(date) : date;
+  if(!dt) return null;
+  const w=M.week[(dt.getDay()+6)%7];
+  return w && w.id && key>=(w.from||"") ? modeById(w.id) : null;
+}
+function modeOffHabit(idx, date){ const m=modeOn(date); return !!(m && m.off && m.off.includes(+idx)); }
+function modeQuiet(key){ const m=modeOn(key); return (m && m.quiet) || {}; }
+// при удалении привычки номера в «на паузе» сдвигаются вместе с остальным
+function modesShiftHabit(idx){
+  const M=DATA.modes;
+  if(!M || !Array.isArray(M.list)) return;
+  M.list.forEach(m=>{ m.off=(m.off||[]).filter(i=>i!==idx).map(i=>i>idx? i-1 : i); });
+}
+function modeSummary(m){
+  const bits=[];
+  const off=(m.off||[]).filter(i=>DATA.habits.list[i]!=null && !isHabitArchived(i));
+  if(off.length) bits.push("на паузе: "+off.map(i=>DATA.habits.list[i]).slice(0,3).join(", ")+(off.length>3? "…" : ""));
+  const q=MODE_QUIET.filter(([k])=>m.quiet && m.quiet[k]).map(x=>x[1]);
+  if(q.length) bits.push("молчат: "+q.join(", "));
+  return bits.join(" · ") || "всё как обычно";
+}
+function renderModeChip(){
+  const m=modeOn(new Date());
+  const off= m? (m.off||[]).filter(i=>DATA.habits.list[i]!=null && !isHabitArchived(i)).length : 0;
+  return `<button class="md-chip ${m?'on':''}" data-mdopen="1">${m? `${m.icon} ${escapeHtml(m.name)}${off? ` · ${off} ${plural(off,'привычка','привычки','привычек')} на паузе` : ""}` : "Режим дня: обычный"} <i>▾</i></button>`;
+}
+function renderModeSheet(s){
+  const M=modesData(), ts=todayStr(), tm=addDaysKey(ts,1), key=s.date||ts, now=modeOn(key);
+  const forced=M.days[key];
+  const opt=(id, icon, name, sub, on, edit)=>`<div class="md-opt ${on?'on':''}" data-mdset="${id}" role="button" tabindex="0"><span class="i">${icon}</span>
+    <span class="t"><b>${escapeHtml(name)}</b><small>${escapeHtml(sub)}</small></span>${edit? `<button class="ed" data-mdedit="${id}">Изменить</button>` : ""}</div>`;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Режим дня</b><span class="zero">привычки на паузе и тихие уведомления</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="fx-pick sm"><button class="${key===ts?'on':''}" data-mdday="${ts}">Сегодня</button><button class="${key===tm?'on':''}" data-mdday="${tm}">Завтра</button></div>
+    ${opt("none", "○", "Обычный", "все привычки и уведомления", !now, false)}
+    ${M.list.map(m=>opt(m.id, m.icon, m.name, modeSummary(m), now && now.id===m.id, true)).join("")}
+    <button class="fx-linkbtn" data-mdnew="1" style="margin-top:10px;">+ Свой режим</button>
+    ${!forced && now? `<div class="fx-hint" style="margin:8px 2px 0;">Включён сам — по дню недели.</div>` : ""}
+    <div class="sh-lab" style="margin-top:16px;">Сам включать по дням недели</div>
+    <div class="md-week">${WD_SHORT.map((l,i)=>{ const w=M.week[i], m=w && modeById(w.id);
+      return `<button class="${m?'on':''}" data-mdwd="${i}"><small>${l}</small><b>${m? m.icon : "—"}</b></button>`; }).join("")}</div>
+    <div class="fx-hint" style="margin:6px 2px 0;">Нажимай на день — режимы сменяются по кругу. Правило действует с сегодняшнего дня.</div>`;
+}
+function bindModeSheet(s){
+  const M=modesData(), root=sheetRoot(), key=()=>s.date||todayStr();
+  root.querySelectorAll('[data-mdday]').forEach(b=>b.onclick=()=>{ s.date=b.dataset.mdday; renderSheet(); });
+  root.querySelectorAll('[data-mdset]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.mdset, k=key();
+    // совпало с правилом недели — ручная отметка не нужна
+    const w=M.week[(parseLocalDate(k).getDay()+6)%7], byWeek= w && k>=(w.from||"") ? w.id : null;
+    if((id==="none" && !byWeek) || id===byWeek) delete M.days[k]; else M.days[k]=id;
+    scheduleSave(); render();
+    const m=modeById(id);
+    showActionToast(m? `${m.icon} ${m.name}${k===todayStr()? "" : " — завтра"}` : `Обычный день${k===todayStr()? "" : " — завтра"}`);
+  });
+  root.querySelectorAll('[data-mdedit]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); openSheet({kind:"modeedit", id:b.dataset.mdedit, back:key()}); });
+  root.querySelectorAll('[data-mdnew]').forEach(b=>b.onclick=()=>{
+    const id="m"+Date.now();
+    M.list.push({id, name:"Мой режим", icon:MODE_ICONS[(M.list.length)%MODE_ICONS.length], off:[], quiet:{}});
+    scheduleSave(); openSheet({kind:"modeedit", id, back:key(), fresh:true});
+  });
+  root.querySelectorAll('[data-mdwd]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.mdwd, w=M.week[i], ids=[null].concat(M.list.map(m=>m.id));
+    const next=ids[(ids.indexOf(w && w.id || null)+1)%ids.length];
+    if(next) M.week[i]={id:next, from:todayStr()}; else delete M.week[i];
+    scheduleSave(); render();
+  });
+}
+function renderModeEditSheet(s){
+  const m=modeById(s.id);
+  if(!m) return `<div class="sh-head"><div class="sh-title left"><b>Режим удалён</b></div><button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button></div>`;
+  const habits=activeHabitIdx();
+  return `<div class="sh-head">
+      <button class="sh-nav" data-mdback="1" aria-label="Назад">‹</button>
+      <div class="sh-title"><b>${m.icon} ${escapeHtml(m.name)}</b><span class="zero">${s.fresh? "новый режим" : "режим дня"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <input class="sh-in" id="mdName" value="${escapeHtml(m.name)}" placeholder="Название" autocomplete="off">
+    <div class="md-icons">${MODE_ICONS.map(ic=>`<button class="${m.icon===ic?'on':''}" data-mdicon="${ic}">${ic}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:14px;">Привычки на паузе</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${habits.length? habits.map(i=>`<button class="${(m.off||[]).includes(i)?'on':''}" data-mdoff="${i}">${escapeHtml(DATA.habits.list[i])}</button>`).join("") : `<span class="fx-hint">Привычек пока нет</span>`}</div>
+    <div class="fx-hint" style="margin:6px 2px 0;">В такой день их нет в плане — серия не рвётся, процент не падает.</div>
+    <div class="sh-lab" style="margin-top:14px;">Не присылать</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${MODE_QUIET.map(([k,l])=>`<button class="${m.quiet && m.quiet[k]?'on':''}" data-mdquiet="${k}">${l}</button>`).join("")}</div>
+    <div class="sh-actions">
+      <button class="btn ghost danger" id="mdDel">Удалить</button>
+      <button class="btn" data-mdback="1">Готово</button>
+    </div>`;
+}
+function bindModeEditSheet(s){
+  const M=modesData(), m=modeById(s.id), root=sheetRoot();
+  root.querySelectorAll('[data-mdback]').forEach(b=>b.onclick=()=>openSheet({kind:"mode", date:s.back}));
+  if(!m) return;
+  const nm=document.getElementById("mdName");
+  if(nm) nm.onchange=()=>{ const v=nm.value.trim(); if(v){ m.name=v; scheduleSave(); renderSheet(); } else nm.value=m.name; };
+  root.querySelectorAll('[data-mdicon]').forEach(b=>b.onclick=()=>{ m.icon=b.dataset.mdicon; scheduleSave(); renderSheet(); });
+  root.querySelectorAll('[data-mdoff]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.mdoff; m.off=m.off||[];
+    const j=m.off.indexOf(i); if(j>=0) m.off.splice(j,1); else m.off.push(i);
+    scheduleSave(); render();
+  });
+  root.querySelectorAll('[data-mdquiet]').forEach(b=>b.onclick=()=>{
+    m.quiet=m.quiet||{}; const k=b.dataset.mdquiet;
+    if(m.quiet[k]) delete m.quiet[k]; else m.quiet[k]=true;
+    scheduleSave(); render();
+  });
+  const del=document.getElementById("mdDel");
+  if(del) del.onclick=()=>{
+    const back=s.back;
+    deleteWithUndo(`Режим «${m.name}»`, ()=>{
+      M.list=M.list.filter(x=>x.id!==m.id);
+      Object.keys(M.days).forEach(k=>{ if(M.days[k]===m.id) delete M.days[k]; });
+      Object.keys(M.week).forEach(k=>{ if(M.week[k] && M.week[k].id===m.id) delete M.week[k]; });
+    });
+    openSheet({kind:"mode", date:back});
+  };
+}
+document.addEventListener("click", e=>{
+  const b=e.target && e.target.closest && e.target.closest('[data-mdopen]');
+  if(!b) return;
+  e.preventDefault(); openSheet({kind:"mode", date:todayStr()});
+});
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-shot", items:[
+const WHATS_NEW={id:"2026-10-03-modes", items:[
+  ["📈","Режимы дня","«Торговый день», «Выходной», «В дороге» и свои: в режиме часть привычек на паузе (серия не рвётся) и часть уведомлений молчит. Кнопка под заголовком на «Сегодня»; можно включать само по дням недели."],
   ["🖼","Траты и доходы со скриншота","Скриншот списка операций в банке или PnL с биржи: «+» → «Со скриншота» или «Поделиться → В трекер» (приложение 2.8). Суммы, даты и магазины прочитаются на телефоне — проверишь и запишешь."],
   ["✓","Привычки отмечаются сами","«Ранний подъём» — по сну, «Без телефона до сна» — по тому, когда отложил телефон, «Тренировка» — когда она записана, ещё дневник, вес, результат дня. Правило — в карточке привычки; снимешь галочку руками — спорить не буду."],
   ["📱","Сон — сам, по телефону","Приложение 2.7: когда отложил телефон вечером и взял утром — ночь записывается сама, остаётся оценить. Короткие взгляды ночью не считаются. Прошлые ночи за неделю — одной кнопкой. Включается в «Здоровье → Сон»."],
@@ -13362,6 +13546,7 @@ function renderToday(){
     <div class="today-head">
       <h2>${todayHeadline(openTodos, undoneHabits)}</h2>
       <p class="th-sub">${habTotal?`${doneCount} из ${habTotal} привычек отмечено`:'Привычек пока нет'}</p>
+      ${renderModeChip()}
     </div>
     ${renderTodayStats(doneCount, habTotal, openTodos)}
     ${focusHtml}
