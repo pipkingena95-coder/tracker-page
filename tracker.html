@@ -1452,6 +1452,24 @@
   .set-card:not(.closed) .set-head{margin-bottom:6px;border-bottom:1px solid var(--hair, var(--border));}
   .set-card:not(.closed) .set-head .chev{transform:rotate(90deg);}
 
+  /* ---- быстрая запись ---- */
+  .qa-fab{position:fixed;right:16px;bottom:calc(90px + env(safe-area-inset-bottom));z-index:44;width:56px;height:56px;
+    border-radius:50%;border:none;background:linear-gradient(135deg,var(--amber),var(--amber2));color:var(--on-accent);
+    font:300 32px/1 var(--font-body);cursor:pointer;display:grid;place-items:center;padding:0 0 3px;
+    box-shadow:0 12px 28px -10px color-mix(in srgb, var(--amber) 85%, transparent), 0 3px 8px rgba(0,0,0,.16);
+    transition:transform .22s ease, opacity .22s ease;}
+  .qa-fab:active{transform:scale(.94);}
+  html.fab-hide .qa-fab, html.sheet-open .qa-fab{transform:translateY(160%);opacity:0;pointer-events:none;}
+  html.has-qa .undo-toast{bottom:calc(156px + env(safe-area-inset-bottom));}
+  /* конец любого списка докручивается выше кнопки — она не закрывает последние строки */
+  html.has-qa .app{padding-bottom:calc(166px + env(safe-area-inset-bottom));}
+  @media(min-width:760px){ .qa-fab{bottom:28px;right:28px;} html.has-qa .undo-toast{bottom:96px;} html.has-qa .app{padding-bottom:110px;} }
+  .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
+  .qa-tile{display:flex;align-items:center;gap:10px;padding:15px 12px;border-radius:16px;border:1px solid var(--border);
+    background:var(--card);color:var(--white);font:600 13.5px var(--font-body);text-align:left;cursor:pointer;min-width:0;}
+  .qa-tile .i{font:600 19px/1 var(--font-body);width:26px;text-align:center;flex:0 0 auto;color:var(--amber);}
+  .qa-tile:active{transform:scale(.98);}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2159,7 +2177,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 13:12+a8121609";
+window.TRACKER_BUILD = "2026-10-02 13:22+5778066d";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2608,8 +2626,10 @@ function render(){
       ${TABS.map(([id,label,ic])=>
         `<button class="${cur.tab===id?'active':''}" data-tab="${id}" title="${label}" aria-label="${label}"><span class="ic">${ic}</span><span class="lbl">${label}</span></button>`).join("")}
     </nav>
+    ${qaFabHtml()}
   `;
   document.getElementById("tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{cur.tab=b.dataset.tab; render();});
+  bindQaFab();
   document.getElementById("openSearch").onclick=()=>{ cur.tab = cur.tab==="search" ? "today" : "search"; render(); };
   document.getElementById("openSettings").onclick=()=>{ cur.tab = cur.tab==="settings" ? "today" : "settings"; render(); };
 
@@ -8462,6 +8482,7 @@ function renderSheet(){
   else if(s.kind==="acc") body=renderAccSheet(s);
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
+  else if(s.kind==="quick") body=renderQuickSheet(s);
   else if(s.kind==="goaledit") body=renderGoalEditSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
@@ -8504,6 +8525,7 @@ function renderSheet(){
   else if(s.kind==="acc") bindAccSheet(s);
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
+  else if(s.kind==="quick") bindQuickSheet(s);
   else if(s.kind==="goaledit") bindGoalEditSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
@@ -8974,9 +8996,134 @@ function todosWeekRow(dates){
   return `<div class="dw-row"><span class="dw-name dw-todo">Дела</span><span class="dw-s">${st>1? `🔥 ${st}` : `${week} за неделю`}</span></div>${cells}`;
 }
 
+// ═════════ БЫСТРАЯ ЗАПИСЬ ═════════
+// Кнопка «+» на любом экране: не нужно идти в раздел, чтобы записать дело,
+// расход, результат дня, сон, вес, тренировку, самочувствие или строчку в дневник.
+// В «Финансах» её нет — там своя «+ Результат / + Расход» на том же месте.
+function qaVisible(){
+  return !(cur.tab==="settings" || cur.tab==="search" || (cur.tab==="money" && subView("money")==="finance"));
+}
+function qaFabHtml(){ return qaVisible()? `<button class="qa-fab" id="qaFab" aria-label="Быстро записать">+</button>` : ""; }
+function bindQaFab(){
+  document.documentElement.classList.toggle("has-qa", qaVisible());
+  const b=document.getElementById("qaFab");
+  if(b) b.onclick=()=>openSheet({kind:"quick", mode:""});
+  if(qaVisible()) watchFabScroll();
+}
+// значки — текстом, не эмодзи: одного цвета с темой
+const QA_TILES=[["todo","☰","Дело или привычка"],["exp","₽","Расход"],["res","₮","Результат дня"],["sleep","☾","Сон"],
+  ["weight","⚖︎","Вес"],["wk","⚡︎","Тренировка"],["feel","☀︎","Самочувствие"],["note","✎","В дневник"]];
+function renderQuickSheet(s){
+  const head=(t, sub, back)=>`<div class="sh-head">${back? `<button class="sh-nav" data-qaback="1" aria-label="Назад">‹</button>` : ""}
+    <div class="sh-title ${back? "" : "left"}"><b>${t}</b><span class="zero">${sub}</span></div>
+    <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button></div>`;
+  const ts=todayStr(), now=new Date();
+  if(s.mode==="todo") return head("Дело или привычка", "срок и повтор поймутся из текста", 1)+`
+    <div class="add-row todo-add" style="margin-top:4px;"><input id="qaText" placeholder="«завтра позвонить в банк»" autocomplete="off" enterkeyhint="done" value="${escapeHtml(s.text||"")}">
+      <button class="mic-btn" id="qaMic" aria-label="Сказать голосом">${MIC_SVG}</button><button id="qaAddTodo" aria-label="Добавить">+</button></div>
+    <div class="fx-hint" style="margin:8px 2px 0;">«По будням зарядка» станет привычкой, «каждый месяц 10 числа аренда» — делом с повтором. Можно списком через запятую.</div>`;
+  if(s.mode==="weight"){
+    const H=healthData(), last=weightSeries().slice(-1)[0];
+    return head("Вес", "утром натощак — точнее", 1)+`
+    <label class="fx-amt pos"><input id="qaKg" type="text" inputmode="decimal" autocomplete="off" placeholder="${last? kgPlain(last.kg) : "0"}" value="${H.weight[ts]? kgPlain(H.weight[ts]) : ""}"><span class="c">кг</span></label>
+    <div class="sh-actions"><button class="btn" id="qaKgSave">Записать</button></div>`;
+  }
+  if(s.mode==="note") return head("В дневник", `${now.getDate()} ${MONTHS_GEN[now.getMonth()]} — допишется к записи дня`, 1)+`
+    <textarea class="sh-in" id="qaNote" rows="4" placeholder="Мысль, событие, вывод…" style="resize:vertical;">${escapeHtml(s.note||"")}</textarea>
+    <div class="sh-actions"><button class="btn" id="qaNoteSave">Записать</button></div>`;
+  if(s.mode==="feel"){
+    const f=healthData().feel[ts]||{};
+    return head("Самочувствие", "энергия сегодня", 1)+`
+    <div class="sl-q">${ENERGY.map(([v,l])=>`<button class="${+f.e===v?'on':''}" data-qafeel="${v}"><b>${v}</b><small>${l}</small></button>`).join("")}</div>
+    <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
+    <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
+  }
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid">${QA_TILES.map(([k,ic,l])=>
+    `<button class="qa-tile" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
+}
+function quickWorkout(){
+  ensureWorkouts();
+  const last=(DATA.workouts||[]).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""))[0];
+  const w={id:Date.now(), date:todayStr(), time:nowTime(), type: last && last.type || "Силовая",
+    duration:"", distance:"", feeling:"", notes:"", exercises:[], _new:true};
+  DATA.workouts.push(w);
+  scheduleSave();
+  openWorkoutSheet(w.id);
+}
+function bindQuickSheet(s){
+  const root=sheetRoot(), ts=todayStr();
+  root.querySelectorAll('[data-qaback]').forEach(b=>b.onclick=()=>{ s.mode=""; renderSheet(); });
+  root.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{
+    const k=b.dataset.qa;
+    if(["todo","weight","note","feel"].includes(k)){
+      s.mode=k; renderSheet();
+      const f=document.getElementById(k==="todo"? "qaText" : k==="weight"? "qaKg" : k==="note"? "qaNote" : "");
+      if(f) f.focus();
+      return;
+    }
+    cur.sheet=null;
+    if(k==="exp"){ cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="exp"; render(); openExpenseSheet(); }
+    else if(k==="res"){
+      const n=new Date();
+      cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="inc";
+      cur.calY=n.getFullYear(); cur.calM=n.getMonth(); cur.calMode="days";
+      render(); openDaySheet(ts, null, true);
+    }
+    else if(k==="sleep") openSleepSheet(ts);
+    else if(k==="wk") quickWorkout();
+  });
+  const text=document.getElementById("qaText");
+  if(text) text.oninput=()=>{ s.text=text.value; };
+  const addTodo=()=>{
+    const raw=(text && text.value || "").trim();
+    if(!raw){ flashError(text, "Что записать?"); return; }
+    const res=createFromText(raw, {split:true});
+    scheduleSave(); closeSheet(); render(); createdToast(res);
+  };
+  const at=document.getElementById("qaAddTodo");
+  if(at) at.onclick=addTodo;
+  if(text) text.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); addTodo(); } };
+  const mic=document.getElementById("qaMic");
+  if(mic) mic.onclick=()=>{ closeSheet(); voiceAddTodo(null); };
+  const kg=document.getElementById("qaKg");
+  const saveKg=()=>{
+    const v=parseKg(kg && kg.value);
+    if(!v || v<20 || v>400){ flashError(kg, "Вес в кг, например 82,4"); return; }
+    healthData().weight[ts]=Math.round(v*10)/10;
+    scheduleSave(); closeSheet(); render(); showActionToast(`Вес записан: ${kgPlain(v)} кг`);
+  };
+  const ks=document.getElementById("qaKgSave");
+  if(ks) ks.onclick=saveKg;
+  if(kg) kg.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); saveKg(); } };
+  const note=document.getElementById("qaNote");
+  if(note) note.oninput=()=>{ s.note=note.value; };
+  const ns=document.getElementById("qaNoteSave");
+  if(ns) ns.onclick=()=>{
+    const v=(note && note.value || "").trim();
+    if(!v){ flashError(note, "Пусто"); return; }
+    const was=(DATA.journal[ts]||"").trim();
+    DATA.journal[ts] = was? `${was}\n${v}` : v;
+    scheduleSave(); closeSheet(); render(); showActionToast("Записано в дневник");
+  };
+  root.querySelectorAll('[data-qafeel]').forEach(b=>b.onclick=()=>{
+    const H=healthData(), f=H.feel[ts]||(H.feel[ts]={}), v=+b.dataset.qafeel;
+    f.e = +f.e===v ? 0 : v;
+    if(!f.e && !f.note) delete H.feel[ts];
+    scheduleSave(); renderSheet();
+  });
+  const fs=document.getElementById("qaFeelSave");
+  if(fs) fs.onclick=()=>{
+    const H=healthData(), n=document.getElementById("qaFeelNote"), v=(n && n.value || "").trim();
+    if(v){ (H.feel[ts]||(H.feel[ts]={})).note=v; }
+    else if(H.feel[ts]){ delete H.feel[ts].note; if(!H.feel[ts].e) delete H.feel[ts]; }
+    scheduleSave(); closeSheet(); render(); showActionToast("Самочувствие записано");
+  };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-sav-set", items:[
+const WHATS_NEW={id:"2026-10-02-quick", items:[
+  ["+","Кнопка «+» на любом экране","Справа внизу: дело или привычка, расход, результат дня, сон, вес, тренировка, самочувствие, строчка в дневник — не заходя в раздел."],
   ["🎯","Накопления заново","Цели — карточками с кольцом прогресса. У выбранной — прогноз, когда соберёшь, и «+ Отложить» одной кнопкой. Взносы строками, правка и снятие — листом снизу."],
   ["⚙","Настройки — списком","Вместо пяти экранов подряд — разделы с состоянием: уведомления, тема, голос, бэкап, обновления. Раздел раскрывается по нажатию."],
   ["✕","Привычка: «Не смог»","Проспал ранний подъём — нажми на привычку и «✕ Не смог». В отличие от пропуска ❄ серия начнётся заново, но привычка не висит в «осталось» и вечером о ней не напоминают. Можно указать причину — увидишь, что мешает чаще всего."],
@@ -8999,6 +9146,9 @@ const WHATS_NEW={id:"2026-10-02-sav-set", items:[
   ["◎","Разбор доходов","План на месяц, доходность на капитал, комиссии и фандинг, дни недели — в «Деньги → Доходы»."]
 ]};
 function newsItems(){
+  return newsFilter().slice(0,6);
+}
+function newsFilter(){
   return WHATS_NEW.items.filter(x=>{
     if(x[3]==="voice") return !!voiceSupported();
     if(x[3]==="novoice") return !voiceSupported() && appOutdated();
