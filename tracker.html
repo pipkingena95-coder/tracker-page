@@ -1498,6 +1498,20 @@
     flex:0 0 auto;cursor:pointer;font-size:12px;}
   .pc-del.confirm{width:auto;padding:0 10px;color:var(--pnl-down);border-color:color-mix(in srgb, var(--pnl-down) 45%, transparent);}
 
+  /* ---- инвестиции ---- */
+  .iv-sub b.pos{color:var(--pnl-up);} .iv-sub b.neg{color:var(--pnl-down);}
+  .iv-list .fx-row .a small.pos{color:var(--pnl-up);} .iv-list .fx-row .a small.neg{color:var(--pnl-down);}
+  .iv-list .acc2-bank small{font:500 10.5px var(--font-body);letter-spacing:0;text-transform:none;color:var(--green);margin-left:6px;}
+  .iv-list .acc2-bank + .fx-row{border-top:none;}
+  .iv-add{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+  .iv-add .btn{flex:1 1 0;padding-left:8px;padding-right:8px;font-size:13px;white-space:nowrap;}
+  .iv-prev{margin-top:14px;padding:11px 13px;border-radius:14px;background:color-mix(in srgb, var(--amber) 9%, var(--card));
+    border:1px solid color-mix(in srgb, var(--amber) 22%, var(--border));font-size:12.5px;color:var(--grey);line-height:1.5;}
+  .iv-prev b{color:var(--white);font-weight:600;}
+  .iv-prev b.pos{color:var(--pnl-up);} .iv-prev b.neg{color:var(--pnl-down);}
+  .iv-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .iv-2 .sh-in{margin-top:6px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2205,7 +2219,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 13:29+c0735780";
+window.TRACKER_BUILD = "2026-10-02 13:35+849ede36";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2692,7 +2706,7 @@ function render(){
     const nav=renderSubNav("money",[["finance","Финансы"],["where","Счета"],["savings","Накопления"],["invest","Инвестиции"]]);
     if(v==="finance"){ c.innerHTML=nav+renderFinanceV3(); bindSubNav(); bindFinance(); bindFinanceV3(); }
     else if(v==="where"){ c.innerHTML=nav+renderWhere2(); bindSubNav(); bindWhere2(); }
-    else if(v==="invest"){ c.innerHTML=nav+renderInvest(); bindSubNav(); bindInvest(); }
+    else if(v==="invest"){ c.innerHTML=nav+renderInvest2(); bindSubNav(); bindInvest2(); }
     else { c.innerHTML=nav+renderSavings2(); bindSubNav(); bindSavings2(); }
   }
   else if(cur.tab==="health"){ renderHealthTab(c); }
@@ -8470,7 +8484,7 @@ function closeSheet(){
   if(was && was.kind==="news") markNewsSeen();
   if(was && was.kind==="listen" && !was.done) voiceCancel();
   if(was && was.kind==="workout"){ dropEmptyWorkout(was.id); render(); }
-  if(was && (was.scope==="acc" || was.scope==="sav")) render();
+  if(was && (was.scope==="acc" || was.scope==="sav" || was.scope==="inv")) render();
   // снять подсветку выбранного дня; из карточки пункта — показать правки в списке
   if(was && (was.scope==="fin" || was.kind==="doitem")) render();
 }
@@ -8511,6 +8525,7 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="inv") body=renderInvSheet(s);
   else if(s.kind==="planitem") body=renderPlanItemSheet(s);
   else if(s.kind==="plancats") body=renderPlanCatsSheet(s);
   else if(s.kind==="goaledit") body=renderGoalEditSheet(s);
@@ -8556,6 +8571,7 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="inv") bindInvSheet(s);
   else if(s.kind==="planitem") bindPlanItemSheet(s);
   else if(s.kind==="plancats") bindPlanCatsSheet(s);
   else if(s.kind==="goaledit") bindGoalEditSheet(s);
@@ -8594,6 +8610,7 @@ function afterRender(){
   if(cur.sheet && cur.sheet.scope==="fin" && !onFin) cur.sheet=null;
   if(cur.sheet && cur.sheet.scope==="acc" && !(cur.tab==="money" && subView("money")==="where")) cur.sheet=null;
   if(cur.sheet && cur.sheet.scope==="sav" && !(cur.tab==="money" && subView("money")==="savings")) cur.sheet=null;
+  if(cur.sheet && cur.sheet.scope==="inv" && !(cur.tab==="money" && subView("money")==="invest")) cur.sheet=null;
   const r=document.getElementById("sheetRoot");
   if(cur.sheet || (r && r.innerHTML && r.dataset.closing!=="1")) renderSheet();
 }
@@ -9461,9 +9478,261 @@ function bindPlanCatsSheet(s){
   if(inp) inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } };
 }
 
+// ═════════ ИНВЕСТИЦИИ ═════════
+// Раньше: три огромные плитки на первый экран и каждый актив — форма с полями прямо
+// в списке. Теперь: шапка как у «Счетов», активы строками по группам, правка листом.
+const INV_GROUPS=[["crypto","Крипта"],["deposit","Вклады"],["other","Другое"]];
+const INV_KIND_ONE={crypto:"Крипта", deposit:"Вклад", other:"Другое"};
+const INV_TICKERS=["BTC","ETH","TON","SOL","BNB","XRP"];
+function invNum(v){ const n=parseMoneyIn(v); return n==null? 0 : n; }
+function invQty(v){ return (+v||0).toLocaleString('ru-RU',{maximumFractionDigits:8}); }
+function invUsd(p){ return "$"+(+p).toLocaleString('ru-RU',{maximumFractionDigits: p<1? 5 : p<100? 2 : 0}); }
+function invName(inv){ return inv.kind==="crypto"? ((inv.symbol||"").trim().toUpperCase()||"Монета") : (inv.name||"Без названия"); }
+function invShortDate(d){
+  const y=d.getFullYear()!==new Date().getFullYear()? ` ${d.getFullYear()}` : "";
+  return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}${y}`;
+}
+function invPct(pl, base){ return `${pl>=0?"+":"−"}${Math.abs(pl/base*100).toLocaleString('ru-RU',{maximumFractionDigits:1})}%`; }
+// месячный доход по действующим вкладам — по простой ставке, для ориентира
+function invDepositMonthly(){
+  return (DATA.investments||[]).filter(x=>x.kind==="deposit").reduce((s,x)=>{
+    const st=depositState(x);
+    if(st.matured) return s;
+    return s+toRub(st.current*(+x.rate||0)/100/12, x.currency);
+  },0);
+}
+function invRowSub(inv){
+  if(inv.kind==="crypto"){
+    const s=(inv.symbol||"").trim().toUpperCase(), p=DATA.prices.usd[s];
+    return `${invQty(inv.qty)} ${escapeHtml(s)}${p!=null? ` · ${invUsd(p)}` : s? " · нет цены" : ""}`;
+  }
+  if(inv.kind==="deposit"){
+    const st=depositState(inv), bits=[];
+    if(+inv.rate) bits.push(`${(+inv.rate).toLocaleString('ru-RU')}%${inv.capitalize? " с кап." : ""}`);
+    if(st.end) bits.push(st.matured? `закрыт ${invShortDate(st.end)}` : `до ${invShortDate(st.end)} · ${st.daysLeft} ${plural(st.daysLeft,'день','дня','дней')}`);
+    else bits.push("бессрочный");
+    return bits.join(" · ");
+  }
+  const inv0=+inv.invested||0;
+  return inv0? `вложено ${fmtMoney(inv0, inv.currency||"RUB", 0)}` : "без цены входа";
+}
+function renderInvest2(){
+  ensureInvestments();
+  const list=DATA.investments;
+  const d0=displayCurrency(), disp= d0==="native"? "RUB" : d0;
+  const rows=list.map((inv,i)=>({inv, i, v:invValueRub(inv), base:invInvestedRub(inv), color:CAT_PALETTE[i%CAT_PALETTE.length]}));
+  const total=rows.reduce((s,r)=>s+r.v,0), totalIn=rows.reduce((s,r)=>s+r.base,0), pl=total-totalIn;
+  const pos=rows.filter(r=>r.v>0);
+  const bar= pos.length>1? `<div class="fx-bar">${pos.slice().sort((a,b)=>b.v-a.v).map(r=>
+    `<i style="width:${(r.v/total*100).toFixed(2)}%;background:${r.color}" title="${escapeHtml(invName(r.inv))}"></i>`).join("")}</div>` : "";
+  const subBits=[];
+  if(totalIn) subBits.push(`<b class="${pl>=0?'pos':'neg'}">${pl>=0?"+":"−"}${rub(Math.abs(pl))} · ${invPct(pl,totalIn)}</b>`);
+  if(totalIn) subBits.push(`вложено ${rub(totalIn)}`);
+  if(!list.length) subBits.push("Крипта, вклады, акции — всё в одном месте");
+  const noPrice=list.filter(x=>x.kind==="crypto" && (x.symbol||"").trim() && DATA.prices.usd[(x.symbol||"").trim().toUpperCase()]==null);
+  const hero=`<div class="card fx-hero">
+    <div class="fx-hero-top"><span class="fx-k">Портфель</span>
+      <div class="fx-cur" role="group" aria-label="Валюта">${["RUB","USDT","USD","EUR"].map(c=>
+        `<button class="${disp===c?'on':''}" data-dispcur="${c}" title="${c}">${CURRENCY_SYMBOL[c]||c}</button>`).join("")}</div></div>
+    <div class="fx-big plain">${rub(total)}</div>
+    <div class="fx-sub iv-sub">${subBits.join(" · ")}</div>
+    ${bar}
+    ${cur.pricesError? `<div class="fx-warn">${escapeHtml(cur.pricesError)}</div>`
+      : noPrice.length? `<div class="fx-warn">Нет цены для ${noPrice.map(x=>escapeHtml((x.symbol||"").toUpperCase())).join(", ")} — проверь тикер или обнови.</div>` : ""}
+    ${rateLineHtml()}
+  </div>`;
+  const groups=INV_GROUPS.map(([k,label])=>{
+    const g=rows.filter(r=>(r.inv.kind||"other")===k || (k==="other" && !INV_KIND_ONE[r.inv.kind]));
+    if(!g.length) return "";
+    const sum=g.reduce((s,r)=>s+r.v,0);
+    const monthly= k==="deposit"? invDepositMonthly() : 0;
+    return `<div class="acc2-bank"><span>${label}${monthly>0? `<small>≈ +${rub(monthly)} в месяц</small>` : ""}</span><b>${rub(sum)}</b></div>
+      ${g.sort((a,b)=>b.v-a.v).map(r=>{
+        const inv=r.inv;
+        let small="";
+        if(inv.kind==="deposit"){ const gain=r.v-r.base; if(r.base && gain>0.5) small=`<small class="pos">+${rub(gain)}</small>`; }
+        else if(r.base){ const d=r.v-r.base; small=`<small class="${d>=0?'pos':'neg'}">${invPct(d, r.base)}</small>`; }
+        return `<button class="fx-row" data-invopen="${inv.id}">
+          <i class="dot" style="background:${r.color}"></i>
+          <span class="t"><b>${escapeHtml(invName(inv))}</b><small>${invRowSub(inv)}${total>0 && r.v>0 && pos.length>1? ` · ${Math.round(r.v/total*100)}%` : ""}</small></span>
+          <span class="a">${rub(r.v)}${small}</span>
+        </button>`;
+      }).join("")}`;
+  }).join("");
+  const addBtns=`<div class="iv-add">${INV_GROUPS.map(([k])=>`<button class="btn ${list.length? 'ghost' : ''}" data-invnew="${k}">+ ${INV_KIND_ONE[k]}</button>`).join("")}</div>`;
+  const listCard=`<div class="card iv-list">
+    <div class="fx-rec-head"><h2>Активы</h2></div>
+    ${list.length? groups : `<div class="fx-empty sm">Пока пусто. Добавь монету, вклад или что-то своё — акции, золото, долю.</div>`}
+    ${addBtns}
+    ${list.length? `<div class="fx-hint">Нажми на актив — количество, цена входа, ставка и срок вклада. Цены монет подтягиваются сами.</div>` : ""}
+  </div>`;
+  return hero + listCard;
+}
+function bindInvest2(){
+  bindCurrencySwitch();
+  document.querySelectorAll('[data-fxrates]').forEach(b=>b.onclick=()=>refreshPrices(true));
+  document.querySelectorAll('[data-invopen]').forEach(b=>b.onclick=()=>openInvSheet(b.dataset.invopen));
+  document.querySelectorAll('[data-invnew]').forEach(b=>b.onclick=()=>openInvSheet(null, b.dataset.invnew));
+  refreshPrices(false);
+}
+// ---------- лист: актив ----------
+function invDraftFor(kind){
+  if(kind==="crypto") return {kind, symbol:"", qty:"", buyPrice:"", currency:"RUB"};
+  if(kind==="deposit") return {kind, name:"", amount:"", rate:"", openDate:todayStr(), termMonths:12, capitalize:true, currency:"RUB"};
+  return {kind:"other", name:"", amount:"", invested:"", currency:"RUB"};
+}
+function openInvSheet(id, kind){
+  const inv= id==null? null : (DATA.investments||[]).find(x=>String(x.id)===String(id));
+  cur.sheet={kind:"inv", scope:"inv", id: inv? String(inv.id) : null,
+    draft: inv? JSON.parse(JSON.stringify(inv)) : invDraftFor(kind||"crypto")};
+  render();
+}
+function invPreviewHtml(d){
+  const x=Object.assign({}, d, {qty:invNum(d.qty), buyPrice:invNum(d.buyPrice), amount:invNum(d.amount), invested:invNum(d.invested), rate:invNum(d.rate)});
+  if(x.kind==="crypto"){
+    const s=(x.symbol||"").trim().toUpperCase(), p=DATA.prices.usd[s];
+    if(!s) return "Впиши тикер — цену подтяну сама.";
+    if(p==null) return `Цены ${escapeHtml(s)} пока нет — подтяну после сохранения.`;
+    const v=invValueRub(x), b=invInvestedRub(x);
+    return `Курс <b>${invUsd(p)}</b>${x.qty? ` · сейчас <b>${rub(v)}</b>` : ""}${b? ` · вложено ${rub(b)} · <b class="${v-b>=0?'pos':'neg'}">${invPct(v-b, b)}</b>` : ""}`;
+  }
+  if(x.kind==="deposit"){
+    if(!x.amount) return "Сумма, ставка и срок — посчитаю проценты к концу срока.";
+    const st=depositState(x), c=x.currency||"RUB";
+    return `Сейчас <b>${fmtMoney(st.current, c, 0)}</b>${st.end? ` · к ${invShortDate(st.end)} <b class="pos">${fmtMoney(st.atEnd, c, 0)}</b> (+${fmtMoney(st.atEnd-st.amount, c, 0)})` : ""}`
+      + (x.rate && !st.matured? ` · ≈ +${fmtMoney(st.current*x.rate/100/12, c, 0)} в месяц` : "");
+  }
+  if(!x.amount) return "Сколько стоит сейчас и сколько вложил — посчитаю доходность.";
+  const c=x.currency||"RUB";
+  return x.invested? `Доход <b class="${x.amount-x.invested>=0?'pos':'neg'}">${x.amount-x.invested>=0?"+":"−"}${fmtMoney(Math.abs(x.amount-x.invested), c, 0)} · ${invPct(x.amount-x.invested, x.invested)}</b>` : `Стоит <b>${fmtMoney(x.amount, c, 0)}</b>`;
+}
+function renderInvSheet(s){
+  const isNew=s.id==null, d=s.draft;
+  if(!isNew && !(DATA.investments||[]).some(x=>String(x.id)===s.id))
+    return `<div class="sh-head"><div class="sh-title left"><b>Актив удалён</b></div><button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button></div>`;
+  const c=d.currency||"RUB", sym=CURRENCY_SYMBOL[c]||c;
+  const curPick=`<div class="sh-lab" style="margin-top:14px;">Валюта</div>
+    <div class="fx-pick cur" style="margin-top:6px;">${INV_CURRENCIES.map(x=>`<button class="${c===x?'on':''}" data-ivcur="${x}">${CURRENCY_SYMBOL[x]||x} ${x}</button>`).join("")}</div>`;
+  let body="";
+  if(d.kind==="crypto"){
+    const s0=(d.symbol||"").trim().toUpperCase();
+    body=`<div class="sh-lab" style="margin-top:4px;">Монета</div>
+      <input class="sh-in" id="ivSym" style="margin-top:6px;text-transform:uppercase;" placeholder="тикер, как на бирже: BTC, ETH, TON" value="${escapeHtml(d.symbol||"")}" autocomplete="off" autocapitalize="characters">
+      <div class="fx-pick sm" style="margin-top:8px;">${INV_TICKERS.map(t=>`<button class="${s0===t?'on':''}" data-ivsym="${t}">${t}</button>`).join("")}</div>
+      <div class="iv-2" style="margin-top:12px;">
+        <div><div class="sh-lab">Сколько монет</div><input class="sh-in" id="ivQty" type="text" inputmode="decimal" placeholder="0,05" value="${escapeHtml(String(d.qty||""))}" autocomplete="off"></div>
+        <div><div class="sh-lab">Цена входа, $</div><input class="sh-in" id="ivBuy" type="text" inputmode="decimal" placeholder="средняя" value="${escapeHtml(String(d.buyPrice||""))}" autocomplete="off"></div>
+      </div>`;
+  } else if(d.kind==="deposit"){
+    body=`<div class="sh-lab" style="margin-top:4px;">Название</div>
+      <input class="sh-in" id="ivName" style="margin-top:6px;" placeholder="например, Вклад Т-Банк" value="${escapeHtml(d.name||"")}" autocomplete="off">
+      <div class="sh-lab" style="margin-top:12px;">Сумма</div>
+      <label class="fx-amt pos"><input id="ivAmt" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(d.amount||""))}" autocomplete="off"><span class="c">${sym}</span></label>
+      <div class="iv-2" style="margin-top:12px;">
+        <div><div class="sh-lab">Ставка, % годовых</div><input class="sh-in" id="ivRate" type="text" inputmode="decimal" placeholder="18" value="${escapeHtml(String(d.rate||""))}" autocomplete="off"></div>
+        <div><div class="sh-lab">Открыт</div><input class="sh-in" id="ivOpen" type="date" value="${escapeHtml(d.openDate||"")}"></div>
+      </div>
+      <div class="sh-lab" style="margin-top:14px;">Срок</div>
+      <div class="fx-pick sm" style="margin-top:6px;">${[[3,"3 мес"],[6,"6 мес"],[12,"год"],[24,"2 года"],[0,"бессрочный"]].map(([m,l])=>
+        `<button class="${(+d.termMonths||0)===m?'on':''}" data-ivterm="${m}">${l}</button>`).join("")}</div>
+      <div class="sh-lab" style="margin-top:14px;">Проценты</div>
+      <div class="fx-pick sm" style="margin-top:6px;">
+        <button class="${d.capitalize?'on':''}" data-ivcap="1">добавляются к вкладу</button>
+        <button class="${!d.capitalize?'on':''}" data-ivcap="0">выплачиваются отдельно</button></div>
+      ${curPick}`;
+  } else {
+    body=`<div class="sh-lab" style="margin-top:4px;">Название</div>
+      <input class="sh-in" id="ivName" style="margin-top:6px;" placeholder="акции, золото, доля в бизнесе…" value="${escapeHtml(d.name||"")}" autocomplete="off">
+      <div class="iv-2" style="margin-top:12px;">
+        <div><div class="sh-lab">Стоит сейчас, ${sym}</div><input class="sh-in" id="ivAmt" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(d.amount||""))}" autocomplete="off"></div>
+        <div><div class="sh-lab">Вложено, ${sym}</div><input class="sh-in" id="ivInv" type="text" inputmode="decimal" placeholder="0" value="${escapeHtml(String(d.invested||""))}" autocomplete="off"></div>
+      </div>
+      ${curPick}`;
+  }
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${isNew? "Новый актив" : escapeHtml(invName(d))}</b><span class="zero">${isNew? "что и сколько" : INV_KIND_ONE[d.kind]||"Другое"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    ${isNew? `<div class="fx-pick" style="margin-bottom:12px;">${INV_GROUPS.map(([k])=>`<button class="${d.kind===k?'on':''}" data-ivkind="${k}">${INV_KIND_ONE[k]}</button>`).join("")}</div>` : ""}
+    ${body}
+    <div class="iv-prev" id="ivPrev">${invPreviewHtml(d)}</div>
+    <div class="sh-actions">
+      ${isNew? "" : `<button class="btn ghost danger" id="ivDel">Удалить</button>`}
+      <button class="btn" id="ivSave">${isNew? "Добавить" : "Готово"}</button>
+    </div>`;
+}
+function bindInvSheet(s){
+  const root=sheetRoot(), d=s.draft, isNew=s.id==null;
+  const f=id=>document.getElementById(id);
+  const sync=()=>{
+    if(f("ivSym")) d.symbol=f("ivSym").value.trim().toUpperCase();
+    if(f("ivQty")) d.qty=f("ivQty").value;
+    if(f("ivBuy")) d.buyPrice=f("ivBuy").value;
+    if(f("ivName")) d.name=f("ivName").value;
+    if(f("ivAmt")) d.amount=f("ivAmt").value;
+    if(f("ivInv")) d.invested=f("ivInv").value;
+    if(f("ivRate")) d.rate=f("ivRate").value;
+    if(f("ivOpen")) d.openDate=f("ivOpen").value;
+    const p=f("ivPrev"); if(p) p.innerHTML=invPreviewHtml(d);
+  };
+  ["ivSym","ivQty","ivBuy","ivName","ivAmt","ivInv","ivRate","ivOpen"].forEach(id=>{ const el=f(id); if(el) el.oninput=sync; });
+  if(f("ivSym")) f("ivSym").addEventListener("input", ()=>root.querySelectorAll('[data-ivsym]').forEach(b=>b.classList.toggle("on", b.dataset.ivsym===d.symbol)));
+  root.querySelectorAll('[data-ivkind]').forEach(b=>b.onclick=()=>{
+    sync();
+    const keep={name:d.name, amount:d.amount};
+    s.draft=invDraftFor(b.dataset.ivkind);
+    if(s.draft.kind!=="crypto") Object.assign(s.draft, keep);
+    renderSheet();
+  });
+  root.querySelectorAll('[data-ivsym]').forEach(b=>b.onclick=()=>{ sync(); d.symbol=b.dataset.ivsym; renderSheet(); const q=f("ivQty"); if(q) q.focus(); });
+  root.querySelectorAll('[data-ivcur]').forEach(b=>b.onclick=()=>{ sync(); d.currency=b.dataset.ivcur; renderSheet(); });
+  root.querySelectorAll('[data-ivterm]').forEach(b=>b.onclick=()=>{ sync(); d.termMonths=+b.dataset.ivterm; renderSheet(); });
+  root.querySelectorAll('[data-ivcap]').forEach(b=>b.onclick=()=>{ sync(); d.capitalize=b.dataset.ivcap==="1"; renderSheet(); });
+  const save=f("ivSave");
+  if(save) save.onclick=()=>{
+    sync();
+    const out=Object.assign({}, d);
+    if(out.kind==="crypto"){
+      out.symbol=(out.symbol||"").trim().toUpperCase();
+      if(!out.symbol){ flashError(f("ivSym"), "Какая монета?"); return; }
+      out.qty=invNum(out.qty); out.buyPrice=invNum(out.buyPrice);
+      if(!(out.qty>0)){ flashError(f("ivQty"), "Сколько монет?"); return; }
+    } else {
+      out.name=(out.name||"").trim();
+      out.amount=invNum(out.amount);
+      if(!out.name){ flashError(f("ivName"), "Как назвать?"); return; }
+      if(!(out.amount>0)){ flashError(f("ivAmt"), "Сумма?"); return; }
+      if(out.kind==="deposit"){ out.rate=invNum(out.rate); out.termMonths=+out.termMonths||0; }
+      else out.invested=invNum(out.invested);
+    }
+    ensureInvestments();
+    let fresh=false;
+    if(isNew){ out.id=Date.now(); DATA.investments.push(out); fresh=true; }
+    else {
+      const inv=DATA.investments.find(x=>String(x.id)===s.id);
+      if(!inv){ closeSheet(); return; }
+      fresh= inv.kind==="crypto" && (inv.symbol||"").toUpperCase()!==out.symbol;
+      Object.keys(inv).forEach(k=>{ if(k!=="id") delete inv[k]; });
+      Object.assign(inv, out, {id:inv.id});
+    }
+    scheduleSave(); closeSheet(); render();
+    showActionToast(isNew? `Добавлено: ${invName(out)}` : "Сохранено");
+    if(out.kind==="crypto" && (fresh || DATA.prices.usd[out.symbol]==null)) refreshPrices(true);
+  };
+  const del=f("ivDel");
+  if(del) del.onclick=()=>{
+    const i=DATA.investments.findIndex(x=>String(x.id)===s.id);
+    if(i<0){ closeSheet(); return; }
+    const n=invName(DATA.investments[i]);
+    closeSheet();
+    deleteWithUndo(`«${n}»`, ()=>DATA.investments.splice(i,1));
+  };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-plan", items:[
+const WHATS_NEW={id:"2026-10-02-invest", items:[
+  ["💼","«Инвестиции» заново","Шапка как у счетов: стоимость, прибыль, доли полосой, курс. Активы строками — крипта, вклады, другое; у вкладов — сколько приносят в месяц. Правка и добавление — листом с живым пересчётом."],
   ["📋","«План» заново","Дела → План: прогресс месяца, одна строка добавления с выбором раздела, только непустые разделы. Несделанное из прошлого месяца — одной кнопкой; цель можно отправить в дела на сегодня или на следующий месяц."],
   ["+","Кнопка «+» на любом экране","Справа внизу: дело или привычка, расход, результат дня, сон, вес, тренировка, самочувствие, строчка в дневник — не заходя в раздел."],
   ["🎯","Накопления заново","Цели — карточками с кольцом прогресса. У выбранной — прогноз, когда соберёшь, и «+ Отложить» одной кнопкой. Взносы строками, правка и снятие — листом снизу."],
