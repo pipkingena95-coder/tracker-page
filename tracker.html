@@ -1409,6 +1409,49 @@
   .rt-say{font-size:13px;line-height:1.5;color:var(--grey);margin-top:12px;}
   .rt-say b{color:var(--white);font-weight:600;}
 
+  /* ---- накопления ---- */
+  .sv-ring{--p:0;--s:96px;width:var(--s);height:var(--s);border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+    background:conic-gradient(var(--amber) calc(var(--p)*1%), color-mix(in srgb, var(--grey-dim) 18%, transparent) 0);}
+  .sv-ring::before{content:"";grid-area:1/1;width:calc(var(--s) - 16px);height:calc(var(--s) - 16px);border-radius:50%;
+    background:var(--pane-solid, var(--panel));}
+  .sv-ring span{grid-area:1/1;position:relative;font:700 22px var(--fx-num);letter-spacing:-.03em;color:var(--white);}
+  .sv-ring.sm{--s:46px;}
+  .sv-ring.sm::before{width:36px;height:36px;}
+  .sv-ring.sm span{font-size:15px;}
+  .sv-hero{display:flex;align-items:center;gap:16px;}
+  .sv-hero .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
+  .sv-hero .t b{font-size:17px;font-weight:700;color:var(--white);letter-spacing:-.01em;}
+  .sv-hero .t span{font-size:13px;color:var(--grey);line-height:1.4;}
+  .sv-hero .t span b{font-size:13px;}
+  .sv-pace{font-size:12.5px;line-height:1.5;color:var(--grey);margin-top:12px;}
+  .sv-pace b{color:var(--white);font-weight:600;}
+  .sv-pace .ok{color:var(--green);}
+  .sv-pace .late{color:var(--pink);}
+  .sv-goals{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px;}
+  .sv-goals::-webkit-scrollbar{display:none;}
+  .sv-goal{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:8px 14px 8px 8px;border-radius:18px;
+    border:1px solid var(--border);background:var(--card);cursor:pointer;font:inherit;color:inherit;text-align:left;max-width:220px;}
+  .sv-goal.on{border-color:var(--amber);background:color-mix(in srgb, var(--amber) 14%, var(--card));}
+  .sv-goal .n{display:flex;flex-direction:column;gap:1px;min-width:0;}
+  .sv-goal .n b{font-size:13px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sv-goal .n small{font:500 10.5px 'JetBrains Mono',monospace;color:var(--grey-dim);}
+  .sv-goal.add{border-style:dashed;color:var(--amber);font-weight:600;font-size:13px;padding:12px 16px;}
+  .sv-month{font-size:12.5px;color:var(--grey);margin:2px 0 6px;line-height:1.45;}
+  .sv-month b{color:var(--white);}
+  /* ---- настройки: разделы ---- */
+  .set-card.closed{padding-top:2px;padding-bottom:2px;margin-bottom:8px;}
+  .set-card.closed > :not(.set-head){display:none !important;}
+  .set-card:not(.closed) > h2.set-title{display:none;}
+  .set-head{display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;padding:12px 0;
+    font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  .set-head .i{font-size:20px;width:28px;text-align:center;flex:0 0 auto;}
+  .set-head .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .set-head .t b{font-size:15px;font-weight:600;color:var(--white);}
+  .set-head .t small{font-size:12px;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .set-head .chev{color:var(--grey-dim);font-size:18px;transition:transform .15s;flex:0 0 auto;}
+  .set-card:not(.closed) .set-head{margin-bottom:6px;border-bottom:1px solid var(--hair, var(--border));}
+  .set-card:not(.closed) .set-head .chev{transform:rotate(90deg);}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2116,7 +2159,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 12:37+3ef400fa";
+window.TRACKER_BUILD = "2026-10-02 13:12+a8121609";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2576,6 +2619,7 @@ function render(){
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
     c.innerHTML=renderNotifyCard()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
+    collapseSettings(c);
     bindNotifyCard(); bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
   }
   else if(cur.tab==="doing"){
@@ -2601,7 +2645,7 @@ function render(){
     if(v==="finance"){ c.innerHTML=nav+renderFinanceV3(); bindSubNav(); bindFinance(); bindFinanceV3(); }
     else if(v==="where"){ c.innerHTML=nav+renderWhere2(); bindSubNav(); bindWhere2(); }
     else if(v==="invest"){ c.innerHTML=nav+renderInvest(); bindSubNav(); bindInvest(); }
-    else { c.innerHTML=nav+renderMonthNav()+renderSavings(); bindSubNav(); bindMonthNav(); bindSavings(); }
+    else { c.innerHTML=nav+renderSavings2(); bindSubNav(); bindSavings2(); }
   }
   else if(cur.tab==="health"){ renderHealthTab(c); }
   else if(cur.tab==="journal"){ c.innerHTML=renderDayNav()+renderJournal(); bindDayNav(); bindJournal(); }
@@ -8378,7 +8422,7 @@ function closeSheet(){
   if(was && was.kind==="news") markNewsSeen();
   if(was && was.kind==="listen" && !was.done) voiceCancel();
   if(was && was.kind==="workout"){ dropEmptyWorkout(was.id); render(); }
-  if(was && was.scope==="acc") render();
+  if(was && (was.scope==="acc" || was.scope==="sav")) render();
   // снять подсветку выбранного дня; из карточки пункта — показать правки в списке
   if(was && (was.scope==="fin" || was.kind==="doitem")) render();
 }
@@ -8417,6 +8461,8 @@ function renderSheet(){
   else if(s.kind==="workout") body=renderWorkoutSheet(s);
   else if(s.kind==="acc") body=renderAccSheet(s);
   else if(s.kind==="trf") body=renderTrfSheet(s);
+  else if(s.kind==="savent") body=renderSavEntrySheet(s);
+  else if(s.kind==="goaledit") body=renderGoalEditSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -8457,6 +8503,8 @@ function renderSheet(){
   else if(s.kind==="workout") bindWorkoutSheet(s);
   else if(s.kind==="acc") bindAccSheet(s);
   else if(s.kind==="trf") bindTrfSheet(s);
+  else if(s.kind==="savent") bindSavEntrySheet(s);
+  else if(s.kind==="goaledit") bindGoalEditSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -8491,6 +8539,7 @@ function afterRender(){
   if(!onFin) document.documentElement.classList.remove("has-fab");
   if(cur.sheet && cur.sheet.scope==="fin" && !onFin) cur.sheet=null;
   if(cur.sheet && cur.sheet.scope==="acc" && !(cur.tab==="money" && subView("money")==="where")) cur.sheet=null;
+  if(cur.sheet && cur.sheet.scope==="sav" && !(cur.tab==="money" && subView("money")==="savings")) cur.sheet=null;
   const r=document.getElementById("sheetRoot");
   if(cur.sheet || (r && r.innerHTML && r.dataset.closing!=="1")) renderSheet();
 }
@@ -8763,7 +8812,7 @@ function routeOpen(o){
   }
   else if(o==="health" || o==="sleep"){ cur.tab="health"; cur.sub.health="sleep"; }
   else if(o==="retro"){ cur.tab="doing"; cur.sub.doing="retro"; cur.retroMode="week"; cur.retroOff=0; }
-  else if(o==="settings") cur.tab="settings";
+  else if(o==="settings"){ cur.tab="settings"; cur.setOpen="Уведомления"; }
   else cur.tab="today";
   render();
   window.scrollTo(0,0);
@@ -8800,7 +8849,7 @@ function bindNotifyButtons(root){
   root=root||document;
   root.querySelectorAll('[data-ntask]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.notifyAsk(); }catch(e){} });
   root.querySelectorAll('[data-ntsys]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.notifySettings(); }catch(e){} });
-  root.querySelectorAll('[data-ntsettings]').forEach(b=>b.onclick=()=>{ cur.tab="settings"; render(); window.scrollTo(0,0); });
+  root.querySelectorAll('[data-ntsettings]').forEach(b=>b.onclick=()=>{ cur.tab="settings"; cur.setOpen="Уведомления"; render(); window.scrollTo(0,0); });
   root.querySelectorAll('[data-nttest]').forEach(b=>b.onclick=()=>{
     const c=notifyCfg();
     let ok=false;
@@ -8927,7 +8976,9 @@ function todosWeekRow(dates){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-fail", items:[
+const WHATS_NEW={id:"2026-10-02-sav-set", items:[
+  ["🎯","Накопления заново","Цели — карточками с кольцом прогресса. У выбранной — прогноз, когда соберёшь, и «+ Отложить» одной кнопкой. Взносы строками, правка и снятие — листом снизу."],
+  ["⚙","Настройки — списком","Вместо пяти экранов подряд — разделы с состоянием: уведомления, тема, голос, бэкап, обновления. Раздел раскрывается по нажатию."],
   ["✕","Привычка: «Не смог»","Проспал ранний подъём — нажми на привычку и «✕ Не смог». В отличие от пропуска ❄ серия начнётся заново, но привычка не висит в «осталось» и вечером о ней не напоминают. Можно указать причину — увидишь, что мешает чаще всего."],
   ["Σ","Итоги заново","Дела → Итоги: неделя или месяц одним экраном — привычки, срывы, дела, сон, вес, тренировки, доход, расходы — и сравнение с тем же днём прошлого периода. В воскресенье в 20:00 — уведомление.", ""],
   ["🏋","Тренировки заново","Сверху — месяц, четыре цифры в ряд и календарь. Журнал строками, тренировка правится листом снизу: тип, время, подходы, самочувствие."],
@@ -9910,6 +9961,250 @@ function bindSavings(){
     g.entries.push({date:dt, amount:"", comment:""});
     scheduleSave(); render();
   };
+}
+
+// ═════════ НАКОПЛЕНИЯ ═════════
+// Раньше раздел открывался формой редактирования цели (иконка, название, сумма,
+// дата), а прогресс был ниже. Теперь сверху — цели с кольцами, у выбранной —
+// крупное кольцо, прогноз и «+ Отложить»; правка — листом снизу.
+function goalCollected(g){ return (g.entries||[]).reduce((s,e)=>s+(+e.amount||0),0); }
+function goalPct(g){ const a=+g.amount||0; return a? Math.max(0, Math.min(100, Math.round(goalCollected(g)/a*100))) : 0; }
+function goalPaceHtml(g){
+  const amount=+g.amount||0, collected=goalCollected(g), remaining=Math.max(0, amount-collected);
+  if(!amount) return `<div class="sv-pace">Сумма цели не задана — нажми «Изменить».</div>`;
+  if(remaining<=0) return `<div class="sv-pace ok">Цель достигнута 🎉</div>`;
+  const out=[];
+  if(g.deadline){
+    const today=new Date(); today.setHours(0,0,0,0);
+    const dl=parseLocalDate(g.deadline);
+    const days=dl? Math.ceil((dl-today)/86400000) : 0;
+    const dlTxt=dl? `${dl.getDate()} ${MONTHS_GEN[dl.getMonth()]} ${dl.getFullYear()}` : g.deadline;
+    if(days<=0) out.push(`<span class="late">Срок ${dlTxt} прошёл</span>, осталось <b>${fmtRub(remaining)}</b>.`);
+    else {
+      const perMonth=Math.ceil(remaining/days*30.4);
+      out.push(`Чтобы успеть к ${dlTxt}: по <b>${fmtRub(perMonth)}</b> в месяц (${days} ${plural(days,'день','дня','дней')}).`);
+    }
+  }
+  const f=projectSavingsCompletion(g.entries||[], remaining);
+  if(f) out.push(`В среднем темпе ${fmtRub(f.avgMonthly)} в месяц — к <b>${MONTHS_DAT[f.target.getMonth()]} ${f.target.getFullYear()}</b>.`);
+  else if(!g.deadline) out.push(`Отложи пару раз — появится прогноз, когда соберёшь.`);
+  return `<div class="sv-pace">${out.join(" ")}</div>`;
+}
+function renderSavings2(){
+  ensureSavingsGoals();
+  const goals=DATA.savingsGoals;
+  if(cur.savingsGoalIdx>=goals.length) cur.savingsGoalIdx=0;
+  const gi=cur.savingsGoalIdx, g=goals[gi];
+  const amount=+g.amount||0, collected=goalCollected(g), pct=goalPct(g);
+  const pills = `<div class="sv-goals">${goals.map((x,i)=>`<button class="sv-goal ${i===gi?'on':''}" data-goalpick="${i}">
+      <span class="sv-ring sm" style="--p:${goalPct(x)}"><span>${x.icon||'🎯'}</span></span>
+      <span class="n"><b>${escapeHtml(x.name||"Цель")}</b><small>${goalPct(x)}% · ${fmtRub(goalCollected(x))}</small></span>
+    </button>`).join("")}<button class="sv-goal add" data-goalnew="1">+ Цель</button></div>`;
+  const hero=`<div class="card fx-hero">
+    <div class="sv-hero">
+      <div class="sv-ring" style="--p:${pct}"><span>${pct}%</span></div>
+      <div class="t"><b>${g.icon||'🎯'} ${escapeHtml(g.name||"Цель")}</b>
+        <span>Отложено <b>${fmtRub(collected)}</b>${amount? ` из ${fmtRub(amount)}` : ""}</span>
+        ${amount && collected<amount? `<span>Осталось ${fmtRub(amount-collected)}</span>` : ""}</div>
+    </div>
+    ${goalPaceHtml(g)}
+    <div class="hl-row"><button class="btn" data-savadd="1">+ Отложить</button><button class="btn ghost" data-goaledit="${gi}">Изменить</button></div>
+    <canvas id="savChart" style="width:100%;height:130px;display:block;margin-top:14px;"></canvas>
+  </div>`;
+  const mPrefix=`${cur.year}-${pad2(cur.monthIdx+1)}`;
+  const monthEntries=(g.entries||[]).map((e,i)=>({e,i})).filter(x=>x.e.date && x.e.date.slice(0,7)===mPrefix)
+    .sort((a,b)=>(b.e.date||"").localeCompare(a.e.date||"") || b.i-a.i);
+  const monthSum=monthEntries.reduce((s,x)=>s+(+x.e.amount||0),0);
+  const mTarget=+((g.monthlyTargets||{})[savMonthKey()])||0;
+  const hist=`<div class="card">
+    <div class="hb2-nav" style="margin-top:0;"><button data-svnav="-1" aria-label="Прошлый месяц">‹</button><span>${MONTHS_RU[cur.monthIdx]} ${cur.year}</span><button data-svnav="1" aria-label="Следующий месяц">›</button></div>
+    <div class="sv-month" style="margin-top:12px;">За месяц <b>${fmtRub(monthSum)}</b>${mTarget? ` из плана ${fmtRub(mTarget)} — ${Math.round(monthSum/mTarget*100)}%` : ""}${monthEntries.length? ` · ${monthEntries.length} ${plural(monthEntries.length,'взнос','взноса','взносов')}` : ""}</div>
+    ${mTarget? `<div class="hb2-meter"><i style="width:${Math.max(0,Math.min(100,Math.round(monthSum/mTarget*100)))}%"></i></div>` : ""}
+    ${monthEntries.length? monthEntries.map(({e,i})=>{
+      const d=parseLocalDate(e.date), v=+e.amount||0;
+      return `<button class="fx-row" data-savopen="${i}">
+        <i class="dot" style="background:${v<0? 'var(--pink)' : 'var(--amber)'}"></i>
+        <span class="t"><b>${d? `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}` : "без даты"}</b>${e.comment? `<small>${escapeHtml(e.comment)}</small>` : ""}</span>
+        <span class="a ${v<0?'neg':'pos'}">${v<0? "−" : "+"}${fmtRub(Math.abs(v))}</span>
+      </button>`; }).join("")
+      : `<div class="fx-empty sm">В этом месяце взносов нет</div>`}
+  </div>`;
+  return `<div class="card" style="padding-top:12px;padding-bottom:12px;">${pills}</div>` + hero + hist;
+}
+function bindSavings2(){
+  const g=DATA.savingsGoals[cur.savingsGoalIdx];
+  const entries=(g.entries||[]).filter(e=>e.date).slice().sort((a,b)=>a.date.localeCompare(b.date));
+  let run=0;
+  const vals=entries.map(e=>{ run+=(+e.amount||0); return run; });
+  if(vals.length) drawLineArea("savChart", entries.map(e=>e.date.slice(5).split('-').reverse().join('.')), vals, cssVar("--amber"), cssVar("--amber"), +g.amount||0);
+  else { const cv=document.getElementById("savChart"); if(cv) cv.style.display="none"; }
+  document.querySelectorAll('[data-goalpick]').forEach(b=>b.onclick=()=>{ cur.savingsGoalIdx=+b.dataset.goalpick; render(); });
+  document.querySelectorAll('[data-goalnew]').forEach(b=>b.onclick=()=>openGoalEdit(null));
+  document.querySelectorAll('[data-goaledit]').forEach(b=>b.onclick=()=>openGoalEdit(+b.dataset.goaledit));
+  document.querySelectorAll('[data-savadd]').forEach(b=>b.onclick=()=>openSavEntry(null));
+  document.querySelectorAll('[data-savopen]').forEach(b=>b.onclick=()=>openSavEntry(+b.dataset.savopen));
+  document.querySelectorAll('[data-svnav]').forEach(b=>b.onclick=()=>{
+    cur.monthIdx+= +b.dataset.svnav;
+    if(cur.monthIdx<0){ cur.monthIdx=11; cur.year--; }
+    if(cur.monthIdx>11){ cur.monthIdx=0; cur.year++; }
+    render();
+  });
+}
+// ---------- лист: взнос ----------
+function openSavEntry(i){
+  const g=DATA.savingsGoals[cur.savingsGoalIdx], e = i==null ? null : (g.entries||[])[i];
+  const now=new Date(), same = now.getFullYear()===cur.year && now.getMonth()===cur.monthIdx;
+  cur.sheet={kind:"savent", scope:"sav", i: i==null? null : i, focus: i==null,
+    draft: e ? {amount:String(Math.abs(+e.amount||0)).replace(".",","), sign:(+e.amount<0)? -1 : 1, date:e.date||todayStr(), comment:e.comment||""}
+      : {amount:"", sign:1, date: same? todayStr() : `${cur.year}-${pad2(cur.monthIdx+1)}-01`, comment:""}};
+  render();
+}
+function renderSavEntrySheet(s){
+  const g=DATA.savingsGoals[cur.savingsGoalIdx], d=s.draft;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${s.i==null? "Отложить" : "Взнос"}</b><span class="zero">${g.icon||'🎯'} ${escapeHtml(g.name||"Цель")}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="fx-sign">
+      <button class="${d.sign>0?'on pos':''}" data-svsign="1">+ Отложить</button>
+      <button class="${d.sign<0?'on neg':''}" data-svsign="-1">− Снять</button>
+    </div>
+    <label class="fx-amt ${d.sign<0?'neg':'pos'}"><span class="s">${d.sign<0?'−':'+'}</span>
+      <input id="svAmt" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.amount||"")}"><span class="c">₽</span></label>
+    <input class="sh-in" id="svDate" type="date" value="${escapeHtml(d.date||"")}">
+    <input class="sh-in" id="svCom" placeholder="Комментарий — откуда или на что" value="${escapeHtml(d.comment||"")}" autocomplete="off">
+    <div class="sh-actions">
+      ${s.i!=null? `<button class="btn ghost danger" id="svDel">Удалить</button>` : ""}
+      <button class="btn" id="svSave">${s.i==null? "Записать" : "Сохранить"}</button>
+    </div>`;
+}
+function bindSavEntrySheet(s){
+  const root=sheetRoot(), d=s.draft, g=DATA.savingsGoals[cur.savingsGoalIdx];
+  const sync=()=>{ const a=document.getElementById("svAmt"), dt=document.getElementById("svDate"), c=document.getElementById("svCom");
+    if(a) d.amount=a.value; if(dt) d.date=dt.value; if(c) d.comment=c.value; };
+  ["svAmt","svDate","svCom"].forEach(id=>{ const el=document.getElementById(id); if(el) el.oninput=sync; });
+  root.querySelectorAll('[data-svsign]').forEach(b=>b.onclick=()=>{ sync(); d.sign=+b.dataset.svsign; renderSheet(); });
+  const a=document.getElementById("svAmt");
+  if(a) a.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); save(); } };
+  const save=()=>{
+    sync();
+    const v=parseMoneyIn(d.amount);
+    if(!(v>0)){ flashError(document.getElementById("svAmt"), "Сколько?"); return; }
+    const rec={date:d.date||todayStr(), amount:v*(d.sign<0? -1 : 1), comment:(d.comment||"").trim()};
+    g.entries=g.entries||[];
+    if(s.i==null) g.entries.push(rec); else Object.assign(g.entries[s.i], rec);
+    scheduleSave(); closeSheet(); render();
+    showActionToast(`${d.sign<0? "Снято" : "Отложено"}: ${fmtRub(v)} · ${g.name||"цель"}`);
+  };
+  const sv=document.getElementById("svSave");
+  if(sv) sv.onclick=save;
+  const del=document.getElementById("svDel");
+  if(del) del.onclick=()=>{ const i=s.i; closeSheet(); deleteWithUndo("Взнос", ()=>g.entries.splice(i,1)); };
+  if(s.focus && a){ s.focus=false; a.focus(); }
+}
+// ---------- лист: цель ----------
+function openGoalEdit(i){
+  const g = i==null ? null : DATA.savingsGoals[i];
+  cur.sheet={kind:"goaledit", scope:"sav", i: i==null? null : i,
+    draft: {icon:g? g.icon||"🎯" : "🎯", name:g? g.name||"" : "", amount:g && +g.amount? String(+g.amount) : "", deadline:g? g.deadline||"" : "",
+      month: g ? String(+((g.monthlyTargets||{})[savMonthKey()])||"" ) : ""}};
+  if(cur.sheet.draft.month==="0") cur.sheet.draft.month="";
+  render();
+}
+const GOAL_ICONS=["🎯","🏠","🚗","✈️","💻","📱","🛡","💍","🎓","🏖"];
+function renderGoalEditSheet(s){
+  const d=s.draft, isNew=s.i==null;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${isNew? "Новая цель" : "Цель"}</b><span class="zero">на что копишь</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="fx-pick sm">${GOAL_ICONS.map(ic=>`<button class="${d.icon===ic?'on':''}" data-gicon="${ic}">${ic}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:12px;">Название</div>
+    <input class="sh-in" id="geName" style="margin-top:6px;" placeholder="например, подушка безопасности" value="${escapeHtml(d.name)}" autocomplete="off">
+    <div class="sh-lab" style="margin-top:12px;">Сколько нужно</div>
+    <label class="fx-amt pos"><input id="geAmt" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.amount)}"><span class="c">₽</span></label>
+    <div class="ws-grid2">
+      <label class="ws-field"><span>Успеть к</span><input type="date" id="geDl" value="${escapeHtml(d.deadline)}"></label>
+      <label class="ws-field"><span>План на ${MONTHS_RU[cur.monthIdx].toLowerCase()}</span><input type="text" inputmode="decimal" id="geMonth" placeholder="—" value="${escapeHtml(d.month)}"></label>
+    </div>
+    <div class="sh-actions">
+      ${!isNew && DATA.savingsGoals.length>1? `<button class="btn ghost danger" id="geDel">Удалить</button>` : ""}
+      <button class="btn" id="geSave">${isNew? "Создать" : "Сохранить"}</button>
+    </div>`;
+}
+function bindGoalEditSheet(s){
+  const root=sheetRoot(), d=s.draft;
+  const sync=()=>{ const g=id=>document.getElementById(id);
+    if(g("geName")) d.name=g("geName").value; if(g("geAmt")) d.amount=g("geAmt").value;
+    if(g("geDl")) d.deadline=g("geDl").value; if(g("geMonth")) d.month=g("geMonth").value; };
+  ["geName","geAmt","geDl","geMonth"].forEach(id=>{ const el=document.getElementById(id); if(el) el.oninput=sync; });
+  root.querySelectorAll('[data-gicon]').forEach(b=>b.onclick=()=>{ sync(); d.icon=b.dataset.gicon; renderSheet(); });
+  const sv=document.getElementById("geSave");
+  if(sv) sv.onclick=()=>{
+    sync();
+    const name=(d.name||"").trim();
+    if(!name){ flashError(document.getElementById("geName"), "Как назвать цель?"); return; }
+    const g = s.i==null ? {id:Date.now(), entries:[], monthlyTargets:{}} : DATA.savingsGoals[s.i];
+    g.icon=d.icon||"🎯"; g.name=name; g.amount=parseMoneyIn(d.amount)||0; g.deadline=d.deadline||"";
+    g.monthlyTargets=g.monthlyTargets||{};
+    const mt=parseMoneyIn(d.month);
+    if(mt>0) g.monthlyTargets[savMonthKey()]=mt; else delete g.monthlyTargets[savMonthKey()];
+    if(s.i==null){ DATA.savingsGoals.push(g); cur.savingsGoalIdx=DATA.savingsGoals.length-1; }
+    scheduleSave(); closeSheet(); render();
+  };
+  const del=document.getElementById("geDel");
+  if(del) del.onclick=()=>{
+    const i=s.i, n=(DATA.savingsGoals[i]||{}).name||"цель";
+    closeSheet();
+    deleteWithUndo(`Цель «${n}»`, ()=>{ DATA.savingsGoals.splice(i,1); cur.savingsGoalIdx=0; });
+  };
+}
+
+// ═════════ НАСТРОЙКИ: РАЗДЕЛЫ ═════════
+// Раньше — пять экранов карточек подряд. Теперь — список разделов с состоянием;
+// раздел раскрывается по нажатию. Карточки и их кнопки те же: свёрнутые просто
+// скрыты, поэтому всё, что к ним привязано, продолжает работать.
+function settingsSummary(title){
+  try{
+    if(title.includes("Уведомления")) return notifyNative()? (notifyOn()? "включены" : "выключены — включи") : (isNativeShell()? "нужно приложение 2.3+" : "что и когда присылать");
+    if(title.includes("Внешний вид")){ const th=(GLASS_THEMES||[]).find(x=>x[0]===appearance().glass); return th? `«Стекло» · ${th[1]}` : "темы «Стекла»"; }
+    if(title.includes("Утренняя сводка")) return "бот в Telegram";
+    if(title.includes("Голос")) return voiceSupported()? "распознавание работает" : "нечем распознавать";
+    if(title.includes("Прогресс")) return "привычки и тренировки по месяцам";
+    if(title.includes("Данные")){ const t=+DATA._lastBackup||0; if(!t) return "бэкапа ещё не было"; const n=Math.floor((Date.now()-t)/86400000); return n<=0? "бэкап сегодня" : `бэкап ${n} ${plural(n,'день','дня','дней')} назад`; }
+    if(title.includes("облаке")) return "копии через бот";
+    if(title.includes("Обновления")) return `сборка ${(currentBuild()||"").slice(0,16)}`;
+  }catch(e){}
+  return "";
+}
+function collapseSettings(c){
+  // голые блоки (плитки сводки) — в следующую карточку, под её заголовок
+  let pending=[];
+  [...c.children].forEach(el=>{
+    if(!el.classList.contains("card")){ pending.push(el); return; }
+    if(pending.length){ const h=el.querySelector(':scope > h2'); pending.forEach(p=> h? h.after(p) : el.prepend(p)); pending=[]; }
+  });
+  const open=cur.setOpen||"";
+  [...c.children].filter(el=>el.classList.contains("card")).forEach(card=>{
+    const h=card.querySelector(':scope > h2');
+    if(!h) return;
+    const raw=h.textContent.replace(/\s*·.*$/,"").trim();
+    const m=raw.match(/^([^\p{L}\p{N}]+)\s*(.*)$/u);
+    const title=m? m[2].trim() : raw;
+    const icon=(m && m[1].trim()) || (title.includes("Прогресс")? "📊" : "•");
+    h.classList.add("set-title");
+    card.classList.add("set-card");
+    if(open!==title) card.classList.add("closed");
+    const head=document.createElement("button");
+    head.className="set-head";
+    head.innerHTML=`<span class="i">${escapeHtml(icon||"•")}</span><span class="t"><b>${escapeHtml(title)}</b>${settingsSummary(raw)? `<small>${escapeHtml(settingsSummary(raw))}</small>` : ""}</span><span class="chev">›</span>`;
+    head.onclick=()=>{
+      cur.setOpen = cur.setOpen===title ? "" : title;
+      render();
+      if(cur.setOpen){ const t=[...document.querySelectorAll('.set-card:not(.closed)')][0]; if(t) t.scrollIntoView({block:"start"}); window.scrollBy(0,-8); }
+    };
+    card.prepend(head);
+  });
 }
 
 // ---------- INVESTMENTS ----------
