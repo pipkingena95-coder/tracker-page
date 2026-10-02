@@ -1623,6 +1623,38 @@
   .md-icons button{width:42px;height:42px;border-radius:12px;border:1px solid var(--border);background:var(--card);font-size:20px;cursor:pointer;}
   .md-icons button.on{border-color:var(--amber);background:color-mix(in srgb, var(--amber) 16%, var(--card));}
 
+  /* ---- календарь событий ---- */
+  .ce-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:12px;}
+  .ce-wd span{text-align:center;font-size:10.5px;color:var(--grey-dim);letter-spacing:.06em;text-transform:uppercase;}
+  .ce-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:6px;}
+  .ce-d{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:3px;padding:7px 0 6px;min-height:46px;border-radius:12px;
+    border:1px solid transparent;background:none;cursor:pointer;font:inherit;color:var(--white);}
+  .ce-d b{font:600 14px var(--fx-num);}
+  .ce-d.we b{color:var(--grey);}
+  .ce-d.past b{opacity:.55;}
+  .ce-d.today{border-color:color-mix(in srgb, var(--amber) 60%, transparent);}
+  .ce-d.sel{background:var(--amber);border-color:var(--amber);}
+  .ce-d.sel b{color:var(--on-accent);opacity:1;}
+  .ce-dots{display:flex;gap:3px;height:6px;}
+  .ce-dots i{width:6px;height:6px;border-radius:50%;background:var(--amber);}
+  .ce-dots i.t{background:var(--cyan);} .ce-dots i.p{background:var(--pink);}
+  .ce-d.sel .ce-dots i{background:var(--on-accent);}
+  .ce-day h3{font-size:15px;font-weight:700;color:var(--white);margin:0 0 6px;letter-spacing:-.01em;}
+  .ce-it{display:flex;align-items:center;gap:11px;width:100%;padding:10px 2px;border:none;border-bottom:1px solid var(--hair, var(--border));
+    background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  .ce-it:last-child{border-bottom:none;}
+  .ce-it .tm{font:600 12.5px 'JetBrains Mono',monospace;color:var(--amber);min-width:44px;}
+  .ce-it .tm.t{color:var(--cyan);} .ce-it .tm.p{color:var(--pink);}
+  .ce-it .x{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .ce-it .x b{font-size:13.5px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ce-it .x small{font-size:11.5px;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ce-it.done .x b{text-decoration:line-through;color:var(--grey-dim);}
+  .ce-legend{display:flex;gap:12px;margin-top:10px;font-size:11px;color:var(--grey-dim);}
+  .ce-legend i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-right:5px;}
+  .ce-legend i.t{background:var(--cyan);} .ce-legend i.p{background:var(--pink);}
+  .ev-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .ev-row2 .sh-in{margin-top:4px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2330,7 +2362,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-03 00:14+0a45bdb2";
+window.TRACKER_BUILD = "2026-10-03 00:18+186020b5";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2800,10 +2832,13 @@ function render(){
   }
   else if(cur.tab==="doing"){
     const v=subView("doing");
-    const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["plan","План"],["retro","Итоги"]]);
+    const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["cal","Календарь"],["plan","План"],["retro","Итоги"]]);
     if(v==="habits"){
       c.innerHTML = nav + renderHabitAutoCard() + renderHabitsPage();
       bindSubNav(); bindHabitsPage(); bindHabitAutoCard();
+    } else if(v==="cal"){
+      c.innerHTML = nav + renderEvCalendar();
+      bindSubNav(); bindEvCalendar();
     } else if(v==="plan"){
       c.innerHTML = nav + renderPlan2();
       bindSubNav(); bindPlan2();
@@ -8644,6 +8679,7 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="event") body=renderEventSheet(s);
   else if(s.kind==="mode") body=renderModeSheet(s);
   else if(s.kind==="modeedit") body=renderModeEditSheet(s);
   else if(s.kind==="shot") body=renderShotSheet(s);
@@ -8696,6 +8732,7 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="event") bindEventSheet(s);
   else if(s.kind==="mode") bindModeSheet(s);
   else if(s.kind==="modeedit") bindModeEditSheet(s);
   else if(s.kind==="shot") bindShotSheet(s);
@@ -8938,6 +8975,7 @@ function buildNotifyPlan(){
       if(at<=now) return;
       items.push(Object.assign({key:k, at, ch, title:n.title, text:n.text||"", open:n.open||"today"}, extra||{}));
     };
+    notifyEventItems(day, key, now).forEach(x=>items.push(x));
     if(c.reminders) (DATA.reminders||[]).forEach(r=>{
       if(r.enabled && r.time) add(`r:${r.id}:${key}`, r.time, "remind", {title:r.label||"Напоминание", text:"", open:"today"}, {snooze:true});
     });
@@ -9000,6 +9038,12 @@ function routeOpen(o){
   if(!o || !DATA) return;
   if(cur.sheet && cur.sheet.kind==="news") markNewsSeen();
   cur.sheet=null;
+  if(o.indexOf("calendar:")===0){
+    const k=o.slice(9), d=parseLocalDate(k);
+    cur.tab="doing"; cur.sub.doing="cal"; cur.ceSel=k; if(d){ cur.ceY=d.getFullYear(); cur.ceM=d.getMonth(); }
+    render(); window.scrollTo(0,0);
+    return;
+  }
   if(o.indexOf("shot:")===0){
     const p=o.split(":");
     render();
@@ -9200,7 +9244,7 @@ function bindQaFab(){
 }
 // значки — текстом, не эмодзи: одного цвета с темой
 const QA_TILES=[["todo","☰","Дело или привычка"],["exp","₽","Расход"],["res","₮","Результат дня"],["sleep","☾","Сон"],
-  ["weight","⚖︎","Вес"],["wk","⚡︎","Тренировка"],["feel","☀︎","Самочувствие"],["note","✎","В дневник"]];
+  ["weight","⚖︎","Вес"],["wk","⚡︎","Тренировка"],["feel","☀︎","Самочувствие"],["note","✎","В дневник"],["event","📅","Событие"]];
 function renderQuickSheet(s){
   const head=(t, sub, back)=>`<div class="sh-head">${back? `<button class="sh-nav" data-qaback="1" aria-label="Назад">‹</button>` : ""}
     <div class="sh-title ${back? "" : "left"}"><b>${t}</b><span class="zero">${sub}</span></div>
@@ -9226,8 +9270,8 @@ function renderQuickSheet(s){
     <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
     <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
   }
-  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button><button class="qa-tile qa-wide" data-qa="shot"><span class="i">🖼</span><span class="tt"><span>Со скриншота</span><small>банк или биржа — суммы запишутся сами</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l])=>
-    `<button class="qa-tile" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button><button class="qa-tile qa-wide" data-qa="shot"><span class="i">🖼</span><span class="tt"><span>Со скриншота</span><small>банк или биржа — суммы запишутся сами</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l],i)=>
+    `<button class="qa-tile${i===QA_TILES.length-1 && QA_TILES.length%2? " qa-wide" : ""}" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
 }
 function quickWorkout(){
   ensureWorkouts();
@@ -9244,6 +9288,7 @@ function bindQuickSheet(s){
   root.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{
     const k=b.dataset.qa;
     if(k==="phrase"){ openDayPhrase(false); return; }
+    if(k==="event"){ openEventSheet(null, todayStr()); return; }
     if(k==="qr"){ closeSheet(); scanReceipt(); return; }
     if(k==="shot"){ closeSheet(); pickShot(); return; }
     if(["todo","weight","note","feel"].includes(k)){
@@ -11472,9 +11517,194 @@ document.addEventListener("click", e=>{
   e.preventDefault(); openSheet({kind:"mode", date:todayStr()});
 });
 
+// ═════════ КАЛЕНДАРЬ СОБЫТИЙ ═════════
+// Свои события: встречи, дни рождения, поездки — с повтором и напоминанием.
+// В сетке месяца рядом с ними дела со сроком и платежи, чтобы день был виден целиком.
+const EV_REPEAT=[["","не повторять"],["week","каждую неделю"],["month","каждый месяц"],["year","каждый год"]];
+const EV_REMIND=[[null,"без напоминания"],[0,"в момент"],[15,"за 15 мин"],[60,"за час"],[1440,"за день"]];
+function eventsData(){ if(!Array.isArray(DATA.events)) DATA.events=[]; return DATA.events; }
+function eventOccursOn(ev, key){
+  if(!ev || !ev.date || key<ev.date) return false;
+  if(ev.date===key) return true;
+  const a=parseLocalDate(ev.date), b=parseLocalDate(key);
+  if(!a || !b) return false;
+  if(ev.repeat==="week") return a.getDay()===b.getDay();
+  if(ev.repeat==="month"){ const nd=daysInMonth(b.getFullYear(), b.getMonth()); return Math.min(a.getDate(), nd)===b.getDate(); }
+  if(ev.repeat==="year") return a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+  return false;
+}
+function eventsOn(key){
+  return (DATA.events||[]).filter(ev=>eventOccursOn(ev, key)).sort((x,y)=>(x.time||"").localeCompare(y.time||""));
+}
+function paymentsOn(key){
+  const d=parseLocalDate(key);
+  if(!d) return [];
+  const nd=daysInMonth(d.getFullYear(), d.getMonth()), prefix=key.slice(0,7);
+  return (DATA.finance.recurring||[]).filter(r=>r.type!=="доход" && (+r.amount||0)>0
+    && (!r.since || r.since<=prefix) && Math.max(1, Math.min(31, +r.day||1, nd))===d.getDate());
+}
+function todosOn(key){ return (DATA.todos||[]).map((t,i)=>({t,i})).filter(x=>x.t.dueDate===key); }
+function ceDayLabel(key){
+  const d=parseLocalDate(key);
+  return d? `${capFirst(WEEKDAYS_FULL[(d.getDay()+6)%7])}, ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}` : key;
+}
+function evRemindLabel(ev){ const r=EV_REMIND.find(x=>x[0]===ev.remind); return r && ev.remind!=null? r[1] : ""; }
+function renderEvCalendar(){
+  const now=new Date(), ts=todayStr();
+  if(cur.ceY==null){ cur.ceY=now.getFullYear(); cur.ceM=now.getMonth(); }
+  const y=cur.ceY, m=cur.ceM, sel=cur.ceSel||ts;
+  const first=new Date(y, m, 1), off=(first.getDay()+6)%7, nd=daysInMonth(y, m);
+  let cells="";
+  for(let i=0;i<off;i++) cells+=`<span></span>`;
+  for(let d=1; d<=nd; d++){
+    const k=`${y}-${pad2(m+1)}-${pad2(d)}`, wd=(new Date(y,m,d).getDay()+6)%7;
+    const ev=eventsOn(k).length, td=todosOn(k).filter(x=>!x.t.done).length, py=paymentsOn(k).length;
+    const dots=[...Array(Math.min(ev,3)).fill('<i></i>'), ...(td? ['<i class="t"></i>'] : []), ...(py? ['<i class="p"></i>'] : [])].slice(0,4).join("");
+    cells+=`<button class="ce-d ${k===ts?'today':''} ${k===sel?'sel':''} ${wd>=5?'we':''} ${k<ts?'past':''}" data-cesel="${k}"><b>${d}</b><span class="ce-dots">${dots}</span></button>`;
+  }
+  const evs=eventsOn(sel), tds=todosOn(sel), pys=paymentsOn(sel);
+  const rows=[
+    ...evs.map(ev=>`<button class="ce-it" data-ceev="${ev.id}"><span class="tm">${ev.time||"весь день"}</span>
+      <span class="x"><b>${escapeHtml(ev.title||"Событие")}</b><small>${[ev.end? "до "+ev.end : "", ev.repeat? EV_REPEAT.find(r=>r[0]===ev.repeat)[1] : "", evRemindLabel(ev), ev.note||""].filter(Boolean).map(escapeHtml).join(" · ") || "событие"}</small></span></button>`),
+    ...tds.map(({t,i})=>`<button class="ce-it ${t.done?'done':''}" data-ceto="${i}"><span class="tm t">дело</span>
+      <span class="x"><b>${escapeHtml(t.text||"Дело")}</b><small>${t.done? "сделано" : t.priority==="high"? "срочно" : "срок в этот день"}</small></span></button>`),
+    ...pys.map(r=>`<button class="ce-it" data-cepay="1"><span class="tm p">платёж</span>
+      <span class="x"><b>${escapeHtml(r.comment||r.category||"Платёж")}</b><small>${escapeHtml(fmtMoney(+r.amount, accountCurrency(r.accountId||defaultAccountId()), 0))} · каждый месяц</small></span></button>`)];
+  // ближайшие события после выбранного дня — на две недели вперёд
+  const up=[];
+  for(let i=1;i<=14 && up.length<6;i++){
+    const k=addDaysKey(sel, i);
+    eventsOn(k).forEach(ev=>{ if(up.length<6) up.push({k, ev}); });
+  }
+  return `<div class="card">
+    <div class="hb2-nav" style="margin-top:0;"><button data-cenav="-1" aria-label="Прошлый месяц">‹</button><span>${MONTHS_RU[m]} ${y}</span><button data-cenav="1" aria-label="Следующий месяц">›</button></div>
+    <div class="ce-wd">${WD_SHORT.map(l=>`<span>${l}</span>`).join("")}</div>
+    <div class="ce-grid">${cells}</div>
+    <div class="ce-legend"><span><i></i>события</span><span><i class="t"></i>дела</span><span><i class="p"></i>платежи</span></div>
+  </div>
+  <div class="card ce-day">
+    <div class="fx-rec-head"><h3>${sel===ts? "Сегодня · " : sel===addDaysKey(ts,1)? "Завтра · " : ""}${escapeHtml(ceDayLabel(sel))}</h3><button class="fx-linkbtn" data-cenew="${sel}">+ Событие</button></div>
+    ${rows.length? rows.join("") : `<div class="fx-empty sm">В этот день ничего нет</div>`}
+  </div>
+  ${up.length? `<div class="card"><h2>Дальше</h2>${up.map(({k,ev})=>{ const d=parseLocalDate(k);
+    return `<button class="ce-it" data-ceev="${ev.id}" data-cekey="${k}"><span class="tm">${d.getDate()} ${MONTHS_SHORT[d.getMonth()].toLowerCase()}</span>
+      <span class="x"><b>${escapeHtml(ev.title||"Событие")}</b><small>${escapeHtml([WD_SHORT[(d.getDay()+6)%7], ev.time||"весь день"].join(" · "))}</small></span></button>`; }).join("")}</div>` : ""}`;
+}
+function bindEvCalendar(){
+  document.querySelectorAll('[data-cenav]').forEach(b=>b.onclick=()=>{
+    cur.ceM+= +b.dataset.cenav;
+    if(cur.ceM<0){ cur.ceM=11; cur.ceY--; } if(cur.ceM>11){ cur.ceM=0; cur.ceY++; }
+    render();
+  });
+  document.querySelectorAll('[data-cesel]').forEach(b=>b.onclick=()=>{ cur.ceSel=b.dataset.cesel; render(); });
+  document.querySelectorAll('[data-cenew]').forEach(b=>b.onclick=()=>openEventSheet(null, b.dataset.cenew));
+  document.querySelectorAll('[data-ceev]').forEach(b=>b.onclick=()=>openEventSheet(b.dataset.ceev));
+  document.querySelectorAll('[data-ceto]').forEach(b=>b.onclick=()=>openSheet({kind:"doitem", ref:"t:"+b.dataset.ceto}));
+  document.querySelectorAll('[data-cepay]').forEach(b=>b.onclick=()=>{ cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="exp"; render(); window.scrollTo(0,0); });
+}
+function openEventSheet(id, date){
+  const ev= id? eventsData().find(x=>String(x.id)===String(id)) : null;
+  openSheet({kind:"event", id: ev? String(ev.id) : null,
+    draft: ev? JSON.parse(JSON.stringify(ev)) : {title:"", date: date||todayStr(), time:"", end:"", repeat:"", remind:15, note:""}});
+}
+function renderEventSheet(s){
+  const d=s.draft, isNew=!s.id;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${isNew? "Новое событие" : "Событие"}</b><span class="zero">${escapeHtml(ceDayLabel(d.date))}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <input class="sh-in" id="evTitle" style="margin-top:4px;" placeholder="Встреча, день рождения, поездка…" value="${escapeHtml(d.title||"")}" autocomplete="off">
+    <div class="ev-row2">
+      <div><div class="sh-lab">Дата</div><input class="sh-in" type="date" id="evDate" value="${escapeHtml(d.date||"")}"></div>
+      <div><div class="sh-lab">Время</div><input class="sh-in" type="time" id="evTime" value="${escapeHtml(d.time||"")}"></div>
+    </div>
+    ${d.time? `<div class="ev-row2"><div><div class="sh-lab">До (необязательно)</div><input class="sh-in" type="time" id="evEnd" value="${escapeHtml(d.end||"")}"></div><div></div></div>` : `<div class="fx-hint" style="margin:6px 2px 0;">Без времени — событие на весь день.</div>`}
+    <div class="sh-lab" style="margin-top:14px;">Повтор</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${EV_REPEAT.map(([k,l])=>`<button class="${(d.repeat||"")===k?'on':''}" data-evrep="${k}">${l}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:14px;">Напомнить</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${EV_REMIND.map(([k,l])=>`<button class="${d.remind===k?'on':''}" data-evrem="${k==null? "" : k}">${l}</button>`).join("")}</div>
+    <input class="sh-in" id="evNote" placeholder="Заметка — адрес, что взять…" value="${escapeHtml(d.note||"")}" autocomplete="off">
+    <div class="sh-actions">
+      ${isNew? "" : `<button class="btn ghost danger" id="evDel">Удалить</button>`}
+      <button class="btn" id="evSave">${isNew? "Добавить" : "Готово"}</button>
+    </div>`;
+}
+function bindEventSheet(s){
+  const d=s.draft, root=sheetRoot(), f=id=>document.getElementById(id);
+  const sync=()=>{
+    if(f("evTitle")) d.title=f("evTitle").value;
+    if(f("evDate")) d.date=f("evDate").value || d.date;
+    if(f("evTime")) d.time=f("evTime").value;
+    if(f("evEnd")) d.end=f("evEnd").value;
+    if(f("evNote")) d.note=f("evNote").value;
+  };
+  ["evTitle","evNote","evEnd"].forEach(id=>{ const el=f(id); if(el) el.oninput=sync; });
+  ["evDate","evTime"].forEach(id=>{ const el=f(id); if(el) el.onchange=()=>{ sync(); renderSheet(); }; });
+  root.querySelectorAll('[data-evrep]').forEach(b=>b.onclick=()=>{ sync(); d.repeat=b.dataset.evrep; renderSheet(); });
+  root.querySelectorAll('[data-evrem]').forEach(b=>b.onclick=()=>{ sync(); d.remind= b.dataset.evrem===""? null : +b.dataset.evrem; renderSheet(); });
+  const sv=f("evSave");
+  if(sv) sv.onclick=()=>{
+    sync();
+    const title=(d.title||"").trim();
+    if(!title){ flashError(f("evTitle"), "Как назвать событие?"); return; }
+    if(!d.date){ flashError(f("evDate"), "Какая дата?"); return; }
+    const out={title, date:d.date, time:d.time||"", end: d.time? (d.end||"") : "", repeat:d.repeat||"", remind: d.remind==null? null : +d.remind, note:(d.note||"").trim()};
+    const list=eventsData();
+    if(!s.id){ out.id=Date.now(); list.push(out); }
+    else { const ev=list.find(x=>String(x.id)===s.id); if(ev) Object.assign(ev, out); }
+    cur.ceSel=out.date; const dt=parseLocalDate(out.date); if(dt){ cur.ceY=dt.getFullYear(); cur.ceM=dt.getMonth(); }
+    scheduleSave(); closeSheet(); render();
+    showActionToast(`📅 ${title} — ${ceDayLabel(out.date).toLowerCase()}${out.time? ", "+out.time : ""}`);
+  };
+  const del=f("evDel");
+  if(del) del.onclick=()=>{
+    const list=eventsData(), i=list.findIndex(x=>String(x.id)===s.id);
+    if(i<0){ closeSheet(); return; }
+    const t=list[i].title;
+    closeSheet();
+    deleteWithUndo(`«${t}»`, ()=>list.splice(i,1));
+  };
+}
+// «Сегодня»: события дня и завтрашние — одной карточкой
+function renderTodayEvents(){
+  const ts=todayStr(), tm=addDaysKey(ts,1), now=nowTime();
+  const today=eventsOn(ts).filter(ev=>!ev.time || (ev.end||ev.time)>=now);
+  const tomorrow=eventsOn(tm);
+  if(!today.length && !tomorrow.length) return "";
+  const li=(ev, k)=>`<button class="ce-it" data-ceopen="${k}"><span class="tm">${ev.time||"весь день"}</span><span class="x"><b>${escapeHtml(ev.title)}</b>${ev.note? `<small>${escapeHtml(ev.note)}</small>` : ""}</span></button>`;
+  return `<div class="card"><div class="nt-head"><h2>📅 ${today.length? "Сегодня" : "Завтра"}</h2><button class="fx-linkbtn" data-ceopen="${ts}">Календарь ›</button></div>
+    ${today.map(ev=>li(ev, ts)).join("")}
+    ${today.length && tomorrow.length? `<div class="sh-lab" style="margin-top:10px;">Завтра</div>` : ""}
+    ${tomorrow.map(ev=>li(ev, tm)).join("")}</div>`;
+}
+document.addEventListener("click", e=>{
+  const b=e.target && e.target.closest && e.target.closest('[data-ceopen]');
+  if(!b) return;
+  e.preventDefault();
+  const k=b.dataset.ceopen, d=parseLocalDate(k);
+  cur.tab="doing"; cur.sub.doing="cal"; cur.ceSel=k; if(d){ cur.ceY=d.getFullYear(); cur.ceM=d.getMonth(); }
+  closeSheet(); render(); window.scrollTo(0,0);
+});
+// напоминания о событиях — в общем расписании уведомлений
+function notifyEventItems(day, key, now){
+  const c=notifyCfg(), out=[];
+  if(c.events===false) return out;
+  eventsOn(key).forEach(ev=>{
+    if(ev.remind==null) return;
+    let at;
+    if(ev.time) at=hmAt(day, ev.time)-(+ev.remind||0)*60000;
+    else at= (+ev.remind>=1440)? hmAt(new Date(day.getFullYear(), day.getMonth(), day.getDate()-1), "20:00") : hmAt(day, c.morningTime||"09:00");
+    if(at<=now) return;
+    const when= ev.time? (ev.remind>=1440? `завтра в ${ev.time}` : ev.remind? `в ${ev.time}` : "сейчас") : (ev.remind>=1440? "завтра" : "сегодня");
+    out.push({key:`ev:${ev.id}:${key}`, at, ch:"remind", title:`📅 ${ev.title}`, text:[when, ev.note||""].filter(Boolean).join(" · "), open:`calendar:${key}`, snooze:true});
+  });
+  return out;
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-03-modes", items:[
+const WHATS_NEW={id:"2026-10-03-cal", items:[
+  ["📅","Свой календарь","Дела → Календарь: месяц сеткой, события с повтором и напоминанием, рядом — дела со сроком и платежи. События дня — на «Сегодня», новое — «+» → «Событие»."],
   ["📈","Режимы дня","«Торговый день», «Выходной», «В дороге» и свои: в режиме часть привычек на паузе (серия не рвётся) и часть уведомлений молчит. Кнопка под заголовком на «Сегодня»; можно включать само по дням недели."],
   ["🖼","Траты и доходы со скриншота","Скриншот списка операций в банке или PnL с биржи: «+» → «Со скриншота» или «Поделиться → В трекер» (приложение 2.8). Суммы, даты и магазины прочитаются на телефоне — проверишь и запишешь."],
   ["✓","Привычки отмечаются сами","«Ранний подъём» — по сну, «Без телефона до сна» — по тому, когда отложил телефон, «Тренировка» — когда она записана, ещё дневник, вес, результат дня. Правило — в карточке привычки; снимешь галочку руками — спорить не буду."],
@@ -13550,6 +13780,7 @@ function renderToday(){
     </div>
     ${renderTodayStats(doneCount, habTotal, openTodos)}
     ${focusHtml}
+    ${renderTodayEvents()}
     ${renderDayPhraseCard()}
     ${renderHealthToday()}
     <div class="card">
