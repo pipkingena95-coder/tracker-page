@@ -1547,6 +1547,37 @@
   .dp-card .dp-c-b{display:flex;gap:8px;margin-top:12px;}
   .dp-card .dp-c-b .btn{flex:1 1 0;}
 
+  /* ---- банк и чеки ---- */
+  .bk-card .bk-h{display:flex;align-items:flex-start;gap:12px;}
+  .bk-card .bk-h .i{font-size:22px;line-height:1.1;flex:0 0 auto;}
+  .bk-card .bk-h b{display:block;font-size:15px;font-weight:600;color:var(--white);}
+  .bk-card .bk-h span{display:block;font-size:12.5px;color:var(--grey);margin-top:3px;line-height:1.42;}
+  .bk-acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+  .bk-acts .btn{flex:1 1 0;white-space:nowrap;}
+  .bk-row{display:flex;align-items:center;gap:10px;padding:10px 2px;border-bottom:1px solid var(--hair, var(--border));flex-wrap:wrap;}
+  .bk-row:last-child{border-bottom:none;}
+  .bk-row .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .bk-row .t b{font:600 13.5px var(--font-body);color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bk-row .t small{font-size:11px;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .bk-row .a{font:600 13px 'JetBrains Mono',monospace;white-space:nowrap;color:var(--grey);}
+  .bk-row .a.pos{color:var(--pnl-up);} .bk-row .a.neg{color:var(--pnl-down);}
+  .bk-btns{display:flex;gap:6px;width:100%;justify-content:flex-end;}
+  .bk-btns button{border:1px solid var(--border);background:var(--card);border-radius:10px;padding:6px 11px;
+    font:600 12px var(--font-body);color:var(--white);cursor:pointer;}
+  .bk-btns button.x{color:var(--grey-dim);}
+  .bk-note{font-size:11.5px;color:var(--grey-dim);line-height:1.5;margin-top:10px;}
+  .bk-note b{color:var(--grey);}
+  .bk-ok{color:var(--green);font-weight:600;}
+  .bk-test{margin-top:8px;font-size:12px;color:var(--grey);line-height:1.5;}
+  .bk-test b{color:var(--white);}
+  .bk-cards .pc-row{margin-top:6px;}
+  .bk-cards .lbl{font:600 12.5px var(--font-body);color:var(--white);min-width:96px;}
+  .sh-qr{border:1px solid var(--border);background:var(--card);border-radius:12px;padding:7px 10px;font:600 12px var(--font-body);
+    color:var(--white);cursor:pointer;margin-right:6px;flex:0 0 auto;}
+  .rc-dup{margin-top:12px;padding:10px 12px;border-radius:13px;font-size:12.5px;line-height:1.45;color:var(--grey);
+    background:color-mix(in srgb, var(--amber) 10%, var(--card));border:1px solid color-mix(in srgb, var(--amber) 28%, var(--border));}
+  .rc-dup b{color:var(--white);}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2254,7 +2285,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 16:52+298a942c";
+window.TRACKER_BUILD = "2026-10-02 17:15+c2060270";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2554,6 +2585,7 @@ async function loadData(){
   maybeShowNews();
   scheduleNotifyPlan();
   handleAndroidOpen();
+  try{ bankSync(false); }catch(e){}
 }
 
 // Every migration a save needs, whether it came from storage or from a restored
@@ -2715,9 +2747,9 @@ function render(){
   if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); bindHealthToday(); bindDayPhraseCard(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
-    c.innerHTML=renderNotifyCard()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
+    c.innerHTML=renderNotifyCard()+renderBankSettings()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
     collapseSettings(c);
-    bindNotifyCard(); bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
+    bindNotifyCard(); bindBankSettings(); bindAppearance(); bindVoiceCard(); bindBackupUi(); drawDashChart();
   }
   else if(cur.tab==="doing"){
     const v=subView("doing");
@@ -2739,7 +2771,7 @@ function render(){
   else if(cur.tab==="money"){
     const v=subView("money");
     const nav=renderSubNav("money",[["finance","Финансы"],["where","Счета"],["savings","Накопления"],["invest","Инвестиции"]]);
-    if(v==="finance"){ c.innerHTML=nav+renderFinanceV3(); bindSubNav(); bindFinance(); bindFinanceV3(); }
+    if(v==="finance"){ c.innerHTML=nav+renderFinanceV3(); bindSubNav(); bindFinance(); bindFinanceV3(); bindBankCard(); }
     else if(v==="where"){ c.innerHTML=nav+renderWhere2(); bindSubNav(); bindWhere2(); }
     else if(v==="invest"){ c.innerHTML=nav+renderInvest2(); bindSubNav(); bindInvest2(); }
     else { c.innerHTML=nav+renderSavings2(); bindSubNav(); bindSavings2(); }
@@ -8026,7 +8058,7 @@ function openExpenseSheet(){
 }
 function renderExpenseSheet(s){
   return `<div class="sh-head">
-      <div class="sh-title left"><b>Новый расход</b><span class="zero">или несколько — вкладка «Списком»</span></div>
+      <div class="sh-title left"><b>Новый расход</b><span class="zero">или несколько — вкладка «Списком»</span></div>${qrAvailable()? `<button class="sh-qr" data-qrscan="1">📷 QR</button>` : ""}
       <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
     </div>
     <div class="sh-exp">${renderFinQuickAdd()}</div>`;
@@ -8060,7 +8092,7 @@ function renderFinanceV3(){
   const mode=finMode();
   const fab=`<button class="fx-fab" id="fxFab" aria-label="${mode==="inc"? "Записать результат":"Записать расход"}"><span>+</span>${mode==="inc"? "Результат" : "Расход"}</button>`;
   if(mode==="inc") return renderFinModeSwitch() + renderPnlHero() + renderPnlCalendar() + renderPnlInsights() + renderIncomeRecords() + fab + `<div class="fx-spacer"></div>`;
-  return renderFinModeSwitch() + renderSpendHero() + renderFinPanels() + renderExpenseRecords() + fab + `<div class="fx-spacer"></div>`;
+  return renderFinModeSwitch() + renderSpendHero() + renderBankCard() + renderFinPanels() + renderExpenseRecords() + fab + `<div class="fx-spacer"></div>`;
 }
 // Кнопка «+» прячется, когда листаешь вниз, и возвращается при движении вверх:
 // иначе она всё время закрывала бы правый край календаря и сумм
@@ -8560,6 +8592,8 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="bankinbox") body=renderBankInboxSheet(s);
+  else if(s.kind==="receipt") body=renderReceiptSheet(s);
   else if(s.kind==="dayphrase") body=renderDayPhraseSheet(s);
   else if(s.kind==="inv") body=renderInvSheet(s);
   else if(s.kind==="planitem") body=renderPlanItemSheet(s);
@@ -8607,6 +8641,8 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="bankinbox") bindBankInboxSheet(s);
+  else if(s.kind==="receipt") bindReceiptSheet(s);
   else if(s.kind==="dayphrase") bindDayPhraseSheet(s);
   else if(s.kind==="inv") bindInvSheet(s);
   else if(s.kind==="planitem") bindPlanItemSheet(s);
@@ -9124,7 +9160,7 @@ function renderQuickSheet(s){
     <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
     <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
   }
-  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button>${QA_TILES.map(([k,ic,l])=>
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l])=>
     `<button class="qa-tile" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
 }
 function quickWorkout(){
@@ -9142,6 +9178,7 @@ function bindQuickSheet(s){
   root.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{
     const k=b.dataset.qa;
     if(k==="phrase"){ openDayPhrase(false); return; }
+    if(k==="qr"){ closeSheet(); scanReceipt(); return; }
     if(["todo","weight","note","feel"].includes(k)){
       s.mode=k; renderSheet();
       const f=document.getElementById(k==="todo"? "qaText" : k==="weight"? "qaKg" : k==="note"? "qaNote" : "");
@@ -10271,9 +10308,451 @@ function bindDayPhraseCard(){
   document.querySelectorAll('[data-dpopen]').forEach(b=>b.onclick=()=>openDayPhrase(b.dataset.dpopen==="voice"));
 }
 
+// ═════════ ТРАТЫ ИЗ БАНКА ═════════
+// Приложение 2.6 ловит уведомления банков (и SMS с суммой) и кладёт в очередь.
+// Здесь их разбор: покупка — расход с магазином и категорией, сразу; переводы,
+// пополнения и снятие наличных — на решение: у арбитражника входящий перевод —
+// не доход, а продажа, и записывать его самому значит испортить учёт.
+const BANK_NAMES={"ru.sberbankmobile":"Сбер","com.idamob.tinkoff.android":"Т-Банк","ru.alfabank.mobile.android":"Альфа",
+  "ru.vtb24.mobilebanking.android":"ВТБ","ru.raiffeisennews":"Райффайзен","com.yandex.bank":"Яндекс Банк","ru.ozon.fintech.finance":"Озон Банк",
+  "ru.gazprombank.android.mobilebank.app":"Газпромбанк","ru.mts.money":"МТС Банк","ru.sovcomcard.halva.v1":"Халва","com.openbank":"Открытие",
+  "logo.com.mbanking":"ПСБ","ru.rosbank.android":"Росбанк","ru.pochtabank.pochtaapp":"Почта Банк","ru.akbars.mobile":"Ак Барс","ru.bspb":"БСПБ",
+  "ru.uralsib.mobile":"Уралсиб","ru.rshb.dbo":"Россельхоз","ru.vtb.invest":"ВТБ","ru.bank_hlynov.xbank":"Хлынов","com.wildberries.bank":"WB Банк"};
+// банк по отправителю SMS или по тексту; ключ — для поиска счёта с таким банком
+const BANK_KEYS=[["Сбер",/^(?:900|sber|сбер)/i,"сбер"],["Т-Банк",/(?:tinkoff|t-bank|т-банк|тинькофф|tbank)/i,"т-банк|тинькофф|тиньк"],
+  ["Альфа",/(?:alfa|альфа)/i,"альфа"],["ВТБ",/(?:vtb|втб)/i,"втб"],["Райффайзен",/(?:raiff|райф)/i,"райф"],["Озон Банк",/(?:ozon|озон)/i,"озон"],
+  ["Яндекс Банк",/(?:yandex|яндекс)/i,"яндекс"],["Газпромбанк",/(?:gazprom|газпром)/i,"газпром"],["МТС Банк",/(?:mts|мтс)/i,"мтс"],
+  ["Халва",/(?:halva|халва|совком)/i,"халва|совком"],["Открытие",/(?:open|открыт)/i,"открыт"],["ПСБ",/(?:psb|псб)/i,"псб"],["Почта Банк",/(?:pochta|почта)/i,"почта"]];
+function bankData(){
+  if(!DATA.bank || typeof DATA.bank!=="object") DATA.bank={};
+  const B=DATA.bank;
+  if(B.auto==null) B.auto=true;
+  if(!B.transfers) B.transfers="ask";
+  if(!B.cards) B.cards={};
+  if(!B.cardsSeen) B.cardsSeen={};
+  if(!B.seen) B.seen={};
+  if(!Array.isArray(B.inbox)) B.inbox=[];
+  if(!B.receipts) B.receipts={};
+  return B;
+}
+function hasBank(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.bankList==="function"; }
+function bankStatus(){
+  if(!hasBank()) return null;
+  try{ return JSON.parse(AndroidHost.bankStatus()||"{}"); }catch(e){ return {}; }
+}
+function bankNameOf(raw){
+  if(BANK_NAMES[raw.pkg]) return BANK_NAMES[raw.pkg];
+  const s=`${raw.title||""} ${raw.text||""}`;
+  const hit=BANK_KEYS.find(([,re])=>re.test(raw.title||"")) || BANK_KEYS.find(([,re])=>re.test(s));
+  return hit? hit[0] : (raw.app || "Банк");
+}
+const BK_KINDS={
+  inc:/(?:зачислен\p{L}*|пополнен\p{L}*|поступлен\p{L}*|перевод от|вам перевел\p{L}*|вам отправил\p{L}*|входящий перевод|возврат\p{L}*|отмена покупки|кэшбэк|кешбэк|cashback|refund|зарплат\p{L}*|аванс|начислен\p{L}* процент\p{L}*)/iu,
+  exp:/(?:покупк\p{L}*|оплат\p{L}*|списан\p{L}*|payment|pokupka|oplata|retail|purchase|платеж\p{L}*|автоплатеж\p{L}*)/iu,
+  cash:/(?:снятие|выдача налич\p{L}*|снят\p{L}* налич\p{L}*|atm|банкомат\p{L}*)/iu,
+  trf:/(?:перевод\p{L}*|отправлен\p{L}*|сбп|transfer)/iu
+};
+const BK_CAT_HINTS=[["еда","pyater|magnit|perekres|vkusvil|lenta|auchan|dixy|diksi|samokat|lavka|kfc|rostics|mcdonald|burger|vkusno|coffee|kofe|cafe|restoran|eda|delivery|spar|metro cash|ozon fresh|пятерочк|пятёрочк|магнит|перекрест|вкусвил|лента|ашан|дикси|самокат|лавк|кофе|кафе|ресторан|еда|продукт|шаурм|пицц|суши|бургер|столов"],
+  ["транспорт","taxi|yandex.go|yandex go|яндекс go|яндекс такси|ситимобил|убер|uber|citymobil|lukoil|rosneft|gazprom|azs|tatneft|shell|metro|mosgortrans|troika|transport|parking|delimobil|belkacar|whoosh|urent|такси|азс|бензин|метро|транспорт|парковк|каршеринг|самокат"],
+  ["здоровье","apteka|pharm|36.6|rigla|zdravcity|gorzdrav|invitro|gemotest|clinic|stomat|аптек|ригла|клиник|стоматолог|инвитро|гемотест|врач"],
+  ["развлечения","kino|cinema|steam|netflix|okko|kinopoisk|ivi|spotify|yandex plus|playstation|xbox|bar|club|кино|театр|бар|клуб|концерт|подписк"],
+  ["жилье","zhkh|gku|mosenergo|rostelecom|beeline|megafon|tele2|mts|dom.ru|жкх|жку|коммунал|ростелеком|билайн|мегафон|теле2|интернет|аренд"]];
+function bankCategory(merchant){
+  const low=dpNorm(merchant);
+  if(!low) return "";
+  const g=guessCategory(low, categoryIndexFromHistory());
+  if(g) return g;
+  const cats=DATA.financeCats||[];
+  for(const [name, re] of BK_CAT_HINTS){
+    if(new RegExp(re,"iu").test(low)){ const c=cats.find(x=>dpNorm(x.name)===name); if(c) return c.name; }
+  }
+  return "";
+}
+function bankPrettyMerchant(m){
+  m=String(m||"").replace(/\s+/g," ").replace(/^[\s,.:;\-–—«"]+|[\s,.:;\-–—»"]+$/g,"").trim();
+  m=m.replace(/\s+\d{3,}$/,"").replace(/\*+/g," ").trim();
+  if(/^(?:в|на|у|из|от|по|с|за|к)$/i.test(m)) return "";
+  if(/^atm(?![a-z])/i.test(m)) return "Банкомат";
+  if(/^[A-Z0-9 .'&_\-]+$/.test(m) && /[A-Z]{3}/.test(m)) m=m.toLowerCase().replace(/(^|[\s.\-])([a-z])/g,(a,b,c)=>b+c.toUpperCase());
+  return m.slice(0,40);
+}
+const BK_MONEY=/(?:([$€])\s?)?(\d{1,3}(?:[  ]\d{3})+|\d+)(?:[.,](\d{1,2}))?(?:\s?(₽|р\.?(?![а-яё])|руб\.?|rub|rur|usdt|usd|\$|€|eur))?/giu;
+function bankCurCode(x){
+  x=String(x||"").toLowerCase();
+  if(/^(?:₽|р|руб|rub|rur)/.test(x)) return "RUB";
+  if(x==="usdt") return "USDT";
+  if(x==="$" || x==="usd") return "USD";
+  if(x==="€" || x==="eur") return "EUR";
+  return "";
+}
+// Разбор одного уведомления: {kind, amount, cur, merchant, last4} или {skip}
+function parseBankText(title, text){
+  const raw=`${title||""} ${text||""}`.replace(/\s+/g," ").trim();
+  const low0=raw.toLowerCase().replace(/ё/g,"е");
+  if(/(?:код|code|пароль|password)[^\d]{0,40}\d{4,8}|не сообщайте/.test(low0)) return {skip:"код"};
+  if(/(?:отказ|отклонен\p{L}*|недостаточно|не прошл\p{L}*|не выполнен\p{L}*|отменен\p{L}*)/u.test(low0) && !/отмена покупки/.test(low0)) return {skip:"отказ"};
+  if(/(?:между своими|на свой сч|себе на сч|своих счетов)/u.test(low0)) return {skip:"свои счета"};
+  const l4=/(?:карт\p{L}*|card|сч[её]т\p{L}*|mir|visa|master\p{L}*|мир|maestro)[\s*•·.\-№]*(\d{4})(?!\d)|[*•·]+\s?(\d{4})(?!\d)/iu.exec(raw);
+  const last4= l4? (l4[1]||l4[2]) : "";
+  let s=raw.replace(/(?:карт\p{L}*|card|сч[её]т\p{L}*|mir|visa|master\p{L}*|мир|maestro)[\s*•·.\-№]*\d{4}(?!\d)/giu," ")
+    .replace(/[*•·]+\s?\d{4}(?!\d)/g," ")
+    .replace(/(?:^|\s)\d{1,2}:\d{2}(?::\d{2})?(?=\s|$|[.,])/g," ")
+    .replace(/(?:^|\s)\d{2}\.\d{2}\.\d{2,4}(?=\s|$|[.,])/g," ")
+    .replace(/\s+/g," ").trim();
+  const low=s.toLowerCase().replace(/ё/g,"е");
+  // сумма операции — до «баланс / остаток / доступно»
+  const cut=low.search(/(?:баланс|остаток|доступно|available|balance|ост\.|бал\.)/);
+  const head= cut>0? s.slice(0,cut) : s;
+  let amt=null;
+  BK_MONEY.lastIndex=0;
+  let m;
+  while((m=BK_MONEY.exec(head))){
+    const code=bankCurCode(m[1]||m[4]);
+    if(!code) continue;
+    const v=parseFloat(m[2].replace(/[  ]/g,"")+(m[3]? "."+m[3] : ""));
+    if(v>0){ amt={v, cur:code, at:m.index, end:m.index+m[0].length}; break; }
+  }
+  if(!amt) return {skip:"нет суммы"};
+  const hlow=head.toLowerCase().replace(/ё/g,"е");
+  let kind="", kAt=1e9;
+  for(const k of ["inc","exp","cash","trf"]){
+    const x=BK_KINDS[k].exec(hlow);
+    if(x && x.index<kAt){ kind=k; kAt=x.index; }
+  }
+  if(!kind){
+    const x=BK_KINDS.inc.exec(low) || BK_KINDS.exp.exec(low);
+    if(x) kind= BK_KINDS.inc.test(low)? "inc" : "exp";
+  }
+  if(!kind && /(?:%|предлага|акци|скидк|розыгрыш|бонус\p{L}* до)/u.test(low)) return {skip:"реклама"};
+  // кто: после суммы до точки/запятой; если пусто — перед суммой, без слова операции
+  let after=head.slice(amt.end).replace(/^[\s,.:;\-–—]+/,"");
+  after=after.split(/[.;](?:\s|$)|,\s|\s(?:баланс|остаток|доступно|комисси\p{L}*|кэшбэк|кешбэк)/iu)[0].replace(/^(?:(?:в|на|у|из|от|по)\s+)?(?:сбп\s+)?/iu,"");
+  let merchant=bankPrettyMerchant(after);
+  if(!merchant || /^\d/.test(merchant)){
+    let before=head.slice(0, amt.at).replace(/[\s:,\-–—]+$/,"");
+    // «Пополнение Перевод от Ивана И.» → «Ивана И.»: все слова операции подряд
+    before=before.replace(/^(?:.*?(?:покупк\p{L}*|оплат\p{L}*|списан\p{L}*|перевод\p{L}* от|перевод\p{L}*|зачислен\p{L}*|пополнен\p{L}*|поступлен\p{L}*|возврат\p{L}*|платеж\p{L}*)\s*)+/iu,"");
+    before=before.replace(/^(?:в|на|у|из|от|по)\s+/iu,"");
+    if(before.length<40) merchant=bankPrettyMerchant(before);
+  }
+  if(/^(?:покупк|оплат|списан|перевод|зачислен|пополнен)/iu.test(merchant)) merchant="";
+  return {kind: kind||"exp", sure: !!kind, amount: amt.v, cur: amt.cur, merchant, last4};
+}
+// Счёт: по карте, если её уже связали; иначе — счёт с таким банком; иначе основной
+function bankAccountFor(p){
+  const B=bankData(), accs=DATA.finance.accounts||[];
+  if(p.last4 && B.cards[p.last4] && accs.some(a=>String(a.id)===String(B.cards[p.last4]))) return String(B.cards[p.last4]);
+  const key=(BANK_KEYS.find(k=>k[0]===p.bank)||[])[2];
+  if(key){
+    const re=new RegExp(key,"i");
+    const list=accs.filter(a=>re.test(`${a.bank||""} ${a.name||""}`));
+    const a=list.find(x=>(x.currency||"RUB")===p.cur) || list[0];
+    if(a){ if(p.last4) B.cards[p.last4]=String(a.id); return String(a.id); }
+  }
+  const byCur=accs.find(a=>(a.currency||"RUB")===p.cur);
+  return String(byCur? byCur.id : defaultAccountId());
+}
+function bankEntryIsDup(p){
+  const B=bankData(), type= p.kind==="inc"? "доход" : "расход";
+  return (DATA.finance.entries||[]).some(e=>e.bankAt && Math.abs(e.bankAt-p.at)<180000 && Math.abs(Math.abs(+e.amount)-p.amount)<0.005 && e.type===type)
+    || B.inbox.some(x=>Math.abs(x.at-p.at)<180000 && Math.abs(x.amount-p.amount)<0.005 && x.kind===p.kind);
+}
+function bankRecord(p, as){
+  ensureFinanceAccounts();
+  const d=new Date(p.at||Date.now()), accountId=bankAccountFor(p);
+  const e={date:ymdOf(d), time:`${pad2(d.getHours())}:${pad2(d.getMinutes())}`, type: as==="inc"? "доход" : "расход",
+    amount:p.amount, category: as==="inc"? "" : (p.cat!=null? p.cat : bankCategory(p.merchant)), comment:p.merchant||"",
+    accountId, bank:1, bankAt:p.at||Date.now()};
+  if(as==="inc") e.source="other";
+  if(p.cur && p.cur!==accountCurrency(accountId)) e.currency=p.cur;
+  DATA.finance.entries.push(e);
+  return e;
+}
+function bankKindLabel(k){ return {exp:"покупка", inc:"зачисление", trf:"перевод", cash:"снятие наличных"}[k] || "операция"; }
+let bankSyncing=false;
+function bankSync(quiet){
+  if(!hasBank() || bankSyncing || !DATA || !DATA.finance) return;
+  let list=[];
+  try{ list=JSON.parse(AndroidHost.bankList()||"[]"); }catch(e){ list=[]; }
+  if(!list.length) return;
+  bankSyncing=true;
+  const B=bankData(), done=[], now=Date.now();
+  let recN=0, recSum={}, askN=0;
+  list.sort((a,b)=>(a.at||0)-(b.at||0)).forEach(raw=>{
+    done.push(raw.id);
+    if(B.seen[raw.id]) return;
+    B.seen[raw.id]=now;
+    const p=parseBankText(raw.title, raw.text);
+    if(!p || p.skip) return;
+    Object.assign(p, {id:raw.id, at:+raw.at||now, bank:bankNameOf(raw), pkg:raw.pkg, raw:`${raw.title||""} ${raw.text||""}`.slice(0,240)});
+    if(p.last4){ B.cardsSeen[p.last4]={bank:p.bank, at:p.at}; }
+    if(bankEntryIsDup(p)) return;
+    if(p.kind==="exp" && p.sure && B.auto!==false){
+      bankRecord(p, "exp"); recN++; recSum[p.cur]=(recSum[p.cur]||0)+p.amount;
+    } else {
+      p.quiet= p.kind!=="exp" && B.transfers==="skip";
+      B.inbox.push(p);
+      if(!p.quiet) askN++;
+    }
+  });
+  // помним разобранное неделю — на случай, если очередь не успела очиститься
+  Object.keys(B.seen).forEach(k=>{ if(now-B.seen[k]>7*86400000) delete B.seen[k]; });
+  if(B.inbox.length>200) B.inbox=B.inbox.slice(-200);
+  scheduleSave();
+  try{ AndroidHost.bankAck(JSON.stringify(done)); }catch(e){}
+  bankSyncing=false;
+  if(!recN && !askN) return;
+  if(!cur.sheet) render();
+  if(quiet) return;
+  const sums=Object.keys(recSum).map(c=>fmtMoney(recSum[c], c, 0)).join(" + ");
+  if(recN) showActionToast(`🏦 Из банка: ${recN} ${plural(recN,'трата','траты','трат')} на ${sums}${askN? ` · ${askN} ${plural(askN,"ждёт","ждут","ждут")} решения` : ""}`, "Посмотреть", ()=>bankGoFinance());
+  else showActionToast(`🏦 ${askN} ${plural(askN,'операция ждёт','операции ждут','операций ждут')} решения`, "Разобрать", ()=>openSheet({kind:"bankinbox"}));
+}
+function bankGoFinance(){ closeSheet(); cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="exp"; render(); window.scrollTo(0,0); }
+window.__bankNew=function(){ try{ bankSync(false); }catch(e){} };
+function bankVisibleInbox(){ return bankData().inbox.filter(x=>!x.quiet); }
+function bankRowHtml(p, i){
+  const d=new Date(p.at), when=`${d.getDate()} ${MONTHS_GEN[d.getMonth()]}, ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+  const sign= p.kind==="inc"? "+" : "−";
+  return `<div class="bk-row">
+    <span class="t"><b>${escapeHtml(p.merchant || bankKindLabel(p.kind))}</b><small>${escapeHtml(p.bank||"")} · ${bankKindLabel(p.kind)}${p.last4? " *"+p.last4 : ""} · ${when}</small></span>
+    <span class="a ${p.kind==="inc"?'pos':'neg'}">${sign}${escapeHtml(fmtMoney(p.amount, p.cur||"RUB", 2))}</span>
+    <span class="bk-btns"><button data-bkas="exp:${i}">Расход</button><button data-bkas="inc:${i}">Доход</button><button class="x" data-bkas="no:${i}" aria-label="Не записывать">Не надо</button></span>
+  </div>`;
+}
+function renderBankInboxSheet(s){
+  const B=bankData(), all=B.inbox.map((p,i)=>({p,i}));
+  const vis=all.filter(x=> s.quiet? x.p.quiet : !x.p.quiet).sort((a,b)=>b.p.at-a.p.at);
+  const trfN=vis.filter(x=>x.p.kind==="trf" || x.p.kind==="inc").length;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${s.quiet? "Пропущенные переводы" : "Из банка — решить"}</b><span class="zero">${vis.length? `${vis.length} ${plural(vis.length,'операция','операции','операций')}` : "пусто"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    ${vis.length? vis.map(x=>bankRowHtml(x.p, x.i)).join("") : `<div class="fx-empty sm">Всё разобрано</div>`}
+    <div class="bk-note">Переводы и пополнения сами не пишутся: у арбитража входящий перевод — это продажа, а не доход. «Не надо» — просто убрать из списка.</div>
+    ${vis.length>1? `<div class="sh-actions">${trfN? `<button class="btn ghost" id="bkDropTrf">Убрать переводы (${trfN})</button>` : ""}<button class="btn ghost danger" id="bkDropAll">Убрать всё</button></div>` : ""}`;
+}
+function bindBankInboxSheet(s){
+  const B=bankData();
+  sheetRoot().querySelectorAll('[data-bkas]').forEach(b=>b.onclick=()=>{
+    const [as, i]=b.dataset.bkas.split(":"), p=B.inbox[+i];
+    if(!p) return;
+    if(as!=="no") bankRecord(p, as);
+    B.inbox.splice(+i,1);
+    scheduleSave(); render();
+    if(as!=="no") showActionToast(`${as==="inc"? "Доход" : "Расход"}: ${fmtMoney(p.amount, p.cur||"RUB", 0)}${p.merchant? " · "+p.merchant : ""}`);
+  });
+  const drop=fn=>{ B.inbox=B.inbox.filter(p=>!fn(p)); scheduleSave(); render(); };
+  const dt=document.getElementById("bkDropTrf");
+  if(dt) dt.onclick=()=>drop(p=>(s.quiet? p.quiet : !p.quiet) && (p.kind==="trf" || p.kind==="inc"));
+  const da=document.getElementById("bkDropAll");
+  if(da) da.onclick=()=>drop(p=> s.quiet? p.quiet : !p.quiet);
+}
+// «Финансы → Расходы»: предложить включить; показать, что ждёт решения
+function renderBankCard(){
+  if(!hasBank()){
+    if(isNativeShell() && appOutdated() && !bankData().promoOff) return `<div class="card bk-card"><div class="bk-h"><span class="i">🏦</span><div>
+      <b>Траты из банка — сами</b><span>Покупки по карте будут записываться без тебя, из уведомлений банка. Нужно приложение ${LATEST_APP.version} — ставится поверх, данные сохранятся.</span></div></div>
+      <div class="bk-acts"><a class="btn" href="${LATEST_APP.url}">Скачать ${LATEST_APP.version}</a><button class="btn ghost" data-bkpromo="0">Не надо</button></div></div>`;
+    return "";
+  }
+  const st=bankStatus()||{}, B=bankData(), vis=bankVisibleInbox();
+  let out="";
+  if(!st.granted && !B.promoOff) out+=`<div class="card bk-card"><div class="bk-h"><span class="i">🏦</span><div>
+      <b>Траты из банка — сами</b><span>Разреши читать уведомления банков: покупки по карте запишутся сами — с магазином и категорией. Переводы — только с твоего согласия. Ничего не уходит в интернет.</span></div></div>
+      <div class="bk-acts"><button class="btn" data-bkon="1">Включить</button><button class="btn ghost" data-bkpromo="0">Не надо</button></div></div>`;
+  if(vis.length) out+=`<div class="card bk-card"><div class="bk-h"><span class="i">🏦</span><div>
+      <b>Из банка: ${vis.length} ${plural(vis.length,'операция ждёт','операции ждут','операций ждут')} решения</b>
+      <span>${vis.slice(-3).reverse().map(p=>`${p.kind==="inc"? "+" : "−"}${escapeHtml(fmtMoney(p.amount, p.cur||"RUB", 0))}${p.merchant? " "+escapeHtml(p.merchant) : ""}`).join(" · ")}</span></div></div>
+      <div class="bk-acts"><button class="btn" data-bkinbox="1">Разобрать</button></div></div>`;
+  return out;
+}
+function bindBankCard(){
+  document.querySelectorAll('[data-bkon]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.bankSettings(); }catch(e){} });
+  document.querySelectorAll('[data-bkpromo]').forEach(b=>b.onclick=()=>{ bankData().promoOff=true; scheduleSave(); render(); });
+  document.querySelectorAll('[data-bkinbox]').forEach(b=>b.onclick=()=>openSheet({kind:"bankinbox", quiet: b.dataset.bkinbox==="quiet"}));
+}
+// Настройки → «Банк и чеки»
+function renderBankSettings(){
+  const B=bankData(), st=bankStatus();
+  let status;
+  if(!st) status= isNativeShell()
+    ? `<div class="bk-note" style="margin-top:0;">Нужно приложение ${LATEST_APP.version}: оно читает уведомления банков. Ставится поверх, данные сохранятся.</div><div class="bk-acts"><a class="btn" href="${LATEST_APP.url}">Скачать ${LATEST_APP.version}</a></div>`
+    : `<div class="bk-note" style="margin-top:0;">Траты из уведомлений банка работают в приложении для Android.</div>`;
+  else if(st.granted) status=`<div><span class="bk-ok">✓ Доступ к уведомлениям включён</span></div>
+    <div class="bk-note">Ловлю уведомления ${escapeHtml([...new Set((st.banks||[]).concat(st.extra||[]).map(p=>BANK_NAMES[p]||p))].slice(0,8).join(", "))} и SMS банков. Коды подтверждения пропускаю, в интернет ничего не уходит.</div>
+    <div class="bk-acts"><button class="btn ghost" data-bkon="1">Выключить или проверить доступ</button></div>`;
+  else status=`<div class="bk-note" style="margin-top:0;">Разреши приложению читать уведомления — покупки по карте будут записываться сами. В списке «Доступ к уведомлениям» включи <b>«Трекер: траты из банка»</b>.</div>
+    <div class="bk-acts"><button class="btn" data-bkon="1">Включить доступ</button></div>
+    <div class="bk-note">Если Android пишет <b>«Ограниченная настройка»</b>: открой «О приложении» → ⋮ справа вверху → <b>«Разрешить ограниченные настройки»</b> и снова нажми «Включить доступ».</div>
+    <div class="bk-acts"><button class="btn ghost" data-bkapp="1">О приложении</button></div>`;
+  const cand=(st && st.cand||[]).filter(c=>c.n>0);
+  const cards=Object.keys(B.cardsSeen||{});
+  const accs=DATA.finance.accounts||[];
+  const quietN=B.inbox.filter(x=>x.quiet).length;
+  return `<div class="card"><h2>🏦 Банк и чеки</h2>
+    ${status}
+    ${st? `<div class="sh-lab" style="margin-top:16px;">Покупки по карте</div>
+    <div class="fx-pick sm" style="margin-top:6px;"><button class="${B.auto!==false?'on':''}" data-bkauto="1">записывать сразу</button><button class="${B.auto===false?'on':''}" data-bkauto="0">сначала спросить</button></div>
+    <div class="sh-lab" style="margin-top:14px;">Переводы и пополнения</div>
+    <div class="fx-pick sm" style="margin-top:6px;"><button class="${B.transfers!=="skip"?'on':''}" data-bktrf="ask">спрашивать</button><button class="${B.transfers==="skip"?'on':''}" data-bktrf="skip">не трогать</button></div>
+    ${quietN? `<div class="bk-acts"><button class="btn ghost" data-bkinbox="quiet">Пропущенные переводы (${quietN})</button></div>` : ""}
+    ${cand.length? `<div class="sh-lab" style="margin-top:14px;">Ещё приложения с суммами</div>
+      ${cand.map(c=>`<div class="pc-row"><span class="lbl" style="flex:1;font-size:13px;color:var(--white);">${escapeHtml(c.app||c.pkg)}<small style="display:block;color:var(--grey-dim);font-size:11px;">${c.n} ${plural(c.n,'уведомление','уведомления','уведомлений')} с суммой</small></span>
+        <button class="btn ghost" data-bkadd="${escapeHtml(c.pkg)}" style="flex:0 0 auto;">Это банк</button></div>`).join("")}` : ""}
+    ${cards.length? `<div class="sh-lab" style="margin-top:14px;">Карты → счета</div><div class="bk-cards">
+      ${cards.map(l4=>`<div class="pc-row"><span class="lbl">*${escapeHtml(l4)} · ${escapeHtml(B.cardsSeen[l4].bank||"")}</span>
+        <div class="fx-pick sm" style="flex:1;">${accs.map(a=>`<button class="${String(B.cards[l4])===String(a.id)?'on':''}" data-bkcard="${escapeHtml(l4)}:${a.id}">${escapeHtml(a.name)}</button>`).join("")}</div></div>`).join("")}</div>` : ""}
+    <div class="sh-lab" style="margin-top:16px;">Проверить разбор</div>
+    <textarea class="sh-in" id="bkTest" rows="2" placeholder="Вставь текст уведомления банка — покажу, что пойму"></textarea>
+    <div class="bk-test" id="bkTestOut"></div>` : ""}
+    <div class="sh-lab" style="margin-top:16px;">QR с чека</div>
+    <div class="bk-note" style="margin-top:4px;">${qrAvailable()? "Кнопка «+» → «Чек по QR» или «📷 QR» в листе расхода. Сумма и время — точно с чека; если покупка уже пришла из банка, второй раз не запишу." : `Сканер чеков — в приложении ${LATEST_APP.version} или в Telegram.`}</div>
+  </div>`;
+}
+function bindBankSettings(){
+  const B=bankData();
+  document.querySelectorAll('[data-bkapp]').forEach(b=>b.onclick=()=>{ try{ AndroidHost.appSettings(); }catch(e){} });
+  document.querySelectorAll('[data-bkauto]').forEach(b=>b.onclick=()=>{ B.auto=b.dataset.bkauto==="1"; scheduleSave(); render(); });
+  document.querySelectorAll('[data-bktrf]').forEach(b=>b.onclick=()=>{
+    B.transfers=b.dataset.bktrf;
+    B.inbox.forEach(p=>{ if(p.kind!=="exp") p.quiet= B.transfers==="skip"; });
+    scheduleSave(); render();
+  });
+  document.querySelectorAll('[data-bkadd]').forEach(b=>b.onclick=()=>{
+    const st=bankStatus()||{}, ex=(st.extra||[]).slice();
+    if(!ex.includes(b.dataset.bkadd)) ex.push(b.dataset.bkadd);
+    try{ AndroidHost.bankSetExtra(JSON.stringify(ex)); }catch(e){}
+    render(); showActionToast("Буду слушать это приложение");
+  });
+  document.querySelectorAll('[data-bkcard]').forEach(b=>b.onclick=()=>{
+    const [l4, id]=b.dataset.bkcard.split(":");
+    B.cards[l4]=id; scheduleSave(); render();
+  });
+  const t=document.getElementById("bkTest"), out=document.getElementById("bkTestOut");
+  if(t && out) t.oninput=()=>{
+    const v=t.value.trim();
+    if(!v){ out.innerHTML=""; return; }
+    const p=parseBankText("", v);
+    if(p.skip){ out.innerHTML=`Пропущу: <b>${escapeHtml(p.skip)}</b>`; return; }
+    const cat= p.kind==="exp"? bankCategory(p.merchant) : "";
+    out.innerHTML=`<b>${bankKindLabel(p.kind)}${p.sure? "" : " (догадка)"}</b> · <b>${escapeHtml(fmtMoney(p.amount, p.cur, 2))}</b>${p.merchant? ` · ${escapeHtml(p.merchant)}` : ""}${p.last4? ` · карта *${escapeHtml(p.last4)}` : ""}${cat? ` · категория «${escapeHtml(cat)}»` : ""}<br>${p.kind==="exp" && p.sure? "Запишу расходом сам." : "Спрошу, записывать ли."}`;
+  };
+  bindBankCard();
+}
+
+// ═════════ ЧЕК ПО QR ═════════
+// QR кассового чека: t=20261002T1405&s=450.00&fn=…&i=…&fp=…&n=1 — точные сумма и время.
+function tgQrOk(){
+  try{ const W=window.Telegram && Telegram.WebApp; return !!(W && W.showScanQrPopup && W.isVersionAtLeast && W.isVersionAtLeast("6.4")); }catch(e){ return false; }
+}
+function qrAvailable(){ return (typeof AndroidHost!=="undefined" && typeof AndroidHost.qrScan==="function") || tgQrOk(); }
+let qrPending=null;
+function qrScan(){
+  return new Promise((res, rej)=>{
+    if(typeof AndroidHost!=="undefined" && typeof AndroidHost.qrScan==="function"){
+      if(qrPending) qrPending.rej(new Error(""));
+      qrPending={res, rej};
+      try{ AndroidHost.qrScan(); }catch(e){ qrPending=null; rej(new Error("Сканер недоступен")); }
+      return;
+    }
+    if(tgQrOk()){
+      const W=Telegram.WebApp;
+      W.showScanQrPopup({text:"Наведи на QR-код чека"}, t=>{ try{ W.closeScanQrPopup(); }catch(e){} res(String(t||"")); return true; });
+      return;
+    }
+    rej(new Error("unavailable"));
+  });
+}
+window.__qrResult=function(t){ const p=qrPending; qrPending=null; if(p) p.res(String(t||"")); };
+window.__qrError=function(m){ const p=qrPending; qrPending=null; if(p) p.rej(new Error(m||"")); };
+function rcAmt(v){ return (+v).toLocaleString("ru-RU",{minimumFractionDigits: v%1? 2 : 0, maximumFractionDigits:2})+" ₽"; }
+function parseReceiptQr(s){
+  const q={};
+  String(s||"").trim().split("&").forEach(part=>{ const i=part.indexOf("="); if(i>0) q[part.slice(0,i).trim().toLowerCase()]=decodeURIComponent(part.slice(i+1)); });
+  const m=/^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})/.exec(q.t||"");
+  const sum=parseFloat(String(q.s||"").replace(",","."));
+  if(!m || !(sum>0)) return null;
+  return {date:`${m[1]}-${m[2]}-${m[3]}`, time:`${m[4]}:${m[5]}`, amount:Math.round(sum*100)/100,
+    refund: q.n==="2" || q.n==="4", key:[q.fn,q.i,q.fp].filter(Boolean).join(":") || `${q.t}:${q.s}`};
+}
+async function scanReceipt(){
+  let raw="";
+  try{ raw=await qrScan(); }
+  catch(e){ const msg=e && e.message || ""; if(msg && msg!=="unavailable") showActionToast("📷 "+msg); else if(msg==="unavailable") showActionToast("Сканер чеков — в приложении "+LATEST_APP.version); return; }
+  const r=parseReceiptQr(raw);
+  if(!r){ showActionToast("Это не QR кассового чека"); return; }
+  const accs=DATA.finance.accounts||[];
+  const acc=accs.find(a=>(a.currency||"RUB")==="RUB") || accs[0];
+  openSheet({kind:"receipt", r, comment:"", cat:"", accountId: acc? String(acc.id) : String(defaultAccountId()), force:false});
+}
+// та же покупка, уже записанная (из банка или руками): сумма та же, ±20 минут
+function receiptDup(r){
+  const t=hmToMin(r.time);
+  return (DATA.finance.entries||[]).find(e=>e.type===(r.refund? "доход" : "расход") && e.date===r.date
+    && Math.abs((+e.amount||0)-r.amount)<0.005 && (!e.time || Math.abs((hmToMin(e.time)||0)-t)<=20) && !e.receipt);
+}
+function renderReceiptSheet(s){
+  const r=s.r, B=bankData(), d=parseLocalDate(r.date);
+  const was=B.receipts[r.key], dup= was? null : receiptDup(r);
+  const head=`<div class="sh-head">
+      <div class="sh-title left"><b>${r.refund? "Возврат" : "Чек"} на ${rcAmt(r.amount)}</b><span class="zero">${d? `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}` : r.date}, ${r.time}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>`;
+  if(was) return head+`<div class="rc-dup">Этот чек уже записан.</div><div class="sh-actions"><button class="btn" data-shclose="1">Понятно</button></div>`;
+  const accs=DATA.finance.accounts||[];
+  return head+`
+    ${dup && !s.force? `<div class="rc-dup">Похоже, уже записано${dup.bank? " из банка" : ""}: <b>${escapeHtml(dup.comment||dup.category||"расход")} −${escapeHtml(fmtMoney(+dup.amount, dup.currency||"RUB", 2))}</b>${dup.time? " в "+dup.time : ""}.</div>
+      <div class="sh-actions"><button class="btn ghost" id="rcForce">Записать ещё раз</button><button class="btn" id="rcLink">Это он — не дублировать</button></div>` : `
+    <div class="sh-lab" style="margin-top:4px;">Где</div>
+    <input class="sh-in" id="rcWhere" style="margin-top:6px;" placeholder="магазин, кафе — необязательно" value="${escapeHtml(s.comment||"")}" autocomplete="off">
+    <div class="sh-lab" style="margin-top:14px;">Категория</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${(DATA.financeCats||[]).map(c=>`<button class="${s.cat===c.name?'on':''}" style="--src:${c.color}" data-rccat="${escapeHtml(c.name)}"><i></i>${escapeHtml(c.name)}</button>`).join("")}</div>
+    ${accs.length>1? `<div class="sh-lab" style="margin-top:14px;">Счёт</div>
+      <div class="fx-pick sm" style="margin-top:6px;">${accs.map(a=>`<button class="${String(a.id)===s.accountId?'on':''}" data-rcacc="${a.id}">${escapeHtml(a.name)}</button>`).join("")}</div>` : ""}
+    <div class="sh-actions"><button class="btn" id="rcSave">Записать</button></div>`}`;
+}
+function bindReceiptSheet(s){
+  const r=s.r, B=bankData();
+  const w=document.getElementById("rcWhere");
+  if(w) w.oninput=()=>{
+    s.comment=w.value;
+    const g=bankCategory(w.value);
+    if(g && !s.catSet){ s.cat=g; sheetRoot().querySelectorAll('[data-rccat]').forEach(b=>b.classList.toggle("on", b.dataset.rccat===g)); }
+  };
+  sheetRoot().querySelectorAll('[data-rccat]').forEach(b=>b.onclick=()=>{ s.cat= s.cat===b.dataset.rccat? "" : b.dataset.rccat; s.catSet=true; if(w) s.comment=w.value; renderSheet(); });
+  sheetRoot().querySelectorAll('[data-rcacc]').forEach(b=>b.onclick=()=>{ s.accountId=b.dataset.rcacc; if(w) s.comment=w.value; renderSheet(); });
+  const f=document.getElementById("rcForce");
+  if(f) f.onclick=()=>{ s.force=true; renderSheet(); };
+  const l=document.getElementById("rcLink");
+  if(l) l.onclick=()=>{ B.receipts[r.key]=Date.now(); const d=receiptDup(r); if(d) d.receipt=r.key; scheduleSave(); closeSheet(); showActionToast("Чек отмечен — дубля не будет"); };
+  const sv=document.getElementById("rcSave");
+  if(sv) sv.onclick=()=>{
+    ensureFinanceAccounts();
+    const comment=(w? w.value : s.comment||"").trim();
+    const e={date:r.date, time:r.time, type: r.refund? "доход" : "расход", amount:r.amount, category: r.refund? "" : (s.cat||""), comment, accountId:s.accountId, receipt:r.key};
+    if(accountCurrency(s.accountId)!=="RUB") e.currency="RUB";
+    if(r.refund) e.source="other";
+    DATA.finance.entries.push(e);
+    B.receipts[r.key]=Date.now();
+    scheduleSave(); closeSheet(); render();
+    showActionToast(`${r.refund? "Возврат" : "Расход"} ${rcAmt(r.amount)} записан`, "Отменить", ()=>{
+      const i=DATA.finance.entries.indexOf(e); if(i>=0) DATA.finance.entries.splice(i,1);
+      delete B.receipts[r.key]; scheduleSave(); render();
+    });
+  };
+}
+document.addEventListener("click", e=>{
+  const b=e.target && e.target.closest && e.target.closest('[data-qrscan]');
+  if(!b) return;
+  e.preventDefault(); closeSheet(); scanReceipt();
+});
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-phrase", items:[
+const WHATS_NEW={id:"2026-10-02-bank", items:[
+  ["🏦","Траты из банка — сами","Приложение 2.6 читает уведомления банков: покупка по карте записывается расходом с магазином и категорией. Переводы и пополнения — только с твоего решения. Включается в «Финансах» или в настройках → «Банк и чеки»."],
+  ["📷","Чек по QR","«+» → «Чек по QR»: наводишь камеру на чек — сумма и время точно. Если покупка уже пришла из банка, второй раз не запишется."],
   ["🎤","Весь день одной фразой","«Заработал 4200, потратил 1500 на продукты, зал час, спал плохо, настроение четвёрка, сделал зарядку» — голосом или текстом. Разложу по разделам и покажу, что понял. Кнопка «+» → первая плитка, а вечером — карточка на «Сегодня»."],
   ["💼","«Инвестиции» заново","Шапка как у счетов: стоимость, прибыль, доли полосой, курс. Активы строками — крипта, вклады, другое; у вкладов — сколько приносят в месяц. Правка и добавление — листом с живым пересчётом."],
   ["📋","«План» заново","Дела → План: прогресс месяца, одна строка добавления с выбором раздела, только непустые разделы. Несделанное из прошлого месяца — одной кнопкой; цель можно отправить в дела на сегодня или на следующий месяц."],
@@ -10362,7 +10841,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.5", size:"меньше 1 МБ",
+const LATEST_APP={version:"2.6", size:"около 2 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -11473,6 +11952,7 @@ function settingsSummary(title){
     if(title.includes("Уведомления")) return notifyNative()? (notifyOn()? "включены" : "выключены — включи") : (isNativeShell()? "нужно приложение 2.3+" : "что и когда присылать");
     if(title.includes("Внешний вид")){ const th=(GLASS_THEMES||[]).find(x=>x[0]===appearance().glass); return th? `«Стекло» · ${th[1]}` : "темы «Стекла»"; }
     if(title.includes("Утренняя сводка")) return "бот в Telegram";
+    if(title.includes("Банк")){ const st=bankStatus(); return !st? (isNativeShell()? `нужно приложение ${LATEST_APP.version}` : "траты из банка, чеки") : st.granted? "траты пишутся сами" : "выключено — включи"; }
     if(title.includes("Голос")) return voiceSupported()? "распознавание работает" : "нечем распознавать";
     if(title.includes("Прогресс")) return "привычки и тренировки по месяцам";
     if(title.includes("Данные")){ const t=+DATA._lastBackup||0; if(!t) return "бэкапа ещё не было"; const n=Math.floor((Date.now()-t)/86400000); return n<=0? "бэкап сегодня" : `бэкап ${n} ${plural(n,'день','дня','дней')} назад`; }
@@ -12799,7 +13279,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
