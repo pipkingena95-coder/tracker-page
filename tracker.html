@@ -1470,6 +1470,34 @@
   .qa-tile .i{font:600 19px/1 var(--font-body);width:26px;text-align:center;flex:0 0 auto;color:var(--amber);}
   .qa-tile:active{transform:scale(.98);}
 
+  /* ---- план на месяц ---- */
+  .pl-chips{padding:10px 2px 0;margin-bottom:-2px;}
+  .pl-chips button.pl-edit{color:var(--grey-dim);border-style:dashed;}
+  .pl-sec{--pc:var(--amber);}
+  .pl-sec + .pl-sec{margin-top:14px;}
+  .pl-h{display:flex;align-items:center;gap:8px;font:700 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;
+    color:var(--grey);padding:2px 2px 2px;}
+  .pl-h i{width:9px;height:9px;border-radius:50%;background:var(--pc);flex:0 0 auto;}
+  .pl-h b{margin-left:auto;font:600 11px 'JetBrains Mono',monospace;color:var(--grey-dim);letter-spacing:0;}
+  .pl-sec .do-chk{border-color:color-mix(in srgb, var(--pc) 70%, var(--border));}
+  .pl-sec .do-row.done .do-chk{background:var(--pc);border-color:var(--pc);}
+  .pl-sec .do-row.moved .do-t{color:var(--grey-dim);}
+  .pl-carry b{display:block;font-size:15px;font-weight:600;color:var(--white);}
+  .pl-carry span{display:block;font-size:12.5px;color:var(--grey);margin-top:4px;line-height:1.45;}
+  .pl-ex{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+  .pl-ex button{border:1px dashed var(--border);background:none;color:var(--grey);border-radius:14px;padding:6px 11px;
+    font:500 12px var(--font-body);cursor:pointer;}
+  .pl-acts{display:flex;gap:8px;margin-top:12px;}
+  .pl-acts .btn{flex:1 1 0;padding-left:8px;padding-right:8px;font-size:13px;}
+  .pc-row{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .pc-row .sh-in{margin-top:0;flex:1;min-width:0;}
+  .pc-dot{width:30px;height:30px;border-radius:50%;flex:0 0 auto;cursor:pointer;padding:0;
+    border:3px solid color-mix(in srgb, var(--white) 22%, transparent);}
+  .pc-n{font:500 11px 'JetBrains Mono',monospace;color:var(--grey-dim);min-width:16px;text-align:right;}
+  .pc-del{width:38px;height:38px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--grey-dim);
+    flex:0 0 auto;cursor:pointer;font-size:12px;}
+  .pc-del.confirm{width:auto;padding:0 10px;color:var(--pnl-down);border-color:color-mix(in srgb, var(--pnl-down) 45%, transparent);}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2177,7 +2205,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 13:22+5778066d";
+window.TRACKER_BUILD = "2026-10-02 13:29+c0735780";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2649,8 +2677,8 @@ function render(){
       c.innerHTML = nav + renderHabitsPage();
       bindSubNav(); bindHabitsPage();
     } else if(v==="plan"){
-      c.innerHTML = nav + renderMonthNav() + renderPlan();
-      bindSubNav(); bindMonthNav(); bindPlan();
+      c.innerHTML = nav + renderPlan2();
+      bindSubNav(); bindPlan2();
     } else if(v==="retro"){
       c.innerHTML = nav + renderRetro();
       bindSubNav(); bindRetro();
@@ -8483,6 +8511,8 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="planitem") body=renderPlanItemSheet(s);
+  else if(s.kind==="plancats") body=renderPlanCatsSheet(s);
   else if(s.kind==="goaledit") body=renderGoalEditSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
@@ -8526,6 +8556,8 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="planitem") bindPlanItemSheet(s);
+  else if(s.kind==="plancats") bindPlanCatsSheet(s);
   else if(s.kind==="goaledit") bindGoalEditSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
@@ -9120,9 +9152,319 @@ function bindQuickSheet(s){
   };
 }
 
+// ═════════ ПЛАН НА МЕСЯЦ ═════════
+// Крупные цели месяца по разделам. Одна строка добавления сверху вместо поля
+// в каждом разделе; показываются только разделы, где что-то есть;
+// невыполненное прошлого месяца переносится одной кнопкой.
+function planKeyOf(y,m){ return `${y}-${m}`; }
+function planShift(key, d){
+  const p=key.split("-"); let y=+p[0], m=+p[1]+d;
+  while(m<0){ m+=12; y--; } while(m>11){ m-=12; y++; }
+  return planKeyOf(y,m);
+}
+function planItemsOf(key){
+  const P=(DATA.plan||{})[key]||{}, out=[];
+  DATA.planCats.forEach((c,ci)=>{ (P[c.name]||[]).forEach((it,i)=>out.push({ci, cat:c.name, i, it})); });
+  return out;
+}
+function planCatLabel(n){
+  n=String(n||"");
+  return n && n===n.toUpperCase() && n!==n.toLowerCase() ? n[0]+n.slice(1).toLowerCase() : n;
+}
+function planPick(){
+  if(!cur.planCat || !DATA.planCats.some(c=>c.name===cur.planCat)) cur.planCat=(DATA.planCats[0]||{}).name;
+  return cur.planCat;
+}
+function planMeta(key){
+  if(!DATA.planMeta || typeof DATA.planMeta!=="object") DATA.planMeta={};
+  return DATA.planMeta[key]||(DATA.planMeta[key]={});
+}
+// невыполненное прошлого месяца, которого ещё нет в этом
+function planCarryList(key){
+  const have={};
+  planItemsOf(key).forEach(x=>{ have[(x.it.text||"").trim().toLowerCase()]=1; });
+  return planItemsOf(planShift(key,-1)).filter(x=>!x.it.done && !x.it.moved && !have[(x.it.text||"").trim().toLowerCase()]);
+}
+function planMonthName(key, form){
+  const m=+key.split("-")[1];
+  return form==="gen"? MONTHS_GEN[m] : MONTHS_RU[m].toLowerCase();
+}
+function planItemMeta(it){
+  const bits=[];
+  if(it.done && it.doneAt){ const d=parseLocalDate(it.doneAt); if(d) bits.push(`сделано ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`); }
+  if(it.moved && !it.done) bits.push("перенесено дальше");
+  if(it.from && !it.done) bits.push(`из ${planMonthName(it.from,"gen")}`);
+  if(it.todo){
+    const t=(DATA.todos||[]).find(x=>x.id===it.todo);
+    if(t) bits.push(t.done? "в делах — сделано" : "в делах");
+  }
+  return bits.join(" · ");
+}
+const PLAN_EXAMPLES=["Закрыть 20 сделок","Отложить 50 000 ₽","Пробежать 50 км","Прочитать 2 книги","Разобрать документы"];
+function renderPlan2(){
+  ensurePlan();
+  const key=mk(), pick=planPick(), mName=planMonthName(key);
+  const all=planItemsOf(key), total=all.length, done=all.filter(x=>x.it.done).length;
+  const now=new Date(), nowKey=planKeyOf(now.getFullYear(), now.getMonth());
+  const isNow=key===nowKey;
+  const past= cur.year<now.getFullYear() || (cur.year===now.getFullYear() && cur.monthIdx<now.getMonth());
+  let subTxt;
+  if(!total) subTxt = past? "В этом месяце плана не было" : "Крупное на месяц. Дела на день — в «Списке»";
+  else if(done===total) subTxt = `Всё сделано — ${total} из ${total}`;
+  else if(isNow){
+    const dim=daysInMonth(cur.year,cur.monthIdx), left=dim-now.getDate()+1;
+    const expect=Math.floor(total*(now.getDate()-1)/dim);
+    subTxt = `${done} из ${total} · осталось ${left} ${plural(left,"день","дня","дней")}`
+      + (done>=expect? " · в графике" : ` · по графику уже ${expect}`);
+  }
+  else if(past) subTxt = `Итог: ${done} из ${total}`;
+  else subTxt = `${total} ${plural(total,"цель","цели","целей")} заранее`;
+  const pct= total? Math.round(done/total*100) : 0;
+  const chips=`<div class="fx-chips pl-chips">${DATA.planCats.map((c,ci)=>
+      `<button class="${c.name===pick?'on':''}" style="--src:${c.color}" data-plcat="${ci}"><i></i>${escapeHtml(planCatLabel(c.name))}</button>`).join("")}
+    <button class="pl-edit" data-plcats="1">Разделы…</button></div>`;
+  const hero=`<div class="card do-head">
+    <div class="hb2-nav" style="margin:0 0 14px;"><button data-plnav="-1" aria-label="Прошлый месяц">‹</button><span>${MONTHS_RU[cur.monthIdx]} ${cur.year}</span><button data-plnav="1" aria-label="Следующий месяц">›</button></div>
+    <div class="dh-row">
+      <div class="dh-ring" style="--p:${pct}"><span>${done}<small>/${total}</small></span></div>
+      <div class="dh-txt"><b>План на ${mName}</b><span>${subTxt}</span></div>
+    </div>
+    <div class="add-row todo-add"><input id="plNew" placeholder="Цель на ${mName}…" autocomplete="off" enterkeyhint="done"><button id="plAdd" aria-label="Добавить">+</button></div>
+    ${chips}
+  </div>`;
+  const carry= isNow && !planMeta(key).noCarry ? planCarryList(key) : [];
+  const prevName=planMonthName(planShift(key,-1),"gen");
+  const carryCard= carry.length? `<div class="card pl-carry">
+    <b>Из ${prevName} не сделано: ${carry.length}</b>
+    <span>${carry.slice(0,3).map(x=>"«"+escapeHtml(x.it.text||"")+"»").join(", ")}${carry.length>3? ` и ещё ${carry.length-3}` : ""}</span>
+    <div class="pl-acts"><button class="btn" id="plCarry">Перенести в ${mName}</button><button class="btn ghost" id="plNoCarry">Не надо</button></div>
+  </div>` : "";
+  const P=DATA.plan[key];
+  const secs=DATA.planCats.map((c,ci)=>{
+    const arr=(P[c.name]||[]).map((it,i)=>({it,i}));
+    if(!arr.length) return "";
+    const d=arr.filter(x=>x.it.done).length;
+    const rows=arr.filter(x=>!x.it.done).concat(arr.filter(x=>x.it.done)).map(({it,i})=>{
+      const meta=planItemMeta(it);
+      return `<div class="do-row ${it.done?'done':''} ${it.moved && !it.done?'moved':''}">
+        <button class="do-chk" data-pltick="${ci}:${i}" aria-label="${it.done?'Вернуть в работу':'Сделано'}">${it.done? CHECK_SVG : ''}</button>
+        <button class="do-main" data-plopen="${ci}:${i}"><span class="do-t">${escapeHtml(it.text||"без названия")}</span>${meta? `<span class="do-m">${meta}</span>`:""}</button>
+      </div>`;
+    }).join("");
+    return `<div class="pl-sec" style="--pc:${c.color}"><div class="pl-h"><i></i><span>${escapeHtml(planCatLabel(c.name))}</span><b>${d}/${arr.length}</b></div>${rows}</div>`;
+  }).join("");
+  const list= total? `<div class="card do-list">${secs}</div>`
+    : `<div class="card"><div class="fx-empty sm" style="text-align:left;">${past? "Пусто. Листай вперёд — к текущему месяцу." : "Пока пусто. Например:"}</div>
+      ${past? "" : `<div class="pl-ex">${PLAN_EXAMPLES.map(x=>`<button data-plex="${escapeHtml(x)}">${escapeHtml(x)}</button>`).join("")}</div>`}</div>`;
+  return hero + carryCard + list;
+}
+function planAt(key, ref){
+  const p=String(ref).split(":"), cat=DATA.planCats[+p[0]];
+  const arr=cat && DATA.plan[key] && DATA.plan[key][cat.name];
+  return arr && arr[+p[1]] ? {cat, arr, i:+p[1], it:arr[+p[1]]} : null;
+}
+function planToggle(key, ref){
+  const x=planAt(key, ref);
+  if(!x) return;
+  x.it.done=!x.it.done;
+  if(x.it.done) x.it.doneAt=todayStr(); else delete x.it.doneAt;
+  scheduleSave(); render();
+  if(x.it.done) showActionToast(`✓ ${x.it.text}`, "Отменить", ()=>{ x.it.done=false; delete x.it.doneAt; scheduleSave(); render(); });
+}
+function bindPlan2(){
+  const key=mk();
+  document.querySelectorAll('[data-plnav]').forEach(b=>b.onclick=()=>{
+    cur.monthIdx+= +b.dataset.plnav;
+    if(cur.monthIdx<0){ cur.monthIdx=11; cur.year--; }
+    if(cur.monthIdx>11){ cur.monthIdx=0; cur.year++; }
+    render();
+  });
+  // раздел выбирается на месте: перерисовка стёрла бы набранный текст
+  document.querySelectorAll('[data-plcat]').forEach(b=>b.onclick=()=>{
+    const c=DATA.planCats[+b.dataset.plcat];
+    if(!c) return;
+    cur.planCat=c.name;
+    document.querySelectorAll('[data-plcat]').forEach(x=>x.classList.toggle("on", x===b));
+  });
+  document.querySelectorAll('[data-plcats]').forEach(b=>b.onclick=()=>openSheet({kind:"plancats"}));
+  const inp=document.getElementById("plNew");
+  const add=()=>{
+    const v=(inp && inp.value || "").trim();
+    if(!v){ flashError(inp, "Что за цель?"); return; }
+    ensurePlan();
+    const c=planPick();
+    (DATA.plan[key][c]||(DATA.plan[key][c]=[])).push({text:v, done:false});
+    scheduleSave(); render();
+    const n=document.getElementById("plNew");
+    if(n) n.focus();
+  };
+  const ab=document.getElementById("plAdd");
+  if(ab) ab.onclick=add;
+  if(inp) inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } };
+  document.querySelectorAll('[data-plex]').forEach(b=>b.onclick=()=>{ if(inp){ inp.value=b.dataset.plex; inp.focus(); } });
+  document.querySelectorAll('[data-pltick]').forEach(b=>b.onclick=()=>planToggle(key, b.dataset.pltick));
+  document.querySelectorAll('[data-plopen]').forEach(b=>b.onclick=()=>{
+    const p=b.dataset.plopen.split(":");
+    openSheet({kind:"planitem", key, ci:+p[0], i:+p[1]});
+  });
+  const cb=document.getElementById("plCarry");
+  if(cb) cb.onclick=()=>{
+    const list=planCarryList(key);
+    withUndo(()=>{
+      ensurePlan();
+      list.forEach(x=>{
+        x.it.moved=true;
+        (DATA.plan[key][x.cat]||(DATA.plan[key][x.cat]=[])).push({text:x.it.text, done:false, from:planShift(key,-1)});
+      });
+    }, `Перенесено: ${list.length}`);
+  };
+  const nb=document.getElementById("plNoCarry");
+  if(nb) nb.onclick=()=>{ planMeta(key).noCarry=true; scheduleSave(); render(); };
+}
+function renderPlanItemSheet(s){
+  const x=planAt(s.key, `${s.ci}:${s.i}`);
+  if(!x) return `<div class="sh-head"><div class="sh-title left"><b>Цели уже нет</b></div><button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button></div>`;
+  const it=x.it, next=planMonthName(planShift(s.key,1));
+  const todo=it.todo && (DATA.todos||[]).find(t=>t.id===it.todo && !t.done);
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Цель на ${planMonthName(s.key)}</b><span class="zero">${planItemMeta(it) || (it.done? "сделано" : "в работе")}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <textarea class="sh-in" id="piText" rows="2" style="resize:vertical;">${escapeHtml(it.text||"")}</textarea>
+    <div class="fx-chips pl-chips">${DATA.planCats.map((c,ci)=>
+      `<button class="${ci===s.ci?'on':''}" style="--src:${c.color}" data-picat="${ci}"><i></i>${escapeHtml(planCatLabel(c.name))}</button>`).join("")}</div>
+    <div class="pl-acts">
+      <button class="btn ghost" id="piTodo" ${todo||it.done? "disabled style=\"opacity:.45\"" : ""}>${todo? "Уже в делах" : "☰ В дела на сегодня"}</button>
+      <button class="btn ghost" id="piNext" ${it.done? "disabled style=\"opacity:.45\"" : ""}>На ${next} →</button>
+    </div>
+    <div class="sh-actions">
+      <button class="btn ghost danger" id="piDel">Удалить</button>
+      <button class="btn" id="piDone">${it.done? "Вернуть в работу" : "✓ Сделано"}</button>
+    </div>`;
+}
+function bindPlanItemSheet(s){
+  const x=planAt(s.key, `${s.ci}:${s.i}`);
+  if(!x) return;
+  const it=x.it, root=sheetRoot();
+  const tx=document.getElementById("piText");
+  if(tx) tx.oninput=()=>{ const v=tx.value.trim(); if(v){ it.text=v; scheduleSave(); } };
+  root.querySelectorAll('[data-picat]').forEach(b=>b.onclick=()=>{
+    const ci=+b.dataset.picat, to=DATA.planCats[ci];
+    if(ci===s.ci || !to) return;
+    const P=DATA.plan[s.key];
+    x.arr.splice(x.i,1);
+    (P[to.name]||(P[to.name]=[])).push(it);
+    s.ci=ci; s.i=P[to.name].length-1;
+    scheduleSave(); render();
+  });
+  const done=document.getElementById("piDone");
+  if(done) done.onclick=()=>{ closeSheet(); planToggle(s.key, `${s.ci}:${s.i}`); };
+  const td=document.getElementById("piTodo");
+  if(td && !td.disabled) td.onclick=()=>{
+    const id=Date.now();
+    DATA.todos=DATA.todos||[];
+    DATA.todos.push({id, text:it.text, done:false, dueDate:todayStr(), priority:"medium", createdAt:id});
+    it.todo=id;
+    closeSheet(); scheduleSave(); render();
+    showActionToast(`«${it.text}» — в делах на сегодня`, "Отменить", ()=>{
+      const j=DATA.todos.findIndex(t=>t.id===id);
+      if(j>=0) DATA.todos.splice(j,1);
+      delete it.todo;
+      scheduleSave(); render();
+    });
+  };
+  const nx=document.getElementById("piNext");
+  if(nx && !nx.disabled) nx.onclick=()=>{
+    const nk=planShift(s.key,1), name=planMonthName(nk);
+    closeSheet();
+    withUndo(()=>{
+      if(!DATA.plan[nk]) DATA.plan[nk]={};
+      const y=planAt(s.key, `${s.ci}:${s.i}`);
+      if(!y) return;
+      y.arr.splice(y.i,1);
+      (DATA.plan[nk][y.cat.name]||(DATA.plan[nk][y.cat.name]=[])).push({text:y.it.text, done:false, from:s.key});
+    }, `Перенесено на ${name}`);
+  };
+  const del=document.getElementById("piDel");
+  if(del) del.onclick=()=>{
+    closeSheet();
+    deleteWithUndo(`«${(it.text||"").slice(0,40)}»`, ()=>{ const y=planAt(s.key, `${s.ci}:${s.i}`); if(y) y.arr.splice(y.i,1); });
+  };
+}
+function planCatUse(){
+  const n={};
+  Object.keys(DATA.plan||{}).forEach(k=>{ const P=DATA.plan[k]||{};
+    Object.keys(P).forEach(c=>{ if(Array.isArray(P[c])) n[c]=(n[c]||0)+P[c].length; }); });
+  return n;
+}
+function renderPlanCatsSheet(s){
+  const used=planCatUse();
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Разделы плана</b><span class="zero">цвет — нажми на кружок</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    ${DATA.planCats.map((c,ci)=>`<div class="pc-row">
+      <button class="pc-dot" data-pccolor="${ci}" style="background:${c.color}" aria-label="Сменить цвет"></button>
+      <input class="sh-in" data-pcname="${ci}" value="${escapeHtml(planCatLabel(c.name))}" autocomplete="off">
+      <small class="pc-n" title="Целей за всё время">${used[c.name]||""}</small>
+      <button class="pc-del" data-pcdel="${ci}" aria-label="Удалить раздел">✕</button>
+    </div>`).join("")}
+    <div class="add-row" style="margin-top:12px;"><input id="pcNew" placeholder="Новый раздел" autocomplete="off" enterkeyhint="done"><button id="pcAdd" aria-label="Добавить раздел">+</button></div>`;
+}
+function bindPlanCatsSheet(s){
+  const root=sheetRoot();
+  root.querySelectorAll('[data-pccolor]').forEach(b=>b.onclick=()=>{
+    const c=DATA.planCats[+b.dataset.pccolor];
+    const j=CAT_PALETTE.indexOf(c.color);
+    c.color=CAT_PALETTE[(j+1)%CAT_PALETTE.length];
+    scheduleSave(); render();
+  });
+  root.querySelectorAll('[data-pcname]').forEach(inp=>inp.onchange=()=>{
+    const ci=+inp.dataset.pcname, oldName=DATA.planCats[ci].name, v=inp.value.trim();
+    if(!v){ inp.value=planCatLabel(oldName); return; }
+    if(v===oldName || v===planCatLabel(oldName)) return;
+    if(DATA.planCats.some((c,i)=>i!==ci && (c.name===v || planCatLabel(c.name)===v))){ flashError(inp, "Такой раздел уже есть"); inp.value=planCatLabel(oldName); return; }
+    Object.keys(DATA.plan).forEach(k=>{
+      if(DATA.plan[k][oldName]){ DATA.plan[k][v]=DATA.plan[k][oldName]; delete DATA.plan[k][oldName]; }
+    });
+    if(cur.planCat===oldName) cur.planCat=v;
+    DATA.planCats[ci].name=v;
+    scheduleSave(); render();
+  });
+  root.querySelectorAll('[data-pcdel]').forEach(b=>b.onclick=()=>{
+    const ci=+b.dataset.pcdel, c=DATA.planCats[ci];
+    if(DATA.planCats.length<=1){ showActionToast("Последний раздел не удалить"); return; }
+    const n=planCatUse()[c.name]||0;
+    if(n && !b.classList.contains("confirm")){
+      b.classList.add("confirm"); b.textContent=`и ${n} ${plural(n,"цель","цели","целей")}?`;
+      setTimeout(()=>{ if(b.isConnected){ b.classList.remove("confirm"); b.textContent="✕"; } }, 2800);
+      return;
+    }
+    deleteWithUndo(`«${planCatLabel(c.name)}»`, ()=>{
+      Object.keys(DATA.plan).forEach(k=>{ delete DATA.plan[k][c.name]; });
+      DATA.planCats.splice(ci,1);
+    });
+  });
+  const inp=document.getElementById("pcNew");
+  const add=()=>{
+    const v=(inp && inp.value || "").trim();
+    if(!v) return;
+    if(DATA.planCats.some(c=>c.name===v || planCatLabel(c.name)===v)){ flashError(inp, "Такой раздел уже есть"); return; }
+    const free=CAT_PALETTE.find(col=>!DATA.planCats.some(c=>c.color===col));
+    DATA.planCats.push({name:v, color:free || CAT_PALETTE[DATA.planCats.length % CAT_PALETTE.length]});
+    scheduleSave(); render();
+    const n=document.getElementById("pcNew");
+    if(n) n.focus();
+  };
+  const ab=document.getElementById("pcAdd");
+  if(ab) ab.onclick=add;
+  if(inp) inp.onkeydown=e=>{ if(e.key==="Enter"){ e.preventDefault(); add(); } };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-quick", items:[
+const WHATS_NEW={id:"2026-10-02-plan", items:[
+  ["📋","«План» заново","Дела → План: прогресс месяца, одна строка добавления с выбором раздела, только непустые разделы. Несделанное из прошлого месяца — одной кнопкой; цель можно отправить в дела на сегодня или на следующий месяц."],
   ["+","Кнопка «+» на любом экране","Справа внизу: дело или привычка, расход, результат дня, сон, вес, тренировка, самочувствие, строчка в дневник — не заходя в раздел."],
   ["🎯","Накопления заново","Цели — карточками с кольцом прогресса. У выбранной — прогноз, когда соберёшь, и «+ Отложить» одной кнопкой. Взносы строками, правка и снятие — листом снизу."],
   ["⚙","Настройки — списком","Вместо пяти экранов подряд — разделы с состоянием: уведомления, тема, голос, бэкап, обновления. Раздел раскрывается по нажатию."],
