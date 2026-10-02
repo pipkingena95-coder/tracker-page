@@ -1227,6 +1227,12 @@
   .jq-past{font-size:13.5px;line-height:1.55;color:var(--grey);white-space:pre-wrap;}
   .jq-past b{display:block;color:var(--white);font-size:12px;margin-top:6px;}
 
+  /* ---- дела в сетке недели ---- */
+  .dw-c.dw-t{cursor:default;font:700 12px 'JetBrains Mono',monospace;color:var(--grey);}
+  .dw-c.dw-t.done{color:var(--on-accent, #fff);}
+  .dw-c.part{background:color-mix(in srgb, var(--amber) 38%, transparent);border-color:var(--amber);color:var(--white);}
+  .dw-name.dw-todo{cursor:default;font-weight:600;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -1934,7 +1940,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 01:13+bfe850fb";
+window.TRACKER_BUILD = "2026-10-02 11:44+5469c81b";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2821,8 +2827,7 @@ function bindHabits(){
   document.querySelectorAll('[data-idx][data-day]').forEach(cell=>{
     cell.onclick=()=>{
       const idx=cell.dataset.idx, day=+cell.dataset.day, key=mk();
-      cycleHabitDay(idx, key, day);
-      scheduleSave(); render();
+      tickHabitUndo(+idx, new Date(cur.year, cur.monthIdx, day), ()=>cycleHabitDay(idx, key, day));
     };
   });
   bindHabitTypeControls();
@@ -2873,8 +2878,7 @@ function bindHabitsWeek(){
       const idx=cell.dataset.idx;
       const [y,m,d]=cell.dataset.wdate.split('-').map(Number);
       const key=`${y}-${m}`;
-      cycleHabitDay(idx, key, d);
-      scheduleSave(); render();
+      tickHabitUndo(+idx, new Date(y,m,d), ()=>cycleHabitDay(idx, key, d));
     };
   });
   bindHabitTypeControls();
@@ -3918,7 +3922,7 @@ function doHeadline(G){
 }
 function renderDoWeek(){
   const ids=activeHabitIdx();
-  if(!ids.length) return "";
+  if(!ids.length && !(DATA.todos||[]).length) return "";
   const dates=getWeekDates(Date.now());
   const ts=todayStr();
   const head=dates.map(d=>`<span class="wd ${ymdOf(d)===ts?'now':''}">${WD_SHORT[(d.getDay()+6)%7]}</span>`).join("");
@@ -3943,9 +3947,9 @@ function renderDoWeek(){
       <span class="dw-s">${streak>0? "🔥 "+streak : `${doneN} из ${need}`}</span></div>${cells}`;
   }).join("");
   return `<div class="card do-week">
-    <div class="dw-head"><h2>Привычки · неделя</h2><button class="fx-linkbtn" data-gohabits="1">Месяц и год ›</button></div>
-    <div class="dw-grid">${head}${rows}</div>
-    <div class="fx-hint">Клетка: сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию.</div>
+    <div class="dw-head"><h2>Неделя</h2><button class="fx-linkbtn" data-gohabits="1">Месяц и год ›</button></div>
+    <div class="dw-grid">${head}${todosWeekRow(dates)}${rows}</div>
+    <div class="fx-hint">Дела — сколько закрыто за день. Привычки: клетка сделано → пропуск без разрыва серии → пусто. Пунктир — не по расписанию.</div>
   </div>`;
 }
 function renderDoList(){
@@ -4000,15 +4004,13 @@ function bindDoList(){
   if(mic) mic.onclick=()=>voiceAddTodo(mic);
   document.querySelectorAll('[data-dotick]').forEach(el=>el.onclick=()=>{
     const [k,v]=el.dataset.dotick.split(":");
-    if(k==="h") toggleHabitToday(+v); else toggleTodo(+v);
-    scheduleSave(); render();
+    if(k==="h") tickHabitUndo(+v, new Date(), ()=>toggleHabitToday(+v)); else tickTodoUndo(+v);
   });
   document.querySelectorAll('[data-doopen]').forEach(el=>el.onclick=()=>openSheet({kind:"doitem", ref:el.dataset.doopen}));
   document.querySelectorAll('[data-dwcell]').forEach(el=>el.onclick=()=>{
     const [idx,date]=el.dataset.dwcell.split(":");
     const [y,m,d]=date.split("-").map(Number);
-    cycleHabitDay(+idx, `${y}-${m}`, d);
-    scheduleSave(); render();
+    tickHabitUndo(+idx, new Date(y,m,d), ()=>cycleHabitDay(+idx, `${y}-${m}`, d));
   });
   document.querySelectorAll('[data-gohabits]').forEach(el=>el.onclick=()=>{ cur.sub.doing="habits"; cur.habitView="month"; render(); window.scrollTo(0,0); });
   const det=document.querySelector('.do-done');
@@ -4172,7 +4174,7 @@ function bindDoItemSheet(s){
   const del=document.getElementById("itDel");
   if(del) del.onclick=()=>{ closeSheet(); deleteWithUndo(`Дело «${t.text}»`, ()=>{ const j=DATA.todos.indexOf(t); if(j>=0) DATA.todos.splice(j,1); }); };
   const done=document.getElementById("itDone");
-  if(done) done.onclick=()=>{ toggleTodo(i); closeSheet(); save(); };
+  if(done) done.onclick=()=>{ closeSheet(); tickTodoUndo(i); };
 }
 
 function ensurePlan(){
@@ -5171,10 +5173,35 @@ function bindWhere(){
 // upcoming recurring charges are added as known events, and only the discretionary
 // remainder is extrapolated — blended with previous months so that day 2 of the
 // month doesn't produce a wild number from a single big purchase.
-function rubEntriesAll(){
-  const ids=rubAccountIds();
-  return DATA.finance.entries.filter(e=>isRubEntry(e));
+// Все записи в рублях по курсу. Раньше бюджет, прогноз, календарь, категории и
+// итоги брали только рублёвые записи, и расход в USDT давал «потрачено 0 ₽».
+// Без курса запись пропускается — её сумма честно неизвестна, и об этом говорит
+// spendRateNote(). Копии помнят номер записи (_i) и исходную валюту (_cur).
+function entriesInRub(){
+  return (DATA.finance.entries||[]).map((e,i)=>{
+    const c=entryCurrency(e);
+    const v = c==="RUB" ? (+e.amount||0) : convertMoney(+e.amount||0, c, "RUB");
+    return v==null ? null : {...e, amount:v, currency:"RUB", _i:i, _cur:c};
+  }).filter(Boolean);
 }
+// Под «Потрачено»: какие траты пересчитаны и по какому курсу, а каких курсов нет
+function spendRateNote(){
+  const now=new Date(), prefix=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
+  const other={}, miss=new Set();
+  (DATA.finance.entries||[]).forEach(e=>{
+    if(e.type==="доход" || !e.date || e.date.slice(0,7)!==prefix) return;
+    const c=entryCurrency(e);
+    if(c==="RUB") return;
+    if(!rateToRub(c)) miss.add(c); else other[c]=(other[c]||0)+(+e.amount||0);
+  });
+  const out=[];
+  const cs=Object.keys(other);
+  if(cs.length) out.push(`<div class="fx-sub" style="margin-top:6px;">Включая ${cs.map(c=>
+    `${fmtMoney(other[c],c)} по курсу ${rateToRub(c).toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽`).join(", ")}</div>`);
+  if(miss.size) out.push(`<div class="fx-warn">Нет курса для ${[...miss].join(", ")} — эти траты пока не вошли. <button data-fxrates="1">Обновить курс</button></div>`);
+  return out.join("");
+}
+function rubEntriesAll(){ return entriesInRub(); }
 function monthSums(prefix, entries){
   let inc=0, exp=0, expRec=0;
   entries.forEach(e=>{
@@ -5239,8 +5266,10 @@ function financeForecast(){
   const forecastIncome = cur.inc + up.income;
 
   // current balance across rouble accounts only, to match the rest of this card
-  const balance=DATA.finance.accounts.filter(a=>a.currency==="RUB")
-    .reduce((s,a)=>s+accountBalance(a.id),0);
+  const balance=DATA.finance.accounts.reduce((s,a)=>{
+    const v=convertMoney(accountBalance(a.id), a.currency||"RUB", "RUB");
+    return s+(v==null? 0 : v);
+  },0);
   const endBalance = balance + up.income - (restDiscretionary + up.expense);
 
   const budget=+DATA.finance.budgetLimit||0;
@@ -5353,7 +5382,7 @@ function renderForecastCard(){
     </div>
 
     <div class="fc-list">
-      <div class="fc-line"><div class="l">Сейчас на рублёвых счетах</div>
+      <div class="fc-line"><div class="l">Сейчас на всех счетах, в ₽</div>
         <div class="v">${fmtRub(f.balance)}</div></div>
       <div class="fc-line"><div class="l">Уже потрачено<small>${f.dayNow} из ${f.nd} дней</small></div>
         <div class="v" style="color:var(--pink)">−${fmtRub(spendNow)}</div></div>
@@ -5379,7 +5408,7 @@ function renderForecastCard(){
         <div class="s">${f.monthlyBurn? `при тратах ${fmtRub(f.monthlyBurn)}/мес` : 'нет данных о тратах'}</div></div>
     </div>
     ${verdict}
-    <div class="wk-hint">Считается по рублёвым счетам. Прогноз обычных трат смешивает темп этого месяца со средним за ${f.history.length? `${f.history.length} ${plural(f.history.length,'предыдущий месяц','предыдущих месяца','предыдущих месяцев')}` : 'прошлые месяцы'}, а подписки добавляются по датам списания.</div>
+    <div class="wk-hint">Всё в рублях по курсу, включая счета и траты в USDT. Прогноз обычных трат смешивает темп этого месяца со средним за ${f.history.length? `${f.history.length} ${plural(f.history.length,'предыдущий месяц','предыдущих месяца','предыдущих месяцев')}` : 'прошлые месяцы'}, а подписки добавляются по датам списания.</div>
   </div>`;
 }
 
@@ -5431,9 +5460,7 @@ function inRange(e, from, to){
 }
 // расходы по рублёвым счетам — та же выборка, что у бюджета и прогноза
 function rubExpenses(from, to){
-  const ids=rubAccountIds();
-  return (DATA.finance.entries||[]).filter(e=>
-    e.type==="расход" && isRubEntry(e) && inRange(e, from, to));
+  return entriesInRub().filter(e=>e.type==="расход" && inRange(e, from, to));
 }
 // В отличие от прежнего подсчёта сюда попадают и записи без категории, и категории,
 // удалённые из списка: раньше они молча выпадали, и сумма столбиков не сходилась
@@ -5488,9 +5515,8 @@ function spentByDayOfMonth(y, m, day){
   const prefix=`${r.y}-${pad2(r.m+1)}`;
   const ids=rubAccountIds();
   let s=0;
-  (DATA.finance.entries||[]).forEach(e=>{
+  entriesInRub().forEach(e=>{
     if(e.type!=="расход" || !e.date || e.date.slice(0,7)!==prefix) return;
-    if(!isRubEntry(e)) return;
     if(parseInt(e.date.slice(8,10),10)>day) return;
     s+=(+e.amount||0);
   });
@@ -5560,7 +5586,7 @@ function renderCategoriesCard(){
     `<span class="cat-chip" style="background:${c.color}22;color:${c.color};border:1px solid ${c.color}55;">${escapeHtml(c.name)}<button data-delfincat="${i}">✕</button></span>`).join("");
 
   return `<div class="card">
-    <h2>Расходы по категориям <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(только рублёвые счета)</span></h2>
+    <h2>Расходы по категориям <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(всё в ₽ по курсу)</span></h2>
     ${renderFinPeriodChips()}
     <div class="fc-head">
       <span class="fc-big" style="color:var(--white)">${fmtRub(st.total)}</span>
@@ -5659,7 +5685,7 @@ function renderBudgetCard(){
     : "сейчас столько же";
 
   return `<div class="card">
-    <h2>Бюджет этого месяца <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(только рублёвые счета)</span></h2>
+    <h2>Бюджет этого месяца <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(всё в ₽ по курсу)</span></h2>
     <div class="savings-goal" style="margin-bottom:10px;">
       <div><label>Лимит расходов на месяц, ₽ (0 — не ограничивать)</label><input id="budgetInp" type="number" value="${budget||""}"></div>
     </div>
@@ -5724,9 +5750,8 @@ function financeByDay(y, m){
   const ids=rubAccountIds();
   const prefix=`${y}-${pad2(m+1)}`;
   const out={};
-  (DATA.finance.entries||[]).forEach(e=>{
+  entriesInRub().forEach(e=>{
     if(!e.date || e.date.slice(0,7)!==prefix) return;
-    if(!isRubEntry(e)) return;
     const d=parseInt(e.date.slice(8,10),10);
     if(!d) return;
     const cell=out[d]||(out[d]={inc:0, exp:0, n:0});
@@ -5740,9 +5765,8 @@ function financeByMonth(y){
   const ids=rubAccountIds();
   const out={};
   for(let m=0;m<12;m++) out[m]={inc:0, exp:0, net:0, n:0};
-  (DATA.finance.entries||[]).forEach(e=>{
+  entriesInRub().forEach(e=>{
     if(!e.date || e.date.slice(0,4)!==String(y)) return;
-    if(!isRubEntry(e)) return;
     const m=parseInt(e.date.slice(5,7),10)-1;
     if(!(m>=0 && m<12)) return;
     if(e.type==="доход") out[m].inc+=(+e.amount||0); else out[m].exp+=(+e.amount||0);
@@ -5859,9 +5883,7 @@ function renderCalendarDay(){
   const dt=parseLocalDate(key);
   if(!dt) return "";
   const ids=rubAccountIds();
-  const rows=(DATA.finance.entries||[])
-    .map((e,i)=>({...e,_i:i}))
-    .filter(e=>e.date===key && isRubEntry(e));
+  const rows=entriesInRub().filter(e=>e.date===key);
   const inc=rows.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const exp=rows.filter(e=>e.type!=="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const d=calDraft();
@@ -5918,7 +5940,7 @@ function renderProfitCalendar(){
             : "Задай лимит расходов на месяц, и появится дневная норма"));
 
   return `<div class="card">
-    <h2>Календарь <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(только рублёвые счета)</span></h2>
+    <h2>Календарь <span style="font-size:11px;color:var(--grey-dim);font-weight:400;">(всё в ₽ по курсу)</span></h2>
     <div class="pcal-bar">
       <div class="seg">
         <button class="${byMonth?"":"active"}" data-calmode="days">По дням</button>
@@ -6422,9 +6444,10 @@ function renderSpendHero(){
       : `<div class="fx-sub">Лимит на месяц не задан — его можно поставить во вкладке «Прогноз» ниже</div>`}
     <div class="fx-tiles">
       <div><span class="k">${budget? "Можно в день" : "Темп в день"}</span><span class="v ${budget && perDay<=0?'neg':''}">${fmtRub(perDay)}</span><span class="s">${daysTxt}</span></div>
-      <div><span class="k">На счетах</span><span class="v">${fmtRub(f.balance)}</span><span class="s">рублёвые</span></div>
+      <div><span class="k">На счетах</span><span class="v">${fmtRub(f.balance)}</span><span class="s">все счета, в ₽</span></div>
       <div><span class="k">Останется</span><span class="v ${f.endBalance>=0?'':'neg'}">${fmtRub(f.endBalance)}</span><span class="s">к концу месяца</span></div>
     </div>
+    ${spendRateNote()}
     ${other.length? `<div class="fx-other">${other.map(c=>`<span>${fmtMoney(totals[c].bal,c,2)}</span>`).join("")}</div>`:""}
   </div>`;
 }
@@ -7748,9 +7771,89 @@ function bindNotifyCard(){
   });
 }
 
+// ═════════ ОТМЕТКА С ОТМЕНОЙ ═════════
+// Случайное касание — не повод лезть в карточку и вспоминать, что было. После
+// любой отметки дела или привычки внизу на 6 секунд появляется «Отменить».
+function withUndo(mutate, label){
+  const before=JSON.stringify(DATA);
+  mutate();
+  scheduleSave(); render();
+  const text = typeof label==="function" ? label() : label;
+  showActionToast(text, "Отменить", ()=>{ DATA=JSON.parse(before); scheduleSave(); render(); showActionToast("Отменено"); });
+}
+function habitStateLabel(idx, d){
+  const name=DATA.habits.list[idx]||"Привычка";
+  const when = ymdOf(d)===todayStr() ? "" : ` · ${d.getDate()} ${MONTHS_GEN[d.getMonth()]}`;
+  if(isHabitDoneOn(idx,d)) return `✓ ${name}${when}`;
+  if(isHabitFrozenOn(idx,d)) return `❄ Пропуск: ${name}${when}`;
+  if(habitType(idx)==='counter'){ const c=habitDailyCount(idx,d); if(c) return `${name}: ${c} из ${habitCounterTarget(idx)}${when}`; }
+  return `Отметка снята: ${name}${when}`;
+}
+function tickTodoUndo(i){
+  const t=DATA.todos && DATA.todos[i];
+  if(!t) return;
+  withUndo(()=>toggleTodo(i), ()=> t.done ? `✓ ${t.text}` : `Снова в работе: ${t.text}`);
+}
+function tickHabitUndo(idx, d, mutate){
+  withUndo(mutate, ()=>habitStateLabel(+idx, d));
+}
+
+// Строка «Дела» в сетке недели: сколько закрыто в каждый день. Полная клетка —
+// закрыто всё, что было на этот день; бледная — часть; красная рамка — день
+// прошёл, а дело со сроком так и висит.
+function todoDayMaps(){
+  const done={}, due={};
+  (DATA.todos||[]).forEach(t=>{
+    if(t.done && t.doneAt){ const k=ymdOf(new Date(t.doneAt)); done[k]=(done[k]||0)+1; }
+    if(t.dueDate && !(t.done && t.doneAt && ymdOf(new Date(t.doneAt))===t.dueDate)) due[t.dueDate]=(due[t.dueDate]||0)+1;
+  });
+  return {done, due};
+}
+// Серия — дни подряд, когда что-то закрыто. День, на который ничего не было
+// назначено и ничего не сделано, серию не рвёт; сегодня ещё можно успеть.
+function todoStreak(){
+  const {done, due}=todoDayMaps();
+  const first=Object.keys(done).sort()[0];
+  let n=0;
+  const d=new Date(); d.setHours(0,0,0,0);
+  if(!done[ymdOf(d)]) d.setDate(d.getDate()-1);
+  for(let guard=0; guard<400; guard++){
+    const k=ymdOf(d);
+    if(!first || k<first) break;
+    if(done[k]) n++;
+    else if(due[k]) break;
+    d.setDate(d.getDate()-1);
+  }
+  return n;
+}
+function todosWeekRow(dates){
+  if(!(DATA.todos||[]).length) return "";
+  const ts=todayStr();
+  const open={};
+  (DATA.todos||[]).forEach(t=>{ if(!t.done && t.dueDate) open[t.dueDate]=(open[t.dueDate]||0)+1; });
+  const {done}=todoDayMaps();
+  let week=0;
+  const cells=dates.map(d=>{
+    const k=ymdOf(d), n=done[k]||0, left=open[k]||0, future=k>ts;
+    week+=n;
+    const cls=["dw-c","dw-t"];
+    if(n && !left) cls.push("done");
+    else if(n && left) cls.push("part");
+    else if(!future && k<ts && left) cls.push("miss");
+    if(future) cls.push("future");
+    if(k===ts) cls.push("today");
+    return `<span class="${cls.join(" ")}" title="${d.getDate()} ${MONTHS_GEN[d.getMonth()]}: закрыто ${n}${left? `, осталось ${left}` : ""}">${n||""}</span>`;
+  }).join("");
+  const st=todoStreak();
+  return `<div class="dw-row"><span class="dw-name dw-todo">Дела</span><span class="dw-s">${st>1? `🔥 ${st}` : `${week} за неделю`}</span></div>${cells}`;
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-health", items:[
+const WHATS_NEW={id:"2026-10-02-fixes", items:[
+  ["₽","Расходы в любой валюте","Траты в USDT и долларах входят в «Потрачено», бюджет, категории и календарь — в рублях по курсу. Под суммой видно, по какому курсу посчитано."],
+  ["↶","Отменить отметку","Отметил дело или привычку случайно — внизу на 6 секунд появляется «Отменить»."],
+  ["▦","Дела в неделе","В сетке недели внизу «Дел» — строка «Дела»: сколько закрыто каждый день и 🔥 серия дней подряд."],
   ["♡","Новая вкладка «Здоровье»","Сон, тренировки, вес и самочувствие — в одном месте. Тренировки переехали сюда из «Дел»."],
   ["🌙","Сон","Утром на главном — «Как спал?»: время уже подставлено по твоему режиму, нажми оценку — и готово. Или вечером «Ложусь спать», утром «Встал». Средний сон, недосып, режим и две недели на графике."],
   ["⚖","Вес","Вписывай вес — увидишь тренд по средней за неделю, без дневных скачков, и сколько осталось до цели."],
@@ -8324,7 +8427,7 @@ async function voiceAddTodo(btn){
 
 function bindFinance(){
   const rubIds=rubAccountIds();
-  const entries=DATA.finance.entries.filter(e=>isRubEntry(e));
+  const entries=entriesInRub();
   const incByM=Array(12).fill(0), expByM=Array(12).fill(0);
   const chartYear=finYear();
   entries.forEach(e=>{
@@ -9292,8 +9395,8 @@ function todayQuietSummary(){
   const now=new Date();
   const rubIds=rubAccountIds();
   const prefix=`${now.getFullYear()}-${pad2(now.getMonth()+1)}`;
-  const spent=DATA.finance.entries
-    .filter(e=>e.type==="расход" && isRubEntry(e) && e.date && e.date.slice(0,7)===prefix)
+  const spent=entriesInRub()
+    .filter(e=>e.type==="расход" && e.date && e.date.slice(0,7)===prefix)
     .reduce((s,e)=>s+(+e.amount||0),0);
   const budget=+DATA.finance.budgetLimit||0;
   const nd=daysInMonth(now.getFullYear(),now.getMonth());
@@ -9361,7 +9464,7 @@ function renderRetro(){
   const overdue=openTodos.filter(t=>t.dueDate && t.dueDate<todayStr()).length;
 
   const rubIds=rubAccountIds();
-  const ent=DATA.finance.entries.filter(e=>isRubEntry(e) && e.date && inRange.has(e.date));
+  const ent=entriesInRub().filter(e=>e.date && inRange.has(e.date));
   const spent=ent.filter(e=>e.type==="расход").reduce((x,e)=>x+(+e.amount||0),0);
   const earned=ent.filter(e=>e.type==="доход").reduce((x,e)=>x+(+e.amount||0),0);
   const byCat={};
@@ -9399,7 +9502,7 @@ function renderRetro(){
       <div class="kpi-grid">
         <div class="kpi" style="border-top-color:var(--green)"><div class="t">Выполнено дел</div><div class="v">${doneTodos}</div><div class="s">${openTodos.length} открыто</div></div>
         <div class="kpi" style="border-top-color:var(--pink)"><div class="t">Расход</div><div class="v">${spent.toLocaleString('ru-RU')} ₽</div><div class="s">${mode==='week'?'за неделю':'за месяц'}</div></div>
-        <div class="kpi" style="border-top-color:var(--cyan)"><div class="t">Доход</div><div class="v">${earned.toLocaleString('ru-RU')} ₽</div><div class="s">только ₽-счета</div></div>
+        <div class="kpi" style="border-top-color:var(--cyan)"><div class="t">Доход</div><div class="v">${earned.toLocaleString('ru-RU')} ₽</div><div class="s">в ₽ по курсу</div></div>
         <div class="kpi" style="border-top-color:var(--purple)"><div class="t">Записей</div><div class="v">${notes}</div><div class="s">в дневнике</div></div>
       </div>
       ${topCats.length?`<div style="margin-top:12px;">${topCats.map(([n,v])=>`
@@ -9493,13 +9596,12 @@ function bindToday(){
     cycleHabitDay(idx, `${d.getFullYear()}-${d.getMonth()}`, d.getDate());
   };
   document.querySelectorAll('[data-feed-habit]').forEach(b=>b.onclick=()=>{
-    tickToday(b.dataset.feedHabit); scheduleSave(); render();
+    tickHabitUndo(+b.dataset.feedHabit, new Date(), ()=>tickToday(b.dataset.feedHabit));
   });
   const fb=document.querySelector('[data-focus-done]');
   if(fb) fb.onclick=()=>{
     const [kind,i]=fb.dataset.focusDone.split(":");
-    if(kind==="todo") toggleTodo(+i); else tickToday(i);
-    scheduleSave(); render();
+    if(kind==="todo") tickTodoUndo(+i); else tickHabitUndo(+i, new Date(), ()=>tickToday(i));
   };
 }
 function renderDashCharts(){
@@ -9510,7 +9612,7 @@ function renderDashCharts(){
   const wkMonth = workoutsInMonth(cur.year, cur.monthIdx).length;
   ensureFinanceAccounts();
   const rubIdsDash=rubAccountIds();
-  const rubEntriesDash=DATA.finance.entries.filter(e=>isRubEntry(e));
+  const rubEntriesDash=entriesInRub();
   const income=rubEntriesDash.filter(e=>e.type==="доход").reduce((s,e)=>s+(+e.amount||0),0);
   const expense=rubEntriesDash.filter(e=>e.type==="расход").reduce((s,e)=>s+(+e.amount||0),0);
   const balance=income-expense;
