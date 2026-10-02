@@ -1512,6 +1512,41 @@
   .iv-2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
   .iv-2 .sh-in{margin-top:6px;}
 
+  /* ---- день одной фразой ---- */
+  .qa-tile.qa-wide{grid-column:1/-1;background:color-mix(in srgb, var(--amber) 13%, var(--card));
+    border-color:color-mix(in srgb, var(--amber) 32%, var(--border));}
+  .qa-tile .tt{display:flex;flex-direction:column;gap:2px;min-width:0;}
+  .qa-tile .tt small{font-weight:500;font-size:11.5px;color:var(--grey);line-height:1.3;}
+  .dp-in{display:flex;gap:8px;align-items:stretch;margin-top:4px;}
+  .dp-in textarea{flex:1;margin-top:0;min-height:88px;resize:vertical;font-size:14px;line-height:1.4;}
+  .dp-mic{width:56px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--amber),var(--amber2));
+    color:var(--on-accent);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;padding:0;}
+  .dp-mic svg{width:24px;height:24px;}
+  .dp-ex{font-size:11.5px;color:var(--grey-dim);margin:8px 2px 0;line-height:1.45;}
+  .dp-ex button{border:none;background:none;padding:0;color:var(--amber);font:600 11.5px var(--font-body);cursor:pointer;}
+  .dp-list{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+  .dp-item{display:flex;align-items:center;gap:11px;width:100%;padding:9px 11px;border-radius:14px;border:1px solid var(--border);
+    background:var(--card);font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  .dp-item .i{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;font:700 15px var(--font-body);
+    background:color-mix(in srgb, var(--amber) 15%, transparent);color:var(--amber);}
+  .dp-item .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+  .dp-item .t b{font-size:13.5px;font-weight:600;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dp-item .t small{font-size:11.5px;color:var(--grey-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dp-item .t b.pos{color:var(--pnl-up);} .dp-item .t b.neg{color:var(--pnl-down);}
+  .dp-item .ck{width:22px;height:22px;border-radius:50%;border:2px solid var(--amber);background:var(--amber);color:var(--on-accent);
+    display:grid;place-items:center;flex:0 0 auto;}
+  .dp-item .ck svg{width:13px;height:13px;}
+  .dp-cur{border:1px solid var(--border);background:var(--pane, var(--card));border-radius:9px;padding:4px 9px;
+    font:600 13px var(--font-body);color:var(--white);cursor:pointer;flex:0 0 auto;min-width:32px;}
+  .dp-item.off{opacity:.5;}
+  .dp-item.off .ck{background:none;color:transparent;border-color:var(--border);}
+  .dp-item.off .t b{text-decoration:line-through;}
+  .dp-none{font-size:12.5px;color:var(--grey-dim);padding:12px 4px 2px;line-height:1.5;}
+  .dp-card .dp-c-t b{display:block;font-size:16px;font-weight:700;color:var(--white);letter-spacing:-.01em;}
+  .dp-card .dp-c-t span{display:block;font-size:12.5px;color:var(--grey);margin-top:3px;line-height:1.4;}
+  .dp-card .dp-c-b{display:flex;gap:8px;margin-top:12px;}
+  .dp-card .dp-c-b .btn{flex:1 1 0;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2219,7 +2254,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 13:35+849ede36";
+window.TRACKER_BUILD = "2026-10-02 16:52+298a942c";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2677,7 +2712,7 @@ function render(){
 
   bindUpdateBar();
   const c=document.getElementById("content");
-  if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); bindHealthToday(); }
+  if(cur.tab==="today"){ c.innerHTML = renderToday(); bindToday(); bindReminders(); bindHealthToday(); bindDayPhraseCard(); }
   else if(cur.tab==="search"){ c.innerHTML=renderGlobalSearch(); bindGlobalSearch(); }
   else if(cur.tab==="settings"){
     c.innerHTML=renderNotifyCard()+renderAppearanceCard()+renderVoiceCard()+renderDashCharts()+renderDataCard();
@@ -8525,6 +8560,7 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="dayphrase") body=renderDayPhraseSheet(s);
   else if(s.kind==="inv") body=renderInvSheet(s);
   else if(s.kind==="planitem") body=renderPlanItemSheet(s);
   else if(s.kind==="plancats") body=renderPlanCatsSheet(s);
@@ -8571,6 +8607,7 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="dayphrase") bindDayPhraseSheet(s);
   else if(s.kind==="inv") bindInvSheet(s);
   else if(s.kind==="planitem") bindPlanItemSheet(s);
   else if(s.kind==="plancats") bindPlanCatsSheet(s);
@@ -9087,7 +9124,7 @@ function renderQuickSheet(s){
     <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
     <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
   }
-  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid">${QA_TILES.map(([k,ic,l])=>
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button>${QA_TILES.map(([k,ic,l])=>
     `<button class="qa-tile" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
 }
 function quickWorkout(){
@@ -9104,6 +9141,7 @@ function bindQuickSheet(s){
   root.querySelectorAll('[data-qaback]').forEach(b=>b.onclick=()=>{ s.mode=""; renderSheet(); });
   root.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{
     const k=b.dataset.qa;
+    if(k==="phrase"){ openDayPhrase(false); return; }
     if(["todo","weight","note","feel"].includes(k)){
       s.mode=k; renderSheet();
       const f=document.getElementById(k==="todo"? "qaText" : k==="weight"? "qaKg" : k==="note"? "qaNote" : "");
@@ -9729,9 +9767,514 @@ function bindInvSheet(s){
   };
 }
 
+// ═════════ ДЕНЬ ОДНОЙ ФРАЗОЙ ═════════
+// «Заработал 4200 на крипте, потратил 1500 на продукты, был в зале час, спал
+// плохо, настроение четвёрка» — одна фраза раскладывается по разделам. Перед
+// записью видно, что понято; лишнее снимается нажатием. Всё — одним «Отменить».
+const DP_NUM={ноль:0,один:1,одна:1,одну:1,два:2,две:2,три:3,четыре:4,пять:5,шесть:6,семь:7,восемь:8,девять:9,десять:10,
+  одиннадцать:11,двенадцать:12,тринадцать:13,четырнадцать:14,пятнадцать:15,шестнадцать:16,семнадцать:17,восемнадцать:18,
+  девятнадцать:19,двадцать:20,тридцать:30,сорок:40,пятьдесят:50,шестьдесят:60,семьдесят:70,восемьдесят:80,девяносто:90,
+  сто:100,двести:200,триста:300,четыреста:400,пятьсот:500,шестьсот:600,семьсот:700,восемьсот:800,девятьсот:900,
+  полтора:1.5,полторы:1.5};
+const DP_EXAMPLE="Заработал 4200 на крипте, потратил 1500 на продукты и 300 на такси, был в зале час, спал 7 часов плохо, настроение четвёрка, сделал зарядку";
+// «четыре тысячи двести» → «4200»: распознавание обычно пишет цифрами, но не всегда
+function dpWordsToDigits(s){
+  const out=[];
+  let total=0, chunk=0, on=false;
+  const flush=()=>{ if(on){ out.push(String(total+chunk)); total=0; chunk=0; on=false; } };
+  s.split(/\s+/).forEach(tok=>{
+    const m=/^([а-я]+)([^а-я]*)$/.exec(tok);
+    const word=m? m[1] : null, tail=m? m[2] : "";
+    let used=false;
+    if(word && DP_NUM[word]!=null){ chunk+=DP_NUM[word]; on=true; used=true; }
+    else if(word && /^(тысяч|тысяча|тысячи|тысячу|тыщ|тыщи|тыщу)$/.test(word)){
+      // «4 тысячи» (цифрой) оставляем — его соберёт замена ниже, вместе с «200» после
+      if(on){ total+=(chunk||1)*1000; chunk=0; used=true; }
+      else if(!(out.length && /^\d/.test(out[out.length-1]))){ total=1000; on=true; used=true; }
+    }
+    if(used){ if(tail){ flush(); out[out.length-1]+=tail; } return; }
+    flush();
+    out.push(tok);
+  });
+  flush();
+  return out.join(" ");
+}
+function dpPrep(raw){
+  let s=String(raw||"").toLowerCase().replace(/ё/g,"е").replace(/\s+/g," ").trim();
+  s=s.replace(/в час ночи/g,"в 1:00").replace(/в полночь/g,"в 0:00").replace(/полчаса/g,"30 минут");
+  s=dpWordsToDigits(s);
+  // 4к (только вплотную: «300 к обеду» — не тысячи), 4,2 тыс, 3 косаря, 4 тысячи 200
+  s=s.replace(/(\d+(?:[.,]\d+)?)(?:к|k)(?!\p{L})/gu, (all,a)=>String(Math.round(parseFloat(a.replace(",","."))*1000)));
+  s=s.replace(/(\d+(?:[.,]\d+)?)\s*(?:тыс\p{L}*|тыщ\p{L}*|косар\p{L}*|кус(?:ок|ка|ков))(?!\p{L})(?:\s+(\d{1,3})(?![\d.,:])(?!\s*(?:час|мин|км|кг)))?/gu,
+    (all,a,b)=>String(Math.round(parseFloat(a.replace(",","."))*1000+(b? +b : 0))));
+  return s;
+}
+function dpSplit(raw){
+  return String(raw||"").split(/[.;!?\n]+|,(?!\d)|\s+(?:и|а|потом|затем|ещё|еще|также)\s+/iu)
+    .map(x=>x.trim()).filter(x=>x.length>1);
+}
+const DP_W="(?:^|[^\\p{L}])";
+function dpRe(body){ return new RegExp(DP_W+"(?:"+body+")(?!\\p{L})", "u"); }
+const DP_K={
+  todo:/^(?:надо|нужно|не забыть|напомни\p{L}*|запиши дело)(?!\p{L})/u,
+  weight:dpRe("вес|вешу|взвесил\\p{L}*"),
+  sleep:dpRe("спал\\p{L}*|поспал\\p{L}*|проспал\\p{L}*|сон|выспал\\p{L}*|недосп\\p{L}*|лег|легла|уснул\\p{L}*|заснул\\p{L}*|проснул\\p{L}*|встал|встала"),
+  feel:dpRe("настроени\\p{L}*|самочувстви\\p{L}*|энерги\\p{L}*|чувствую|чувствовал\\p{L}*|состояни\\p{L}*"),
+  workout:dpRe("зал|зале|спортзал\\p{L}*|тренир\\p{L}*|качал\\p{L}*|пробежк\\p{L}*|бегал\\p{L}*|пробежал\\p{L}*|побегал\\p{L}*|плавал\\p{L}*|бассейн\\p{L}*|йог\\p{L}*|растяжк\\p{L}*|велосипед\\p{L}*|велик\\p{L}*|футбол\\p{L}*|баскетбол\\p{L}*|волейбол\\p{L}*|теннис\\p{L}*|бокс\\p{L}*|борьб\\p{L}*|кардио|фитнес\\p{L}*|воркаут|турник\\p{L}*|отжима\\p{L}*|подтяг\\p{L}*"),
+  loss:dpRe("убыт\\p{L}*|минус|минусе|минусом|слил\\p{L}*|потерял\\p{L}*|проторговал\\p{L}*"),
+  income:dpRe("заработ\\p{L}*|профит\\p{L}*|прибыл\\p{L}*|доход\\p{L}*|навар\\p{L}*|поднял\\p{L}*|наторговал\\p{L}*|плюс|плюсе|плюсом|результат\\p{L}*|итог|получил\\p{L}*|зарплат\\p{L}*|зп|сделал"),
+  expense:dpRe("потратил\\p{L}*|потрачено|трат\\p{L}*|купил\\p{L}*|покупк\\p{L}*|заплатил\\p{L}*|оплатил\\p{L}*|отдал\\p{L}*|ушло|расход\\p{L}*|спустил\\p{L}*|заправил\\p{L}*|скинул\\p{L}*"),
+  neg:/(?:^|\s)не\s/u
+};
+// Числа-деньги: не часы, не километры, не время «23:30»
+function dpMoneyNums(c){
+  const re=/(\$\s*)?(\d{1,3}(?:[  ]\d{3})+(?:[.,]\d+)?|\d+(?:[.,]\d+)?)/g, out=[];
+  let m;
+  while((m=re.exec(c))){
+    const end=m.index+m[0].length, after=c.slice(end, end+16), before=c.slice(Math.max(0,m.index-1), m.index);
+    if(/^[:.]\d/.test(after) || /[:.]$/.test(before)) continue;
+    if(/^\s*(?:час|ч(?!\p{L})|мин|км|кило|кг|раз|подход|шаг|балл|из(?!\p{L})|\/|%|утра|вечера|ночи|дн|недел|мес|год|лет|человек)/u.test(after)) continue;
+    if(/(?:час\p{L}*|минут\p{L}*)\s*$/u.test(c.slice(Math.max(0,m.index-10), m.index))) continue;   // «часов шесть»
+    const v=parseFloat(m[2].replace(/[  ]/g,"").replace(",","."));
+    if(!(v>0)) continue;
+    let cur="";
+    if(/^\s*(?:usdt|юсдт|тезер\p{L}*|tether|теther)/u.test(after)) cur="USDT";
+    else if(m[1] || /^\s*(?:\$|доллар\p{L}*|бакс\p{L}*|зелен\p{L}*|usd(?!t))/u.test(after)) cur="$";
+    else if(/^\s*(?:руб\p{L}*|р(?!\p{L})|₽)/u.test(after)) cur="RUB";
+    else if(/^\s*(?:евро|€|eur)/u.test(after)) cur="EUR";
+    out.push({v, cur, at:m.index, end});
+  }
+  return out;
+}
+function dpClauseCur(c){
+  if(/(?:usdt|юсдт|тезер|tether)/u.test(c)) return "USDT";
+  if(/(?:\$|доллар|бакс|usd)/u.test(c)) return "$";
+  if(/(?:руб|₽)/u.test(c)) return "RUB";
+  if(/(?:евро|€)/u.test(c)) return "EUR";
+  return "";
+}
+function dpIncomeSource(c, cur){
+  const list=incomeSources();
+  const byCur=cc=>list.find(s=>s.currency===cc);
+  if(/(?:крипт|фьюч|спот|бирж|байбит|bybit|бинанс|binance|okx|окх|арбитраж|связк|usdt|юсдт)/u.test(c) && !/(?:фонд|акци|мосбирж)/u.test(c))
+    return (srcById("crypto") || byCur("USDT") || list[0] || OTHER_SRC).id;
+  if(/(?:фонд|акци|мосбирж|облиг|бкс|финам|тинькофф инвест)/u.test(c)) return (srcById("stocks") || byCur("RUB") || list[0] || OTHER_SRC).id;
+  if(/(?:зарплат|зп|аванс|премия|фриланс|заказ)/u.test(c)) return "other";
+  const hit=list.find(s=>dpNorm(s.name).split(" ").filter(w=>w.length>=4).some(w=>c.includes(w.slice(0,5))));
+  if(hit) return hit.id;
+  // о бирже ни слова, но валюта названа — источник в этой валюте
+  const byC= cur && cur!=="$" ? byCur(cur) : null;
+  if(byC) return byC.id;
+  const last=DATA.finance.lastSource;
+  return last && (srcById(last) || last==="other") ? last : (list[0]||OTHER_SRC).id;
+}
+const DP_CAT_HINTS=[["еда","продукт|еда|еду|обед|ужин|завтрак|кафе|кофе|ресторан|доставк|магазин|пятерочк|перекрест|шаурм|пицц|суши|бургер|вкусвилл|ашан|лент"],
+  ["транспорт","такси|бензин|метро|автобус|заправ|парковк|каршеринг|электричк|проезд|трамва"],
+  ["жилье","аренд|квартир|коммунал|жкх|свет|интернет|ипотек"],
+  ["развлечения","кино|бар|клуб|игр|концерт|подписк|театр|боулинг|кальян"],
+  ["здоровье","аптек|врач|лекарств|стоматолог|анализ|клиник|витамин|массаж"]];
+function dpNorm(s){ return String(s||"").toLowerCase().replace(/ё/g,"е").trim(); }
+function dpExpenseCat(label, hist){
+  const g=guessCategory(label, hist);
+  if(g) return g;
+  const cats=DATA.financeCats||[];
+  for(const [name, re] of DP_CAT_HINTS){
+    if(new RegExp(re,"u").test(label)){ const c=cats.find(x=>dpNorm(x.name)===name); if(c) return c.name; }
+  }
+  return "";
+}
+function dpCleanLabel(s){
+  return s.replace(DP_K.expense," ").replace(/(?:usdt|юсдт|руб\p{L}*|р(?!\p{L})|₽|\$|доллар\p{L}*|бакс\p{L}*|евро)/gu," ")
+    .replace(/[\s,:\-–—]+/g," ").trim()
+    .replace(/^(?:на|за|в|во|по|для|к)\s+/u,"").replace(/\s+(?:на|за|в|по|для|к)$/u,"").trim();
+}
+const DP_SRC_RE=/(?:крипт|фьюч|спот|бирж|байбит|bybit|бинанс|binance|okx|арбитраж|связк|фонд|акци|мосбирж)/u;
+// привычки: корень первых пяти букв значимых слов + немного синонимов
+const DP_STOP=["без","для","мин","раз","день","дня","до","на","по","режим","ранний","утренний","вечерний","здоровое","каждый"];
+const DP_HSYN={трени:["зал","зале","спортзал","кача","тренир"],чтени:["чита","прочит","книг"],плани:["планир","спланир"],
+  питье:["вод"],подъе:["встал рано","рано встал","проснулся рано","рано проснулся"],обуче:["учил","курс","урок"],медит:["медит"],
+  телеф:["телеф"],питан:["питал","правильно ел","без сладкого"],контр:["контраст"]};
+function dpHabitHit(idx, c){
+  const name=dpNorm(DATA.habits.list[idx]||"");
+  const words=name.replace(/[^а-яa-z\s]/g," ").split(/\s+/).filter(w=>w.length>=3 && !DP_STOP.includes(w));
+  const cw=c.replace(/[^а-яa-z0-9\s]/g," ").split(/\s+/);
+  return words.some(w=>{
+    const key=w.length>5? w.slice(0,5) : w;
+    if(cw.some(x=>x.startsWith(key))) return true;
+    return (DP_HSYN[key]||[]).some(sn=>sn.includes(" ")? c.includes(sn) : cw.some(x=>x.startsWith(sn)));
+  });
+}
+const DP_WK_TYPES=[["бег|бегал|пробеж|побегал","Бег"],["плав|бассейн","Плавание"],["йог","Йога"],["растяжк|стретч","Растяжка"],
+  ["велосипед|велик|вело","Велосипед"],["футбол|баскетбол|волейбол|теннис|хоккей","Игровой спорт"],["бокс|борьб|единоборств|мма","Единоборства"],["кардио|эллипс|дорожк","Кардио"]];
+function dpDuration(c){
+  let min=0;
+  const h=/(\d+(?:[.,]\d+)?)\s*(?:час\p{L}*|ч)(?!\p{L})/u.exec(c);
+  if(h) min+=Math.round(parseFloat(h[1].replace(",","."))*60);
+  else if(/(?:^|\s)(?:час|часик)(?!\p{L})/u.test(c)) min+=60;
+  const m=/(\d+)\s*мин\p{L}*/u.exec(c);
+  if(m) min+=+m[1];
+  return min;
+}
+function dpSleepQ(c){
+  if(/(?:ужасно|отвратительно|кошмар\p{L}*|хуже некуда|почти не спал|не спал)/u.test(c)) return 1;
+  if(/неплохо/u.test(c)) return 3;
+  if(/(?:плохо|хреново|паршиво|не выспал\p{L}*|недоспал\p{L}*|мало|не очень)/u.test(c)) return 2;
+  if(/(?:так себе|нормально|норм|средне)/u.test(c)) return 3;
+  if(/(?:хорошо|выспал\p{L}*|крепко)/u.test(c)) return 4;
+  if(/(?:отлично|прекрасно|супер|как младенец|идеально|шикарно)/u.test(c)) return 5;
+  return 0;
+}
+function dpTime(c, re, isBed){
+  const x=re.exec(c);
+  if(!x) return "";
+  let h=+x[1]; const mm=x[2]? +x[2] : 0;
+  const tail=c.slice(x.index+x[0].length, x.index+x[0].length+8);
+  if(h>23 || mm>59) return "";
+  if(isBed){ if(h===12) h=0; else if(h>=6 && h<=11 && !/утра/u.test(tail)) h+=12; }
+  else if(/(?:вечера|дня)/u.test(tail) && h<12) h+=12;
+  return `${pad2(h)}:${pad2(mm)}`;
+}
+function dpFeel(c){
+  const marks={единица:1,единичка:1,двойка:2,двоечка:2,тройка:3,троечка:3,четверка:4,четверочка:4,пятерка:5,пятерочка:5};
+  const of=/(\d+(?:[.,]\d+)?)\s*(?:из|\/)\s*(\d+)/u.exec(c);
+  if(of){ const v=parseFloat(of[1].replace(",",".")), mx=+of[2]; if(mx>0 && v<=mx) return Math.max(1, Math.min(5, Math.round(v/mx*5))); }
+  for(const k in marks) if(c.includes(k)) return marks[k];
+  const d=/(?:^|[^\d])([1-5])(?![\d.,])/u.exec(c);
+  if(d) return +d[1];
+  if(/(?:без сил|ужасн|разбит|убит|никак|выжат)/u.test(c)) return 1;
+  if(/неплох/u.test(c)) return 4;
+  if(/(?:вял|устал|плохо|так себе|не очень|тяжел|грустн)/u.test(c)) return 2;
+  if(/(?:норм|средне|ровно|спокойн)/u.test(c)) return 3;
+  if(/(?:огонь|отличн|супер|кайф|прекрасн|заряжен)/u.test(c)) return 5;
+  if(/(?:бодр|хорош|позитив|радост)/u.test(c)) return 4;
+  return 0;
+}
+// Разбор: на выходе — список пунктов к записи
+function parseDayPhrase(raw){
+  const items=[], hist=categoryIndexFromHistory(), notes=[], H=healthData();
+  const agg={sleep:null};
+  let lastMoney="", lastWk=null;
+  const habitsSeen={};
+  dpSplit(raw).forEach(orig=>{
+    const c=dpPrep(orig);
+    let used=false;
+    if(DP_K.todo.test(c)){
+      const text=orig.replace(/^\s*(?:надо|нужно|не забыть|напомни\p{L}*|запиши дело)\s*/iu,"").trim();
+      if(text){ items.push({k:"todo", text}); }
+      lastMoney=""; return;
+    }
+    const neg=DP_K.neg.test(c);
+    if(DP_K.weight.test(c)){
+      const n=/(\d{2,3}(?:[.,]\d)?)/.exec(c), v=n? parseFloat(n[1].replace(",",".")) : 0;
+      if(v>=30 && v<=250){ items.push({k:"weight", kg:Math.round(v*10)/10}); used=true; }
+    }
+    if(DP_K.sleep.test(c) && !used){
+      const s=agg.sleep||(agg.sleep={});
+      const h=/(\d+(?:[.,]\d+)?)\s*(?:час\p{L}*|ч)(?!\p{L})(?:\s*(\d+)\s*мин\p{L}*)?/u.exec(c) || /час\p{L}*\s+(\d+(?:[.,]\d+)?)/u.exec(c);
+      if(h){ const v=parseFloat(h[1].replace(",",".")); if(v>0 && v<=16) s.min=Math.round(v*60)+(h[2]? +h[2] : 0); }
+      const bed=dpTime(c, /(?:лег|легла|уснул\p{L}*|заснул\p{L}*|отбой)\D{0,10}?(\d{1,2})(?:[:.](\d{2}))?/u, true);
+      const wake=dpTime(c, /(?:встал|встала|проснул\p{L}*|подъем)\D{0,10}?(\d{1,2})(?:[:.](\d{2}))?/u, false);
+      if(bed) s.bed=bed;
+      if(wake) s.wake=wake;
+      const q=dpSleepQ(c); if(q) s.q=q;
+      if(s.min || bed || wake || q){ used=true; s.src=(s.src? s.src+", " : "")+orig; }
+    }
+    if(DP_K.feel.test(c)){
+      const e=dpFeel(c.replace(DP_K.feel,""));
+      if(e){ items.push({k:"feel", e}); used=true; }
+    }
+    // «заплатил за абонемент в зал» — это расход, не тренировка
+    if(DP_K.workout.test(c) && !DP_K.expense.test(c) && !(neg && /(?:не\s+(?:был|ходил|тренировал\p{L}*|бегал|пошел|пошла))/u.test(c))){
+      let type="Силовая";
+      for(const [re,t] of DP_WK_TYPES) if(new RegExp(re,"u").test(c)){ type=t; break; }
+      const km=/(\d+(?:[.,]\d+)?)\s*(?:км|километр\p{L}*)/u.exec(c);
+      const w={k:"workout", type, min:dpDuration(c), km: km? parseFloat(km[1].replace(",",".")) : 0, note:orig};
+      items.push(w); lastWk=w; used=true;
+    } else if(lastWk && !used && !dpMoneyNums(c).length && (dpDuration(c) || /км/u.test(c))){
+      if(!lastWk.min) lastWk.min=dpDuration(c);
+      const km=/(\d+(?:[.,]\d+)?)\s*(?:км|километр\p{L}*)/u.exec(c);
+      if(km && !lastWk.km) lastWk.km=parseFloat(km[1].replace(",","."));
+      used=true;
+    }
+    // деньги
+    let kind="";
+    if(DP_K.expense.test(c)) kind="exp";
+    else if(DP_K.loss.test(c)) kind="loss";
+    else if(DP_K.income.test(c)) kind="inc";
+    // «…и 300 на такси» — продолжение прошлой суммы; но «4к на крипте» — это доход
+    else if(!used && lastMoney && ![DP_K.sleep, DP_K.feel, DP_K.workout, DP_K.weight].some(r=>r.test(c))) kind= DP_SRC_RE.test(c)? "inc" : lastMoney;
+    const nums= kind && !(DP_K.weight.test(c)) ? dpMoneyNums(c) : [];
+    if(kind && nums.length){
+      const cc=dpClauseCur(c);
+      if(kind==="exp"){
+        nums.forEach((n,i)=>{
+          const nextAt= i+1<nums.length? nums[i+1].at : c.length;
+          let label=dpCleanLabel(c.slice(n.end, nextAt));
+          if(!label) label=dpCleanLabel(c.slice(i? nums[i-1].end : 0, n.at));
+          items.push({k:"exp", amount:n.v, cur:n.cur||cc, label, cat:dpExpenseCat(label, hist)});
+        });
+      } else {
+        nums.forEach(n=>items.push({k:"inc", amount: kind==="loss"? -n.v : n.v, cur:n.cur||cc, src:dpIncomeSource(c, n.cur||cc)}));
+      }
+      lastMoney= kind==="loss"? "inc" : kind;
+      used=true;
+    } else if(!used) lastMoney="";
+    // привычки — не в денежных фразах: «абонемент в зал» не значит «тренировался»
+    if(!(kind && nums.length)) activeHabitIdx().forEach(idx=>{
+      if(habitsSeen[idx] || !dpHabitHit(idx, c)) return;
+      const nm=dpNorm(DATA.habits.list[idx]||"");
+      const fail= neg && !/^(?:без|не)\s/.test(nm);
+      habitsSeen[idx]=1;
+      items.push({k: fail? "hfail" : "habit", idx});
+      used=true;
+    });
+    if(!used) notes.push(orig.replace(/^\s*(?:и|а)\s+/iu,""));
+  });
+  if(agg.sleep){
+    const s=agg.sleep;
+    if(s.min || s.bed || s.wake || s.q) items.push(Object.assign({k:"sleep"}, s));
+  }
+  if(notes.length){
+    const text=notes.map(n=>n.charAt(0).toUpperCase()+n.slice(1)).join(". ")+".";
+    items.push({k:"note", text});
+  }
+  const order=["inc","exp","workout","sleep","weight","feel","habit","hfail","todo","note"];
+  return items.map((x,i)=>Object.assign(x,{_i:i})).sort((a,b)=>order.indexOf(a.k)-order.indexOf(b.k) || a._i-b._i);
+}
+// Ночь: времена из фразы, остальное — из записанного или обычного режима
+function dpSleepTimes(it, date){
+  const H=healthData(), had=H.sleep[date], t=sleepTypical();
+  let bed=it.bed||"", wake=it.wake||"";
+  if(it.min){
+    if(wake && !bed) bed=minToHm(hmToMin(wake)-it.min);
+    else if(bed && !wake) wake=minToHm(hmToMin(bed)+it.min);
+    else if(!bed && !wake){ wake= had? had.wake : t.wake; bed=minToHm(hmToMin(wake)-it.min); }
+  }
+  if(!bed) bed= had? had.bed : t.bed;
+  if(!wake) wake= had? had.wake : t.wake;
+  return {bed, wake};
+}
+function dpIncCur(it){
+  const meta=srcMeta(it.src);
+  if(it.cur==="$") return meta.currency==="USDT"? "USDT" : "USD";
+  return it.cur || meta.currency || pnlCurrency();
+}
+function dpExpCur(it){ return it.cur==="$"? "USD" : (it.cur || "RUB"); }
+function dpItemView(it, date){
+  const ex=s=>escapeHtml(s);
+  switch(it.k){
+    case "inc": { const c=dpIncCur(it); return ["₮", `<b class="${it.amount<0?'neg':'pos'}">${fmtPnl(it.amount, c)}</b>`, `Результат дня · ${ex(srcMeta(it.src).name)}`]; }
+    case "exp": { const c=dpExpCur(it); return ["₽", `<b>−${ex(fmtMoney(it.amount, c, 0))}${it.label? " · "+ex(it.label) : ""}</b>`, `Расход${it.cat? " · "+ex(it.cat) : " · без категории"}`]; }
+    case "workout": return ["⚡︎", `<b>${ex(it.type)}${it.min? " · "+wkDurShort(it.min) : ""}${it.km? " · "+String(it.km).replace(".",",")+" км" : ""}</b>`, "Тренировка"];
+    case "sleep": { const t=dpSleepTimes(it, date), min=sleepMinutes(t), q=SLEEP_Q.find(x=>x[0]===it.q);
+      return ["☾", `<b>${t.bed} → ${t.wake} · ${fmtSleep(min)}</b>`, `Сон${q? " · "+q[1] : ""}${!it.bed && !it.wake? " · время по обычному режиму" : ""}`]; }
+    case "weight": return ["⚖︎", `<b>${kgPlain(it.kg)} кг</b>`, "Вес"];
+    case "feel": { const e=ENERGY.find(x=>x[0]===it.e); return ["☀︎", `<b>${it.e} из 5${e? " · "+e[1] : ""}</b>`, "Самочувствие"]; }
+    case "habit": return ["✓", `<b>${ex(DATA.habits.list[it.idx]||"")}</b>`, "Привычка — отмечу"];
+    case "hfail": return ["✕", `<b>${ex(DATA.habits.list[it.idx]||"")}</b>`, "Привычка — «не смог»"];
+    case "todo": return ["☰", `<b>${ex(it.text)}</b>`, "Новое дело"];
+    case "note": return ["✎", `<b>${ex(it.text)}</b>`, "В дневник"];
+  }
+  return ["•", "", ""];
+}
+function openDayPhrase(listen){
+  openSheet({kind:"dayphrase", text:"", off:{}, cur:{}, date:null});
+  if(listen) setTimeout(()=>dpListen(), 120);
+}
+// разбор + то, что поправили руками (валюта суммы)
+function dpItems(s){
+  const items=parseDayPhrase(s.text);
+  items.forEach((it,i)=>{ if(s.cur && s.cur[i]) it.cur=s.cur[i]; });
+  return items;
+}
+function dpItemCur(it){ return it.k==="inc"? dpIncCur(it) : dpExpCur(it); }
+function dpDate(s){
+  if(s.date) return s.date;
+  if(/(?:^|[^\p{L}])вчера(?!\p{L})/iu.test(s.text||"")) return addDaysKey(todayStr(), -1);
+  return todayStr();
+}
+function dpListHtml(s){
+  const items=dpItems(s), date=dpDate(s);
+  if(!String(s.text||"").trim()) return `<div class="dp-none">Скажи или напиши, как прошёл день — деньги, траты, спорт, сон, настроение, привычки. Разложу по разделам, а ты проверишь.</div>`;
+  if(!items.length) return `<div class="dp-none">Пока ничего не понял. Попробуй: «заработал 3000, спал 7 часов».</div>`;
+  return items.map((it,i)=>{
+    const [ic, title, sub]=dpItemView(it, date);
+    const money=it.k==="inc" || it.k==="exp";
+    return `<div class="dp-item ${s.off[i]?'off':''}" data-dpoff="${i}" role="button" tabindex="0"><span class="i">${ic}</span>
+      <span class="t">${title}<small>${sub}</small></span>
+      ${money? `<button class="dp-cur" data-dpcur="${i}" aria-label="Сменить валюту">${CURRENCY_SYMBOL[dpItemCur(it)]||dpItemCur(it)}</button>` : ""}
+      <span class="ck">${CHECK_SVG}</span></div>`;
+  }).join("") + (items.some(x=>x.k==="inc"||x.k==="exp")? `<div class="dp-ex" style="margin-top:2px;">Нажми на ₽ / ₮ / $, чтобы сменить валюту суммы; на строку — чтобы не записывать.</div>` : "");
+}
+function dpSaveLabel(s){
+  const n=dpItems(s).filter((x,i)=>!s.off[i]).length;
+  return n? `Записать ${n} ${plural(n,"пункт","пункта","пунктов")}` : "Записать";
+}
+function renderDayPhraseSheet(s){
+  const date=dpDate(s), ts=todayStr(), yk=addDaysKey(ts,-1);
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Весь день одной фразой</b><span class="zero">разложу по разделам — ты проверишь</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="dp-in">
+      <textarea class="sh-in" id="dpText" rows="3" placeholder="Заработал 4200, потратил 1500 на продукты, зал час, спал плохо, настроение 4…">${escapeHtml(s.text||"")}</textarea>
+      <button class="dp-mic" id="dpMic" aria-label="Сказать голосом">${MIC_SVG}</button>
+    </div>
+    ${s.text? "" : `<div class="dp-ex">Например: «${escapeHtml(DP_EXAMPLE)}» <button id="dpEx">Подставить</button></div>`}
+    <div class="fx-pick sm" style="margin-top:10px;">
+      <button class="${date===ts?'on':''}" data-dpdate="${ts}">Сегодня</button>
+      <button class="${date===yk?'on':''}" data-dpdate="${yk}">Вчера</button>
+    </div>
+    <div class="dp-list" id="dpList">${dpListHtml(s)}</div>
+    <div class="sh-actions"><button class="btn" id="dpSave">${dpSaveLabel(s)}</button></div>`;
+}
+async function dpListen(){
+  const s=cur.sheet;
+  if(!s || s.kind!=="dayphrase") return;
+  if(!voiceSupported()){ flashError(document.getElementById("dpMic"), "Голосовой ввод недоступен — напиши текстом"); return; }
+  cur.dpListening=true;
+  let raw="";
+  try{ raw=await voiceListen("Как прошёл день?"); }
+  catch(e){
+    cur.dpListening=false;
+    if(cur.sheet!==s) openSheet(s);
+    const msg=e && e.message || "";
+    if(msg && msg!=="unavailable") showActionToast("🎤 "+msg);
+    return;
+  }
+  cur.dpListening=false;
+  s.text=(s.text && s.text.trim()? s.text.trim().replace(/[.,]?$/,", ") : "")+raw.trim();
+  s.off={}; s.cur={};
+  openSheet(s);
+}
+function dpRefresh(s){
+  const list=document.getElementById("dpList");
+  if(list) list.innerHTML=dpListHtml(s);
+  const sv=document.getElementById("dpSave");
+  if(sv) sv.textContent=dpSaveLabel(s);
+  sheetRoot().querySelectorAll('[data-dpoff]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.dpoff;
+    s.off[i]=!s.off[i];
+    b.classList.toggle("off", !!s.off[i]);
+    if(sv) sv.textContent=dpSaveLabel(s);
+  });
+  sheetRoot().querySelectorAll('[data-dpcur]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const i=+b.dataset.dpcur, it=dpItems(s)[i];
+    if(!it) return;
+    const list= it.k==="inc"? ["RUB","USDT","USD"] : ["RUB","USDT","USD","EUR"];
+    const now=dpItemCur(it);
+    s.cur=s.cur||{};
+    s.cur[i]=list[(list.indexOf(now)+1)%list.length];
+    dpRefresh(s);
+  });
+}
+function bindDayPhraseSheet(s){
+  const ta=document.getElementById("dpText");
+  let t=null;
+  if(ta) ta.oninput=()=>{
+    s.text=ta.value; s.off={}; s.cur={};
+    clearTimeout(t); t=setTimeout(()=>dpRefresh(s), 250);
+  };
+  const ex=document.getElementById("dpEx");
+  if(ex) ex.onclick=()=>{ s.text=DP_EXAMPLE; s.off={}; s.cur={}; renderSheet(); };
+  const mic=document.getElementById("dpMic");
+  if(mic) mic.onclick=()=>dpListen();
+  sheetRoot().querySelectorAll('[data-dpdate]').forEach(b=>b.onclick=()=>{ s.date=b.dataset.dpdate; renderSheet(); });
+  dpRefresh(s);
+  const sv=document.getElementById("dpSave");
+  if(sv) sv.onclick=()=>{
+    const date=dpDate(s);
+    const items=dpItems(s).filter((x,i)=>!s.off[i]);
+    if(!items.length){ flashError(ta, String(s.text||"").trim()? "Нечего записывать — всё снято" : "Расскажи, как прошёл день"); return; }
+    closeSheet();
+    withUndo(()=>dpCommit(items, date), ()=>dpSummary(items, date));
+  };
+}
+function dpSummary(items, date){
+  const names={inc:"результат",exp:"расход",workout:"тренировка",sleep:"сон",weight:"вес",feel:"самочувствие",habit:"привычка",hfail:"привычка",todo:"дело",note:"дневник"};
+  const uniq=[...new Set(items.map(x=>names[x.k]))];
+  const head=uniq.slice(0,3).join(", ")+(uniq.length>3? ` и ещё ${uniq.length-3}` : "");
+  return `Записано${date!==todayStr()? " за вчера" : ""}: ${head}`;
+}
+function dpHabitDone(idx, d){
+  const key=`${d.getFullYear()}-${d.getMonth()}`, day=d.getDate();
+  if(isHabitDoneOn(idx,d)) return;
+  const fr=DATA.habits.frozen && DATA.habits.frozen[key] && DATA.habits.frozen[key][idx];
+  if(fr){ const i=fr.indexOf(day); if(i>=0) fr.splice(i,1); }
+  clearHabitFail(idx,key,day);
+  if(habitType(idx)==="counter"){
+    DATA.habits.counts=DATA.habits.counts||{}; DATA.habits.counts[key]=DATA.habits.counts[key]||{};
+    DATA.habits.counts[key][idx]=DATA.habits.counts[key][idx]||{};
+    DATA.habits.counts[key][idx][day]=habitCounterTarget(idx);
+  } else {
+    DATA.habits.checks[key]=DATA.habits.checks[key]||{}; DATA.habits.checks[key][idx]=DATA.habits.checks[key][idx]||[];
+    DATA.habits.checks[key][idx].push(day);
+  }
+  markHabitTime(idx,key,day);
+}
+function dpHabitFail(idx, d){
+  const key=`${d.getFullYear()}-${d.getMonth()}`, day=d.getDate();
+  if(isHabitDoneOn(idx,d) || isHabitFailedOn(idx,d)) return;
+  const arr=habitFailArr(idx,key);
+  if(!arr.includes(day)) arr.push(day);
+}
+function dpCommit(items, date){
+  const H=healthData(), d=parseLocalDate(date)||new Date(), time= date===todayStr()? nowTime() : "21:00";
+  ensureFinanceAccounts();
+  items.forEach((it,n)=>{
+    if(it.k==="inc"){
+      const meta=srcMeta(it.src), c=dpIncCur(it), accountId=srcAccount(meta);
+      const e={date, time, type:"доход", category:"", amount:it.amount, comment:"", accountId, source:it.src||"other"};
+      if(c!==accountCurrency(accountId)) e.currency=c;
+      DATA.finance.entries.push(e);
+      DATA.finance.lastSource=it.src;
+    } else if(it.k==="exp"){
+      const c=dpExpCur(it);
+      const acc=(DATA.finance.accounts||[]).find(a=>(a.currency||"RUB")===c);
+      const accountId=String(acc? acc.id : (finDraft().accountId || defaultAccountId()));
+      const e={date, time, type:"расход", amount:it.amount, category:it.cat||"", comment:it.label||"", accountId};
+      if(c!==accountCurrency(accountId)) e.currency=c;
+      DATA.finance.entries.push(e);
+    } else if(it.k==="workout"){
+      ensureWorkouts();
+      DATA.workouts.push({id:Date.now()+n, date, time, type:it.type, duration: it.min? String(it.min) : "",
+        distance: it.km? String(it.km) : "", feeling:"", notes:"", exercises:[]});
+    } else if(it.k==="sleep"){
+      const t=dpSleepTimes(it, date);
+      saveSleep(date, t.bed, t.wake, it.q || (H.sleep[date] && H.sleep[date].q) || 0);
+    } else if(it.k==="weight"){
+      H.weight[date]=it.kg;
+    } else if(it.k==="feel"){
+      const f=H.feel[date]||(H.feel[date]={});
+      f.e=it.e;
+    } else if(it.k==="habit") dpHabitDone(it.idx, d);
+    else if(it.k==="hfail") dpHabitFail(it.idx, d);
+    else if(it.k==="todo") createFromText(it.text, {split:false});
+    else if(it.k==="note"){
+      const was=(DATA.journal[date]||"").trim();
+      DATA.journal[date]= was? `${was}\n${it.text}` : it.text;
+    }
+  });
+  DATA.dpDone=date;
+}
+// Вечером на «Сегодня»: рассказать про день, не открывая разделы
+function renderDayPhraseCard(){
+  const h=new Date().getHours();
+  if(!(h>=17 || h<4) || DATA.dpDone===todayStr()) return "";
+  return `<div class="card dp-card">
+    <div class="dp-c-t"><b>Как прошёл день?</b><span>Расскажи одной фразой — деньги, траты, спорт, сон, настроение. Разложу по разделам.</span></div>
+    <div class="dp-c-b"><button class="btn" data-dpopen="voice">🎤 Сказать</button><button class="btn ghost" data-dpopen="text">Написать</button></div>
+  </div>`;
+}
+function bindDayPhraseCard(){
+  document.querySelectorAll('[data-dpopen]').forEach(b=>b.onclick=()=>openDayPhrase(b.dataset.dpopen==="voice"));
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-invest", items:[
+const WHATS_NEW={id:"2026-10-02-phrase", items:[
+  ["🎤","Весь день одной фразой","«Заработал 4200, потратил 1500 на продукты, зал час, спал плохо, настроение четвёрка, сделал зарядку» — голосом или текстом. Разложу по разделам и покажу, что понял. Кнопка «+» → первая плитка, а вечером — карточка на «Сегодня»."],
   ["💼","«Инвестиции» заново","Шапка как у счетов: стоимость, прибыль, доли полосой, курс. Активы строками — крипта, вклады, другое; у вкладов — сколько приносят в месяц. Правка и добавление — листом с живым пересчётом."],
   ["📋","«План» заново","Дела → План: прогресс месяца, одна строка добавления с выбором раздела, только непустые разделы. Несделанное из прошлого месяца — одной кнопкой; цель можно отправить в дела на сегодня или на следующий месяц."],
   ["+","Кнопка «+» на любом экране","Справа внизу: дело или привычка, расход, результат дня, сон, вес, тренировка, самочувствие, строчка в дневник — не заходя в раздел."],
@@ -9948,7 +10491,7 @@ function closeListenSheet(){
   if(cur.sheet && cur.sheet.kind==="listen"){ cur.sheet.done=true; closeSheet(); }
 }
 function listenPreview(text){
-  if(!text || (DATA.settings||{}).voiceSplit===false) return [];
+  if(!text || cur.dpListening || (DATA.settings||{}).voiceSplit===false) return [];
   return parseTodoList(text).map(x=>x.text+(x.dueDate? " · "+dueLabel(x.dueDate) : "")+(x.priority==="high"? " · срочно" : ""));
 }
 function renderListenSheet(s){
@@ -11798,6 +12341,7 @@ function renderToday(){
     </div>
     ${renderTodayStats(doneCount, habTotal, openTodos)}
     ${focusHtml}
+    ${renderDayPhraseCard()}
     ${renderHealthToday()}
     <div class="card">
       <h2>Лента дня</h2>
