@@ -1578,6 +1578,17 @@
     background:color-mix(in srgb, var(--amber) 10%, var(--card));border:1px solid color-mix(in srgb, var(--amber) 28%, var(--border));}
   .rc-dup b{color:var(--white);}
 
+  /* ---- привычки сами ---- */
+  .ha-list{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .ha-list .r{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--white);}
+  .ha-list .r small{display:block;font-size:11.5px;color:var(--grey-dim);}
+  .ha-list .r .ck{width:22px;height:22px;border-radius:7px;border:2px solid var(--amber);display:grid;place-items:center;
+    color:var(--on-accent);background:var(--amber);flex:0 0 auto;cursor:pointer;padding:0;}
+  .ha-list .r .ck.off{background:none;color:transparent;border-color:var(--border);}
+  .ha-list .r .ck svg{width:12px;height:12px;}
+  .ha-val{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--grey);}
+  .ha-val input{width:auto;margin-top:0;padding:8px 10px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2285,7 +2296,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 18:02+8948093d";
+window.TRACKER_BUILD = "2026-10-02 22:42+3e74780a";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2717,6 +2728,7 @@ function bindSubNav(){
   });
 }
 function render(){
+  try{ habitsAutoRun(); }catch(e){}
   const app=document.getElementById("app");
   const now=new Date();
   const todayLabel=formatDateRu(now.getFullYear(),now.getMonth(),now.getDate());
@@ -2756,8 +2768,8 @@ function render(){
     const v=subView("doing");
     const nav=renderSubNav("doing",[["list","Список"],["habits","Привычки"],["plan","План"],["retro","Итоги"]]);
     if(v==="habits"){
-      c.innerHTML = nav + renderHabitsPage();
-      bindSubNav(); bindHabitsPage();
+      c.innerHTML = nav + renderHabitAutoCard() + renderHabitsPage();
+      bindSubNav(); bindHabitsPage(); bindHabitAutoCard();
     } else if(v==="plan"){
       c.innerHTML = nav + renderPlan2();
       bindSubNav(); bindPlan2();
@@ -4849,8 +4861,8 @@ function removeHabit(idx){
     });
     return out;
   };
-  ["types","counterTargets","goals","notes","archived","days"].forEach(f=>{ if(H[f]) H[f]=shift(H[f]); });
-  ["checks","counts","frozen","times","failed","failWhy"].forEach(f=>{
+  ["types","counterTargets","goals","notes","archived","days","auto"].forEach(f=>{ if(H[f]) H[f]=shift(H[f]); });
+  ["checks","counts","frozen","times","failed","failWhy","autoDone"].forEach(f=>{
     if(!H[f]) return;
     Object.keys(H[f]).forEach(mkey=>{ H[f][mkey]=shift(H[f][mkey]); });
   });
@@ -5092,6 +5104,7 @@ function renderDoRow(item){
     if(type==="counter") bits.push(`${cnt} из ${habitCounterTarget(idx)}`);
     // серия, которую сегодня ещё можно потерять, — красным числом, без лишних слов
     if(streak>0) bits.push(!done && !frozen ? `<b class="hot" title="Серия прервётся, если не отметить сегодня">🔥 ${streak}</b>` : `🔥 ${streak}`);
+    if(done && habitAutoDoneOn(idx,now)) bits.push("само ✓");
     if(frozen) bits.push("пропуск, серия цела");
     if(failed){ const w=habitFailWhy(idx,now); bits.push(`не смог${w? " — "+escapeHtml(w) : ""}`); }
     const fresh=(cur.freshHabits||[]).includes(idx);
@@ -5327,6 +5340,7 @@ function renderHabitItemSheet(idx){
       <button class="${type==="counter"?'on':''}" data-ittype="counter">Счётчиком</button>
       ${type==="counter"? `<label class="it-target">цель в день <input type="number" min="1" id="itTarget" value="${habitCounterTarget(idx)}"></label>` : ""}
     </div>
+    ${renderHabitAutoBlock(idx)}
     <input class="sh-in" id="itNote" placeholder="Зачем эта привычка? (необязательно)" value="${escapeHtml((DATA.habits.notes && DATA.habits.notes[idx])||"")}">
     <div class="sh-actions">
       <button class="btn ghost" id="itArch">В архив</button>
@@ -5347,6 +5361,7 @@ function bindDoItemSheet(s){
     // терялось бы — кнопку заменили бы новой, пока палец ещё на экране
     if(name) name.onchange=()=>{ const val=name.value.trim(); if(val){ DATA.habits.list[idx]=val; scheduleSave(); } else name.value=DATA.habits.list[idx]; };
     q('[data-itstate]').forEach(b=>b.onclick=()=>{ setHabitStateToday(idx, b.dataset.itstate); save(); });
+    bindHabitAutoBlock(idx);
     q('[data-itwhy]').forEach(b=>b.onclick=()=>{ const n=new Date(); setHabitFailWhy(idx, n, habitFailWhy(idx,n)===b.dataset.itwhy? "" : b.dataset.itwhy); save(); });
     const why=document.getElementById("itWhy");
     if(why) why.onchange=()=>{ setHabitFailWhy(idx, new Date(), why.value.trim()); scheduleSave(); };
@@ -10915,9 +10930,139 @@ document.addEventListener("click", e=>{
   try{ AndroidHost.usageSettings(); }catch(err){}
 });
 
+// ═════════ ПРИВЫЧКИ САМИ ═════════
+// Правило у привычки: выполнено по данным — галочка ставится сама (за сегодня и
+// вчера). Отметки, поставленные так, помнятся: если снять руками — второй раз
+// приложение не спорит.
+const HABIT_AUTO=[
+  ["wake","Встал до","по записи сна: время подъёма","07:00"],
+  ["phonedown","Отложил телефон до","по сну по телефону: когда отложил телефон вечером","23:30"],
+  ["sleep","Спал не меньше","часов по записи сна","7.5"],
+  ["workout","Тренировка","любая тренировка, записанная за день",""],
+  ["journal","Дневник","запись в дневнике или три вопроса дня",""],
+  ["weight","Взвесился","вес записан за день",""],
+  ["result","Результат дня","доход или убыток за день записан",""]];
+const HABIT_AUTO_GUESS=[[/телефон|гаджет|экран|соцсет/i,"phonedown"],[/подъ[её]м|встава|просып|встать/i,"wake"],[/выспа|сон\b|сна\b|спать/i,"sleep"],
+  [/трениров|спорт|зал\b|бег\b|пробежк|фитнес/i,"workout"],[/дневник|рефлекс|итог дня/i,"journal"],[/вес\b|взвеш/i,"weight"],[/результат|торгов|сделк/i,"result"]];
+function habitAuto(idx){ const a=DATA.habits.auto; return a && a[idx] || null; }
+function habitAutoDef(k){ return HABIT_AUTO.find(x=>x[0]===k); }
+function habitAutoDefault(k){
+  if(k==="phonedown"){ const b=healthData().cfg.bed; return b || "23:30"; }
+  const d=habitAutoDef(k); return d? d[3] : "";
+}
+function setHabitAuto(idx, k){
+  DATA.habits.auto=DATA.habits.auto||{};
+  if(k) DATA.habits.auto[idx]={k, v:habitAutoDefault(k)}; else delete DATA.habits.auto[idx];
+}
+function habitAutoGuess(idx){
+  const name=DATA.habits.list[idx]||"";
+  const g=HABIT_AUTO_GUESS.find(([re])=>re.test(name));
+  return g? g[1] : "";
+}
+function habitAutoLabel(rule){
+  const d=habitAutoDef(rule.k);
+  if(!d) return "";
+  if(rule.k==="sleep") return `${d[1]} ${String(rule.v||d[3]).replace(".",",")} ч`;
+  return d[3]? `${d[1]} ${rule.v||d[3]}` : d[1];
+}
+function habitAutoMet(rule, dk){
+  const H=healthData();
+  switch(rule.k){
+    case "wake": { const s=H.sleep[dk], w=s && hmToMin(s.wake);
+      return w!=null && w>=180 && w<=hmToMin(rule.v||"07:00"); }
+    case "phonedown": { const s=H.sleep[addDaysKey(dk,1)];
+      if(!s || hmToMin(s.bed)==null) return false;
+      const off=x=>(hmToMin(x)-1080+1440)%1440;
+      return off(s.bed)<=off(rule.v||"23:30"); }
+    case "sleep": return sleepMinutes(H.sleep[dk])>=parseFloat(String(rule.v||"7.5").replace(",","."))*60;
+    case "workout": return (DATA.workouts||[]).some(w=>w.date===dk && !w._new);
+    case "journal": return !!((DATA.journal[dk]||"").trim() || jqAnswered(dk));
+    case "weight": return !!H.weight[dk];
+    case "result": return (DATA.finance.entries||[]).some(e=>e.type==="доход" && e.date===dk);
+  }
+  return false;
+}
+function habitAutoDoneOn(idx, d){
+  const a=DATA.habits.autoDone && DATA.habits.autoDone[monthKeyOf(d)] && DATA.habits.autoDone[monthKeyOf(d)][idx];
+  return !!(a && a.includes(d.getDate()));
+}
+function habitsAutoRun(){
+  const A=DATA.habits && DATA.habits.auto;
+  if(!A || !Object.keys(A).length) return [];
+  const H=DATA.habits, marked=[];
+  [addDaysKey(todayStr(),-1), todayStr()].forEach(dk=>{
+    const d=parseLocalDate(dk), key=monthKeyOf(d), day=d.getDate();
+    Object.keys(A).forEach(k=>{
+      const idx=+k;
+      if(H.list[idx]==null || isHabitArchived(idx)) return;
+      H.autoDone=H.autoDone||{}; H.autoDone[key]=H.autoDone[key]||{};
+      const arr=H.autoDone[key][idx]||[];
+      if(arr.includes(day)) return;
+      if(isHabitDoneOn(idx,d) || isHabitFrozenOn(idx,d) || isHabitFailedOn(idx,d)) return;
+      if(!habitAutoMet(A[k], dk)) return;
+      dpHabitDone(idx, d);
+      H.autoDone[key][idx]=arr.concat(day);
+      marked.push({idx, dk});
+    });
+  });
+  if(marked.length){
+    scheduleSave();
+    const names=[...new Set(marked.map(m=>H.list[m.idx]))];
+    clearTimeout(cur.haToast);
+    cur.haToast=setTimeout(()=>showActionToast(`✓ Само отмечено: ${names.slice(0,3).join(", ")}${names.length>3? ` и ещё ${names.length-3}` : ""}`), 3800);
+  }
+  return marked;
+}
+// Раздел «Привычки»: предложить правила тем, у кого по названию видно, что можно
+function renderHabitAutoCard(){
+  const H=DATA.habits;
+  if(H.autoAsked) return "";
+  const cand=activeHabitIdx().filter(i=>!habitAuto(i) && habitAutoGuess(i));
+  if(!cand.length) return "";
+  cur.haPick=cur.haPick||{};
+  return `<div class="card bk-card"><div class="bk-h"><span class="i">✓</span><div>
+      <b>Эти привычки могут отмечаться сами</b><span>По сну, тренировкам, дневнику и результату дня — галочка встанет без тебя. Правило меняется в карточке привычки.</span></div></div>
+    <div class="ha-list">${cand.map(i=>{ const k=habitAutoGuess(i), off=cur.haPick[i]===false;
+      return `<div class="r"><button class="ck ${off?'off':''}" data-hapick="${i}" aria-label="Выбрать">${CHECK_SVG}</button>
+        <span><b>${escapeHtml(H.list[i])}</b><small>${escapeHtml(habitAutoLabel({k, v:habitAutoDefault(k)}))} — ${escapeHtml(habitAutoDef(k)[2])}</small></span></div>`; }).join("")}</div>
+    <div class="bk-acts"><button class="btn" data-haon="1">Включить</button><button class="btn ghost" data-haoff="1">Не надо</button></div></div>`;
+}
+function bindHabitAutoCard(){
+  const H=DATA.habits;
+  document.querySelectorAll('[data-hapick]').forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.hapick; cur.haPick=cur.haPick||{};
+    cur.haPick[i]= cur.haPick[i]===false; b.classList.toggle("off", cur.haPick[i]===false);
+  });
+  document.querySelectorAll('[data-haon]').forEach(b=>b.onclick=()=>{
+    const pick=cur.haPick||{};
+    let n=0;
+    activeHabitIdx().forEach(i=>{ if(!habitAuto(i) && habitAutoGuess(i) && pick[i]!==false){ setHabitAuto(i, habitAutoGuess(i)); n++; } });
+    H.autoAsked=true; scheduleSave(); render();
+    showActionToast(n? `Сами отмечаются: ${n} ${plural(n,'привычка','привычки','привычек')}` : "Ничего не выбрано");
+  });
+  document.querySelectorAll('[data-haoff]').forEach(b=>b.onclick=()=>{ H.autoAsked=true; scheduleSave(); render(); });
+}
+function renderHabitAutoBlock(idx){
+  const rule=habitAuto(idx), d=rule && habitAutoDef(rule.k);
+  let val="";
+  if(rule && (rule.k==="wake" || rule.k==="phonedown")) val=`<label class="ha-val">${escapeHtml(d[1])} <input type="time" class="sh-in" id="itAutoV" value="${escapeHtml(rule.v||d[3])}"></label>`;
+  else if(rule && rule.k==="sleep") val=`<label class="ha-val">${escapeHtml(d[1])} <input type="number" class="sh-in" id="itAutoV" min="4" max="12" step="0.5" value="${escapeHtml(String(rule.v||d[3]))}"> ч</label>`;
+  return `<div class="sh-lab">Отмечать само</div>
+    <div class="fx-pick sm"><button class="${!rule?'on':''}" data-itauto="">нет</button>${HABIT_AUTO.map(([k,l])=>`<button class="${rule&&rule.k===k?'on':''}" data-itauto="${k}">${escapeHtml(l)}</button>`).join("")}</div>
+    ${val}
+    ${rule? `<div class="fx-hint" style="margin:6px 2px 0;">${escapeHtml(d[2])}. Галочка встанет сама — за сегодня и вчера; снимешь руками — спорить не буду.</div>` : ""}`;
+}
+function bindHabitAutoBlock(idx){
+  const root=sheetRoot();
+  root.querySelectorAll('[data-itauto]').forEach(b=>b.onclick=()=>{ setHabitAuto(idx, b.dataset.itauto); scheduleSave(); render(); });
+  const v=document.getElementById("itAutoV");
+  if(v) v.onchange=()=>{ const r=habitAuto(idx); if(r && v.value){ r.v=v.value; scheduleSave(); render(); } };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-sleepphone", items:[
+const WHATS_NEW={id:"2026-10-02-habauto", items:[
+  ["✓","Привычки отмечаются сами","«Ранний подъём» — по сну, «Без телефона до сна» — по тому, когда отложил телефон, «Тренировка» — когда она записана, ещё дневник, вес, результат дня. Правило — в карточке привычки; снимешь галочку руками — спорить не буду."],
   ["📱","Сон — сам, по телефону","Приложение 2.7: когда отложил телефон вечером и взял утром — ночь записывается сама, остаётся оценить. Короткие взгляды ночью не считаются. Прошлые ночи за неделю — одной кнопкой. Включается в «Здоровье → Сон»."],
   ["🏦","Траты из банка — сами","Приложение 2.6 читает уведомления банков: покупка по карте записывается расходом с магазином и категорией. Переводы и пополнения — только с твоего решения. Включается в «Финансах» или в настройках → «Банк и чеки»."],
   ["📷","Чек по QR","«+» → «Чек по QR»: наводишь камеру на чек — сумма и время точно. Если покупка уже пришла из банка, второй раз не запишется."],
