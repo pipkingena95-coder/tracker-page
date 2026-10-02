@@ -2285,7 +2285,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 17:15+c2060270";
+window.TRACKER_BUILD = "2026-10-02 18:02+8948093d";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2586,6 +2586,7 @@ async function loadData(){
   scheduleNotifyPlan();
   handleAndroidOpen();
   try{ bankSync(false); }catch(e){}
+  try{ sleepAutoRun(); }catch(e){}
 }
 
 // Every migration a save needs, whether it came from storage or from a restored
@@ -10748,9 +10749,176 @@ document.addEventListener("click", e=>{
   e.preventDefault(); closeSheet(); scanReceipt();
 });
 
+// ═════════ СОН ПО ТЕЛЕФОНУ ═════════
+// Приложение 2.7 отдаёт моменты: разблокировали, экран погас, открыли приложение.
+// Самый длинный ночной перерыв — это сон: отложил телефон — лёг, взял утром — встал.
+// Короткие ночные взгляды (до 4 минут посреди долгой тишины) сон не прерывают.
+function usageOk(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.usageEvents==="function"; }
+function usageGranted(){
+  if(!usageOk()) return false;
+  try{ return !!JSON.parse(AndroidHost.usageStatus()||"{}").granted; }catch(e){ return false; }
+}
+function sleepPhoneOn(){ return usageGranted() && healthData().cfg.phone!==false; }
+function usageEventsBetween(a, b){
+  try{ const r=JSON.parse(AndroidHost.usageEvents(a, b)||"{}"); return r.ok? (r.events||[]) : []; }catch(e){ return []; }
+}
+function sleepGuess(dk){
+  const d=parseLocalDate(dk);
+  if(!d || !usageOk()) return null;
+  const from=new Date(d.getFullYear(), d.getMonth(), d.getDate()-1, 18, 0).getTime();
+  const to=Math.min(new Date(d.getFullYear(), d.getMonth(), d.getDate(), 14, 0).getTime(), Date.now());
+  if(to-from<6*3600000) return null;
+  const ev=usageEventsBetween(from, to).slice().sort((a,b)=>a[0]-b[0]);
+  if(!ev.length) return null;
+  // когда телефоном пользовались: от разблокировки (или открытого приложения) до погасшего экрана
+  const act=[];
+  let st=null;
+  ev.forEach(([t,k])=>{
+    if(k==="u" || k==="a"){ if(st==null) st=t; }
+    else if(k==="off" || k==="lock"){ if(st!=null){ act.push([st, Math.max(st,t)]); st=null; } }
+  });
+  if(st!=null) act.push([st, to]);
+  if(act.length<2) return null;
+  const nightAt=t=>{ const h=new Date(t).getHours(); return h>=22 || h<9; };
+  let wakeups=0, changed=true;
+  while(changed){
+    changed=false;
+    for(let i=1;i<act.length-1;i++){
+      const x=act[i], before=x[0]-act[i-1][1], after=act[i+1][0]-x[1];
+      if(x[1]-x[0]<4*60000 && nightAt(x[0]) && before>=45*60000 && after>=45*60000){
+        act.splice(i,1); wakeups++; changed=true; break;
+      }
+    }
+  }
+  let best=null;
+  for(let i=0;i<act.length-1;i++){
+    const a=act[i][1], b=act[i+1][0], len=b-a;
+    if(len<3*3600000 || len>14*3600000) continue;
+    const ha=new Date(a).getHours(), hb=new Date(b).getHours();
+    if(!(ha>=19 || ha<7) || !(hb>=3 && hb<14)) continue;
+    if(!best || len>best.len) best={a, b, len};
+  }
+  if(!best) return null;
+  const hm=t=>{ const x=new Date(t); return `${pad2(x.getHours())}:${pad2(x.getMinutes())}`; };
+  return {bed:hm(best.a), wake:hm(best.b), min:Math.round(best.len/60000), wakeups, from:best.a, to:best.b};
+}
+function sleepGuessFor(dk){
+  if(!sleepPhoneOn()) return null;
+  cur.slGuess=cur.slGuess||{};
+  const c=cur.slGuess[dk];
+  if(c && Date.now()-c.at<120000) return c.g;
+  const g=sleepGuess(dk);
+  cur.slGuess[dk]={at:Date.now(), g};
+  return g;
+}
+function sleepFormHint(date, where){
+  const H=healthData(), s=H.sleep[date];
+  if(where==="today"){
+    if(s && s.auto) return `Записал по телефону: отложил в <b>${escapeHtml(s.bed)}</b>, взял в <b>${escapeHtml(s.wake)}</b>. Оцени, как спал.`;
+    const g=sleepGuessFor(date);
+    if(g) return `Время — по телефону: отложил в <b>${g.bed}</b>, взял в <b>${g.wake}</b>${g.wakeups? ` (ночью брал ${g.wakeups} ${plural(g.wakeups,'раз','раза','раз')})` : ""}. Нажми оценку — и ночь записана.`;
+    return "Время подставлено по твоему обычному режиму. Нажми оценку — и ночь записана."
+      + (usageOk() && !usageGranted() && H.cfg.phone!==false && !H.cfg.phoneOff? ` <button class="fx-linkbtn" data-slphone="1">Записывать сам по телефону</button>` : "");
+  }
+  if(where==="tab"){
+    const g=!s && sleepGuessFor(date);
+    return g? `По телефону: отложил в ${g.bed}, взял в ${g.wake}. Поправь, если нужно, и нажми оценку.` : "Поправь время, если нужно, и нажми оценку.";
+  }
+  return "";
+}
+// Утром — записать ночь самому. Пока ночь не оценена, уточняем раз в час: ранний
+// взгляд в 5 утра становится «коротким» только когда после него снова тишина.
+function sleepAutoRun(){
+  const g0=usageGranted();
+  if(cur.usageWas!==undefined && g0!==cur.usageWas && !cur.sheet){ cur.usageWas=g0; render(); }
+  cur.usageWas=g0;
+  if(!sleepPhoneOn()) return;
+  const now=new Date(), h=now.getHours();
+  if(h<5 || h>=17) return;
+  const H=healthData(), key=todayStr(), ex=H.sleep[key];
+  if((ex && !(ex.auto && !ex.q)) || pendingSleep()) return;
+  const tag=key+":"+h;
+  if(cur.slAutoTag===tag) return;
+  cur.slAutoTag=tag;
+  if(cur.slGuess) delete cur.slGuess[key];
+  const g=sleepGuessFor(key);
+  if(!g) return;
+  if(ex && ex.bed===g.bed && ex.wake===g.wake) return;
+  saveSleep(key, g.bed, g.wake, 0);
+  H.sleep[key].auto=1;
+  if(cur.slDraft) delete cur.slDraft[key];
+  scheduleSave();
+  if(!cur.sheet) render();
+  if(!ex) showActionToast(`☾ Сон по телефону: ${g.bed} → ${g.wake} · ${fmtSleep(g.min)}`, "Поправить", ()=>openSleepSheet(key));
+}
+function sleepMissingGuesses(){
+  if(!sleepPhoneOn()) return [];
+  const H=healthData(), out=[];
+  for(let i=1;i<=7;i++){
+    const k=addDaysKey(todayStr(), -i);
+    if(H.sleep[k]) continue;
+    const g=sleepGuessFor(k);
+    if(g) out.push({k, g});
+  }
+  return out;
+}
+function renderSleepPhoneCard(){
+  const H=healthData();
+  if(!usageOk()){
+    if(isNativeShell() && appOutdated() && !H.cfg.phoneOff) return `<div class="card bk-card"><div class="bk-h"><span class="i">📱</span><div>
+      <b>Сон — сам, по телефону</b><span>Когда отложил телефон вечером и взял утром — ночь запишется сама. Нужно приложение ${LATEST_APP.version}: ставится поверх, данные сохранятся.</span></div></div>
+      <div class="bk-acts"><a class="btn" href="${LATEST_APP.url}">Скачать ${LATEST_APP.version}</a><button class="btn ghost" data-slphoneoff="1">Не надо</button></div></div>`;
+    return "";
+  }
+  if(!usageGranted()){
+    if(H.cfg.phone===false || H.cfg.phoneOff) return "";
+    return `<div class="card bk-card"><div class="bk-h"><span class="i">📱</span><div>
+      <b>Сон — сам, по телефону</b><span>Разреши «Доступ к истории использования»: приложение увидит, когда ты отложил телефон вечером и взял утром, и запишет ночь само. Берётся только время экрана — какие приложения и что в них, не читается.</span></div></div>
+      <div class="bk-acts"><button class="btn" data-slphone="1">Включить</button><button class="btn ghost" data-slphoneoff="1">Не надо</button></div>
+      <div class="bk-note">В списке найди <b>«Трекер»</b> и включи. Если Android пишет «Ограниченная настройка» — «О приложении» → ⋮ → «Разрешить ограниченные настройки».</div></div>`;
+  }
+  if(H.cfg.phone===false) return "";
+  const miss=sleepMissingGuesses();
+  if(!miss.length) return "";
+  return `<div class="card bk-card"><div class="bk-h"><span class="i">📱</span><div>
+    <b>По телефону нашёл ещё ${miss.length} ${plural(miss.length,'ночь','ночи','ночей')}</b>
+    <span>${miss.slice(0,4).map(x=>{ const d=parseLocalDate(x.k); return `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}: ${x.g.bed} → ${x.g.wake}`; }).join(" · ")}${miss.length>4? " …" : ""}</span></div></div>
+    <div class="bk-acts"><button class="btn" data-slfill="1">Записать</button></div></div>`;
+}
+function renderSleepPhoneToggle(){
+  if(!usageGranted()) return "";
+  return `<label class="vc-check"><input type="checkbox" data-slphoneauto="1" ${healthData().cfg.phone!==false?"checked":""}><span class="tt">Записывать сон сам — по телефону</span>
+    <small>когда отложил телефон вечером и взял утром; оценку поставишь сам</small></label>`;
+}
+function bindSleepPhone(c){
+  const H=healthData();
+  c.querySelectorAll('[data-slphoneoff]').forEach(b=>b.onclick=()=>{ H.cfg.phoneOff=true; scheduleSave(); render(); });
+  c.querySelectorAll('[data-slphoneauto]').forEach(b=>b.onchange=()=>{
+    H.cfg.phone=b.checked; scheduleSave();
+    if(b.checked){ cur.slAutoTag=""; sleepAutoRun(); }
+    render();
+  });
+  c.querySelectorAll('[data-slfill]').forEach(b=>b.onclick=()=>{
+    const miss=sleepMissingGuesses();
+    if(!miss.length) return;
+    withUndo(()=>miss.forEach(x=>{ saveSleep(x.k, x.g.bed, x.g.wake, 0); healthData().sleep[x.k].auto=1; }),
+      `Записано по телефону: ${miss.length} ${plural(miss.length,'ночь','ночи','ночей')}`);
+  });
+}
+document.addEventListener("click", e=>{
+  const b=e.target && e.target.closest && e.target.closest('[data-slphone]');
+  if(!b) return;
+  e.preventDefault();
+  const H=healthData();
+  if(H.cfg.phone===false) H.cfg.phone=true;
+  delete H.cfg.phoneOff; scheduleSave();
+  try{ AndroidHost.usageSettings(); }catch(err){}
+});
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-bank", items:[
+const WHATS_NEW={id:"2026-10-02-sleepphone", items:[
+  ["📱","Сон — сам, по телефону","Приложение 2.7: когда отложил телефон вечером и взял утром — ночь записывается сама, остаётся оценить. Короткие взгляды ночью не считаются. Прошлые ночи за неделю — одной кнопкой. Включается в «Здоровье → Сон»."],
   ["🏦","Траты из банка — сами","Приложение 2.6 читает уведомления банков: покупка по карте записывается расходом с магазином и категорией. Переводы и пополнения — только с твоего решения. Включается в «Финансах» или в настройках → «Банк и чеки»."],
   ["📷","Чек по QR","«+» → «Чек по QR»: наводишь камеру на чек — сумма и время точно. Если покупка уже пришла из банка, второй раз не запишется."],
   ["🎤","Весь день одной фразой","«Заработал 4200, потратил 1500 на продукты, зал час, спал плохо, настроение четвёрка, сделал зарядку» — голосом или текстом. Разложу по разделам и покажу, что понял. Кнопка «+» → первая плитка, а вечером — карточка на «Сегодня»."],
@@ -10841,7 +11009,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.6", size:"около 2 МБ",
+const LATEST_APP={version:"2.7", size:"около 2 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -13279,7 +13447,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} try{ sleepAutoRun(); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
@@ -13648,15 +13816,14 @@ function saveSleep(date, bed, wake, q){
 function sleepDraft(date){
   cur.slDraft=cur.slDraft||{};
   if(!cur.slDraft[date]){
-    const s=healthData().sleep[date], t=sleepTypical();
+    const s=healthData().sleep[date], t=sleepGuessFor(date) || sleepTypical();
     cur.slDraft[date]={bed:s? s.bed : t.bed, wake:s? s.wake : t.wake, q:s && s.q || 0};
   }
   return cur.slDraft[date];
 }
 function renderSleepForm(date, where){
   const d=sleepDraft(date), min=sleepMinutes(d);
-  const hint = where==="today" ? "Время подставлено по твоему обычному режиму. Нажми оценку — и ночь записана."
-    : where==="tab" ? "Поправь время, если нужно, и нажми оценку." : "";
+  const hint=sleepFormHint(date, where);
   return `<div class="sl-times">
       <label class="sl-time"><span>Лёг</span><input type="time" data-slf="bed" data-sld="${date}" value="${escapeHtml(d.bed)}"></label>
       <label class="sl-time"><span>Встал</span><input type="time" data-slf="wake" data-sld="${date}" value="${escapeHtml(d.wake)}"></label>
@@ -13794,7 +13961,7 @@ function renderSleep(){
   const night=!s && !pend && (h>=17 || h<4);
   const lastHtml = x => { const d=parseLocalDate(x.k);
     return `<div class="hl-big">${fmtSleep(sleepMinutes(x.s))}</div>
-      <div class="hl-sub">${x.k===key? "" : `ночь на ${d.getDate()} ${MONTHS_GEN[d.getMonth()]} · `}${escapeHtml(x.s.bed)} → ${escapeHtml(x.s.wake)}${x.s.q? ` · ${SLEEP_Q[x.s.q-1][1]}` : ""}</div>`; };
+      <div class="hl-sub">${x.k===key? "" : `ночь на ${d.getDate()} ${MONTHS_GEN[d.getMonth()]} · `}${escapeHtml(x.s.bed)} → ${escapeHtml(x.s.wake)}${x.s.q? ` · ${SLEEP_Q[x.s.q-1][1]}` : ""}${x.s.auto? " · 📱 по телефону" : ""}</div>`; };
   const hero = pend
     ? `<div class="hl-sub">Лёг в <b>${hmNow(new Date(pend))}</b>. Проснёшься — нажми «Встал».</div>
        <div class="hl-row"><button class="btn" data-slwake="1">☀ Встал</button><button class="btn ghost" data-slcancel="1">Отменить</button></div>`
@@ -13816,6 +13983,7 @@ function renderSleep(){
       Самая длинная — ${fmtSleep(st30.longest.min)} (${parseLocalDate(st30.longest.date).getDate()} ${MONTHS_GEN[parseLocalDate(st30.longest.date).getMonth()]}).${st30.q? ` Средняя оценка — ${st30.q.toFixed(1).replace(".",",")} из 5.` : ""}</div>` : "";
   const native=notifyNative();
   return `<div class="card fx-hero"><div class="fx-hero-top"><span class="fx-k">Сон · последняя ночь</span></div>${hero}${tiles}</div>
+    ${renderSleepPhoneCard()}
     <div class="card">
       <div class="nt-head"><h2>Две недели</h2><button class="fx-linkbtn" data-sladd="1">+ Другая ночь</button></div>
       ${sleepChartRows(14)}
@@ -13828,6 +13996,7 @@ function renderSleep(){
       <div class="hl-lab" style="margin-top:2px;">Цель сна</div>
       <div class="sl-goal">${[7,7.5,8,8.5,9].map(g=>`<button class="${+H.cfg.goal===g?'on':''}" data-slgoal="${g}">${fmtGoal(g)}</button>`).join("")}</div>
       <label class="hl-set"><span>Ложиться в</span><input type="time" data-slbedt="1" value="${escapeHtml(H.cfg.bed)}"></label>
+      ${renderSleepPhoneToggle()}
       <label class="vc-check"><input type="checkbox" data-slremind="1" ${notifyCfg().bed?"checked":""}><span class="tt">Напоминать за 30 минут до отбоя</span>
         <small>${native? "заодно — про три вопроса дня, если ещё не ответил" : "уведомления приходят в приложении на телефоне (2.3+)"}</small></label>
     </div>`;
@@ -13843,6 +14012,7 @@ function bindSleep(){
   const rm=c.querySelector('[data-slremind]');
   if(rm) rm.onchange=()=>{ notifyCfg().bed=rm.checked; scheduleSave(); render(); };
   c.querySelectorAll('[data-sladd]').forEach(b=>b.onclick=()=>openSleepSheet(addDaysKey(todayStr(), -1)));
+  bindSleepPhone(c);
 }
 function openSleepSheet(date){
   if(cur.slDraft) delete cur.slDraft[date];
