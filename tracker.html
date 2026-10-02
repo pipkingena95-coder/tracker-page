@@ -1589,6 +1589,17 @@
   .ha-val{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:var(--grey);}
   .ha-val input{width:auto;margin-top:0;padding:8px 10px;}
 
+  /* ---- со скриншота ---- */
+  .sh-prog{height:6px;border-radius:4px;background:color-mix(in srgb, var(--grey-dim) 20%, transparent);overflow:hidden;margin-top:14px;}
+  .sh-prog i{display:block;height:100%;background:var(--amber);border-radius:4px;transition:width .3s;}
+  .sh-stage{font-size:13px;color:var(--grey);margin-top:10px;line-height:1.45;}
+  .sh-img{display:block;max-width:100%;max-height:180px;margin:10px auto 0;border-radius:12px;border:1px solid var(--border);}
+  .dp-item .ty{border:1px solid var(--border);background:var(--pane, var(--card));border-radius:9px;padding:4px 8px;
+    font:600 11.5px var(--font-body);color:var(--grey);cursor:pointer;flex:0 0 auto;}
+  .shot-list .dp-item .t b{white-space:normal;line-height:1.3;}
+  .sh-raw{margin-top:12px;font-size:12px;color:var(--grey-dim);}
+  .sh-raw pre{white-space:pre-wrap;font:12px/1.4 'JetBrains Mono',monospace;color:var(--grey);margin:6px 0 0;max-height:220px;overflow:auto;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2296,7 +2307,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 22:42+3e74780a";
+window.TRACKER_BUILD = "2026-10-02 22:47+925e9da6";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -8608,6 +8619,7 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="shot") body=renderShotSheet(s);
   else if(s.kind==="bankinbox") body=renderBankInboxSheet(s);
   else if(s.kind==="receipt") body=renderReceiptSheet(s);
   else if(s.kind==="dayphrase") body=renderDayPhraseSheet(s);
@@ -8657,6 +8669,7 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="shot") bindShotSheet(s);
   else if(s.kind==="bankinbox") bindBankInboxSheet(s);
   else if(s.kind==="receipt") bindReceiptSheet(s);
   else if(s.kind==="dayphrase") bindDayPhraseSheet(s);
@@ -8956,6 +8969,12 @@ function routeOpen(o){
   if(!o || !DATA) return;
   if(cur.sheet && cur.sheet.kind==="news") markNewsSeen();
   cur.sheet=null;
+  if(o.indexOf("shot:")===0){
+    const p=o.split(":");
+    render();
+    openShot(`/shared/shot.${p[2]||"jpg"}?t=${p[1]||Date.now()}`);
+    return;
+  }
   if(o.indexOf("income:")===0){
     const key=o.slice(7), dt=parseLocalDate(key);
     cur.tab="money"; cur.sub.money="finance"; DATA.settings.finMode="inc";
@@ -9176,7 +9195,7 @@ function renderQuickSheet(s){
     <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
     <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
   }
-  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l])=>
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button><button class="qa-tile qa-wide" data-qa="shot"><span class="i">🖼</span><span class="tt"><span>Со скриншота</span><small>банк или биржа — суммы запишутся сами</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l])=>
     `<button class="qa-tile" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
 }
 function quickWorkout(){
@@ -9195,6 +9214,7 @@ function bindQuickSheet(s){
     const k=b.dataset.qa;
     if(k==="phrase"){ openDayPhrase(false); return; }
     if(k==="qr"){ closeSheet(); scanReceipt(); return; }
+    if(k==="shot"){ closeSheet(); pickShot(); return; }
     if(["todo","weight","note","feel"].includes(k)){
       s.mode=k; renderSheet();
       const f=document.getElementById(k==="todo"? "qaText" : k==="weight"? "qaKg" : k==="note"? "qaNote" : "");
@@ -11059,9 +11079,220 @@ function bindHabitAutoBlock(idx){
   if(v) v.onchange=()=>{ const r=habitAuto(idx); if(r && v.value){ r.v=v.value; scheduleSave(); render(); } };
 }
 
+// ═════════ СО СКРИНШОТА ═════════
+// Скриншот банка или биржи → траты и доходы. Текст читает Tesseract.js прямо на
+// телефоне (модель rus+eng качается один раз и дальше лежит в кэше страницы).
+// Разбор: строка с суммой в конце (со знаком или валютой) — операция, текст перед
+// суммой — где, строка под ней — подсказка категории; «Сегодня», «Вчера»,
+// «30 сентября» — дата для строк ниже. Скриншот PnL с биржи — результат дня.
+const TESS_URL="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+let tessLoading=null;
+function loadTesseract(){
+  if(window.Tesseract) return Promise.resolve();
+  if(tessLoading) return tessLoading;
+  tessLoading=new Promise((res, rej)=>{
+    const s=document.createElement("script");
+    s.src=TESS_URL; s.async=true;
+    s.onload=()=>res();
+    s.onerror=()=>{ tessLoading=null; s.remove(); rej(new Error("Нет интернета — распознаванию нужно один раз скачать модель")); };
+    document.head.appendChild(s);
+  });
+  return tessLoading;
+}
+async function shotOcr(src, onProg){
+  await loadTesseract();
+  const w=await Tesseract.createWorker(["rus","eng"], 1, {logger:m=>{ if(m && typeof m.progress==="number") onProg(m.status||"", m.progress); }});
+  try{ const r=await w.recognize(src); return (r && r.data && r.data.text) || ""; }
+  finally{ try{ await w.terminate(); }catch(e){} }
+}
+function shotAvailable(){ return !(isNativeShell() && appOutdated() && versionLess((shellInfo()||{}).version||"0", "2.8")); }
+const SHOT_MONTHS=["январ","феврал","март","апрел","ма[йя]","июн","июл","август","сентябр","октябр","ноябр","декабр"];
+function shotDateOf(line){
+  const l=dpNorm(line).replace(/[^\p{L}\d.\s]/gu," ").replace(/\s+/g," ").trim();
+  if(!l || l.length>32) return null;
+  if(/^сегодня/.test(l)) return todayStr();
+  if(/^вчера/.test(l)) return addDaysKey(todayStr(),-1);
+  if(/^позавчера/.test(l)) return addDaysKey(todayStr(),-2);
+  const now=new Date();
+  const m=/^(\d{1,2})\s+([а-я]+)(?:\s+(\d{4}))?/.exec(l);
+  if(m){
+    const mi=SHOT_MONTHS.findIndex(r=>new RegExp("^"+r).test(m[2]));
+    if(mi>=0){ const d=new Date(m[3]? +m[3] : now.getFullYear(), mi, +m[1]); if(!m[3] && d>now) d.setFullYear(d.getFullYear()-1); return ymdOf(d); }
+  }
+  const n=/^(\d{1,2})\.(\d{1,2})(?:\.(\d{2,4}))?$/.exec(l);
+  if(n){ let y=n[3]? +n[3] : now.getFullYear(); if(y<100) y+=2000; const d=new Date(y, +n[2]-1, +n[1]); if(!isNaN(d)) return ymdOf(d); }
+  return null;
+}
+const SHOT_AMT=/(^|[^\d:.,])([+\-−–—]{1,3})?\s*(\d{1,3}(?:[  ]\d{3})+|\d+)(?:[.,](\d{1,2}))?\s*(₽|р\.?|p\.?|руб\.?|rub|rur|\$|usdt|usd|€|eur)?\s*$/iu;
+function shotCur(x){
+  x=String(x||"").toLowerCase().replace(/\./g,"");
+  if(!x) return "";
+  if(/^(?:₽|р|p|руб|rub|rur)$/.test(x)) return "RUB";
+  if(x==="usdt") return "USDT";
+  if(x==="$" || x==="usd") return "USD";
+  if(x==="€" || x==="eur") return "EUR";
+  return "";
+}
+function parseShotText(text){
+  const lines=String(text||"").split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+  const all=dpNorm(lines.join(" "));
+  const pnl=/(?:pnl|p&l|p\/l|прибыл|убыт|realized|реализ|доходност)/i.test(all);
+  const curDefault=/usdt/i.test(all)? "USDT" : "RUB";
+  const hist=categoryIndexFromHistory();
+  let date=null;
+  const items=[];
+  for(let i=0;i<lines.length;i++){
+    const line=lines[i];
+    const dh=shotDateOf(line);
+    if(dh){ date=dh; continue; }
+    const low=dpNorm(line);
+    if(/(?:нереализ|unrealized|баланс|balance|equity|маржа|margin|доступно|available|остаток|лимит|кэшбэк до|начислим)/.test(low)) continue;
+    const m=SHOT_AMT.exec(line);
+    if(!m) continue;
+    const sign=m[2]||"", cur=shotCur(m[5]);
+    if(!sign && !cur) continue;                       // голое число — не сумма (время, номер, процент)
+    const v=parseFloat(m[3].replace(/[  ]/g,"")+(m[4]? "."+m[4] : ""));
+    if(!(v>0)) continue;
+    let label=line.slice(0, m.index+m[1].length).replace(/[•·|:]+$/,"").replace(/\s+/g," ").trim();
+    if(!label && i>0 && !SHOT_AMT.test(lines[i-1]) && !shotDateOf(lines[i-1])) label=lines[i-1];
+    const next=lines[i+1] && !SHOT_AMT.test(lines[i+1]) && !shotDateOf(lines[i+1]) ? lines[i+1] : "";
+    const plus=/^\+/.test(sign), minus=/[\-−–—]/.test(sign);
+    const c=cur || curDefault;
+    if(pnl && (c==="USDT" || c==="USD")){
+      items.push({k:"inc", amount: minus? -v : v, cur:c, label: label || "PnL", date, src:(srcById("crypto") || incomeSources().find(s=>s.currency==="USDT") || OTHER_SRC).id});
+      continue;
+    }
+    const incWords=/(?:перевод от|зачислен|пополнен|возврат|кэшбэк|кешбэк|зарплат|поступлен|вам перевел|входящ)/i;
+    const isInc= plus || (!minus && incWords.test(label));
+    const pretty=bankPrettyMerchant(label) || label;
+    if(isInc) items.push({k:"inc", amount:v, cur:c, label:pretty, date, src:"other"});
+    else items.push({k:"exp", amount:v, cur:c, label:pretty, hint:next, date, cat: bankCategory(`${pretty} ${next}`) || guessCategory(next, hist) || ""});
+  }
+  // уже записанное — снять по умолчанию
+  items.forEach(it=>{
+    const d=it.date || todayStr(), type= it.k==="inc"? "доход" : "расход";
+    it.dup=(DATA.finance.entries||[]).some(e=>e.date===d && e.type===type && Math.abs(Math.abs(+e.amount)-Math.abs(it.amount))<0.005);
+  });
+  return {items, pnl};
+}
+function pickShot(){
+  if(!shotAvailable()){ showActionToast(`Скриншоты — в приложении ${LATEST_APP.version}: обнови, оно ставится поверх`); return; }
+  const inp=document.createElement("input");
+  inp.type="file"; inp.accept="image/*";
+  inp.onchange=()=>{
+    const f=inp.files && inp.files[0];
+    if(!f) return;
+    const r=new FileReader();
+    r.onload=()=>openShot(String(r.result||""));
+    r.readAsDataURL(f);
+  };
+  inp.click();
+}
+function openShot(src){
+  const s={kind:"shot", src, stage:"read", prog:0, status:"", items:[], off:{}, cur:{}, ty:{}, text:"", err:""};
+  openSheet(s);
+  shotOcr(src, (st, p)=>{
+    if(cur.sheet!==s) return;
+    s.prog= /recogniz/.test(st)? 0.25+p*0.75 : p*0.25;
+    s.status= /recogniz/.test(st)? "Читаю скриншот…" : "Готовлю распознавание (первый раз скачивается модель, ~4 МБ)…";
+    const bar=document.getElementById("shProg"), lab=document.getElementById("shStage");
+    if(bar) bar.style.width=Math.round(s.prog*100)+"%";
+    if(lab) lab.textContent=`${s.status} ${Math.round(s.prog*100)}%`;
+  }).then(text=>{
+    s.text=text;
+    const r=parseShotText(text);
+    s.items=r.items; s.pnl=r.pnl;
+    r.items.forEach((it,i)=>{ if(it.dup) s.off[i]=true; });
+    s.stage="done";
+    if(cur.sheet===s) renderSheet();
+  }).catch(e=>{
+    s.stage="error"; s.err=(e && e.message) || "Не получилось распознать";
+    if(cur.sheet===s) renderSheet();
+  });
+}
+function shotAmt(v, c){ v=Math.abs(+v); return `${v.toLocaleString("ru-RU",{minimumFractionDigits: v%1? 2 : 0, maximumFractionDigits:2})} ${CURRENCY_SYMBOL[c]||c}`; }
+function shotItems(s){
+  return s.items.map((it,i)=>{
+    const x=Object.assign({}, it);
+    if(s.cur[i]) x.cur=s.cur[i];
+    if(s.ty[i]) x.k=s.ty[i];
+    return x;
+  });
+}
+function renderShotSheet(s){
+  const head=`<div class="sh-head">
+      <div class="sh-title left"><b>Со скриншота</b><span class="zero">${s.stage==="done"? (s.items.length? `нашёл ${s.items.length} ${plural(s.items.length,'сумму','суммы','сумм')}` : "сумм не нашёл") : s.stage==="error"? "не получилось" : "распознаю на телефоне"}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>`;
+  if(s.stage==="read") return head+`<img class="sh-img" src="${s.src}" alt="">
+    <div class="sh-prog"><i id="shProg" style="width:${Math.round(s.prog*100)}%"></i></div>
+    <div class="sh-stage" id="shStage">${escapeHtml(s.status||"Начинаю…")}</div>`;
+  if(s.stage==="error") return head+`<div class="dp-none">${escapeHtml(s.err)}</div><div class="sh-actions"><button class="btn" data-shclose="1">Понятно</button></div>`;
+  const items=shotItems(s);
+  const rows=items.map((it,i)=>{
+    const c=it.cur||"RUB", d=parseLocalDate(it.date||todayStr());
+    const when= it.date? `${d.getDate()} ${MONTHS_GEN[d.getMonth()]}` : "сегодня";
+    const title= it.k==="inc"
+      ? `<b class="${it.amount<0?'neg':'pos'}">${escapeHtml(fmtPnl(it.amount, c))}${it.label? " · "+escapeHtml(it.label) : ""}</b>`
+      : `<b>−${escapeHtml(shotAmt(it.amount, c))}${it.label? " · "+escapeHtml(it.label) : ""}</b>`;
+    const sub= it.k==="inc" ? `${s.pnl? "результат дня" : "доход"} · ${escapeHtml(srcMeta(it.src||"other").name)} · ${when}` : `${it.cat? escapeHtml(it.cat) : "без категории"} · ${when}`;
+    return `<div class="dp-item ${s.off[i]?'off':''}" data-shoff="${i}" role="button" tabindex="0"><span class="i">${it.k==="inc"? "+" : "−"}</span>
+      <span class="t">${title}<small>${it.dup? "уже есть в записях · " : ""}${sub}</small></span>
+      <button class="ty" data-shty="${i}">${it.k==="inc"? "доход" : "расход"}</button>
+      <button class="dp-cur" data-shcur="${i}" aria-label="Сменить валюту">${CURRENCY_SYMBOL[c]||c}</button>
+      <span class="ck">${CHECK_SVG}</span></div>`;
+  }).join("");
+  const n=items.filter((x,i)=>!s.off[i]).length;
+  return head+(items.length? `<div class="dp-list shot-list">${rows}</div>
+      <div class="dp-ex" style="margin-top:8px;">Нажми на строку — не записывать; «расход/доход» и валюта переключаются.${items.some(x=>x.dup)? " Совпадающие с уже записанным сняты." : ""}</div>`
+      : `<div class="dp-none">Не нашёл сумм. Подойдёт скриншот, где видны суммы со знаком −/+ или с ₽, $, USDT — список операций в банке или PnL на бирже.</div>`)
+    + `<details class="sh-raw"><summary>Что прочитал</summary><pre>${escapeHtml(s.text||"")}</pre></details>`
+    + (items.length? `<div class="sh-actions"><button class="btn" id="shSave">${n? `Записать ${n} ${plural(n,'операцию','операции','операций')}` : "Записать"}</button></div>` : "");
+}
+function bindShotSheet(s){
+  const root=sheetRoot();
+  root.querySelectorAll('[data-shoff]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.shoff; s.off[i]=!s.off[i]; renderSheet(); });
+  root.querySelectorAll('[data-shty]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const i=+b.dataset.shty, it=shotItems(s)[i];
+    s.ty[i]= it.k==="inc"? "exp" : "inc";
+    const base=s.items[i];
+    if(s.ty[i]==="inc" && !base.src) base.src="other";
+    if(s.ty[i]==="exp" && base.amount<0) base.amount=-base.amount;
+    renderSheet();
+  });
+  root.querySelectorAll('[data-shcur]').forEach(b=>b.onclick=e=>{
+    e.stopPropagation();
+    const i=+b.dataset.shcur, now=shotItems(s)[i].cur||"RUB", list=["RUB","USDT","USD","EUR"];
+    s.cur[i]=list[(list.indexOf(now)+1)%list.length];
+    renderSheet();
+  });
+  const sv=document.getElementById("shSave");
+  if(sv) sv.onclick=()=>{
+    const items=shotItems(s).filter((x,i)=>!s.off[i]);
+    if(!items.length){ showActionToast("Всё снято — нечего записывать"); return; }
+    closeSheet();
+    withUndo(()=>{
+      ensureFinanceAccounts();
+      items.forEach(it=>{
+        const c=it.cur||"RUB", date=it.date||todayStr();
+        const acc=(DATA.finance.accounts||[]).find(a=>(a.currency||"RUB")===c);
+        let accountId=String(acc? acc.id : defaultAccountId());
+        if(it.k==="inc" && it.src && it.src!=="other") accountId=srcAccount(srcMeta(it.src));
+        const e={date, time: date===todayStr()? nowTime() : "", type: it.k==="inc"? "доход" : "расход",
+          amount: it.k==="inc"? it.amount : Math.abs(it.amount), category: it.k==="inc"? "" : (it.cat||""), comment: it.label||"", accountId, shot:1};
+        if(it.k==="inc") e.source=it.src||"other";
+        if(c!==accountCurrency(accountId)) e.currency=c;
+        DATA.finance.entries.push(e);
+      });
+    }, `Со скриншота: ${items.length} ${plural(items.length,'запись','записи','записей')}`);
+  };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-habauto", items:[
+const WHATS_NEW={id:"2026-10-02-shot", items:[
+  ["🖼","Траты и доходы со скриншота","Скриншот списка операций в банке или PnL с биржи: «+» → «Со скриншота» или «Поделиться → В трекер» (приложение 2.8). Суммы, даты и магазины прочитаются на телефоне — проверишь и запишешь."],
   ["✓","Привычки отмечаются сами","«Ранний подъём» — по сну, «Без телефона до сна» — по тому, когда отложил телефон, «Тренировка» — когда она записана, ещё дневник, вес, результат дня. Правило — в карточке привычки; снимешь галочку руками — спорить не буду."],
   ["📱","Сон — сам, по телефону","Приложение 2.7: когда отложил телефон вечером и взял утром — ночь записывается сама, остаётся оценить. Короткие взгляды ночью не считаются. Прошлые ночи за неделю — одной кнопкой. Включается в «Здоровье → Сон»."],
   ["🏦","Траты из банка — сами","Приложение 2.6 читает уведомления банков: покупка по карте записывается расходом с магазином и категорией. Переводы и пополнения — только с твоего решения. Включается в «Финансах» или в настройках → «Банк и чеки»."],
@@ -11154,7 +11385,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.7", size:"около 2 МБ",
+const LATEST_APP={version:"2.8", size:"около 2 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
