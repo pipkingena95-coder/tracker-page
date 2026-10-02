@@ -1331,6 +1331,59 @@
   .hy-leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--grey-dim);margin-top:10px;}
   .hy-leg i{width:14px;height:12px;border-radius:4px;display:inline-block;cursor:default;}
 
+  /* ---- тренировки ---- */
+  .wk2-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:14px;}
+  .wk2-stats > div{display:flex;flex-direction:column;gap:3px;padding:10px 9px;border-radius:13px;min-width:0;
+    background:color-mix(in srgb, var(--card) 72%, transparent);border:1px solid var(--border);}
+  .wk2-stats b{font:700 16px var(--fx-num);color:var(--white);letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .wk2-stats span{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .fx-hero .wk-cal{gap:4px;}
+  .fx-hero .wk-cell{min-height:34px;}
+  .wk2-add{width:100%;margin-top:14px;padding:13px;font-size:14.5px;font-weight:700;border-radius:15px;}
+  .wk2-day{display:flex;justify-content:space-between;gap:10px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey-dim);font-weight:600;margin:14px 0 2px;}
+  .wk2-day:first-child{margin-top:2px;}
+  .wk2-day b{letter-spacing:0;text-transform:none;font:500 11px 'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pr-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:8px 0;
+    border-bottom:1px solid var(--hair, var(--border));font-size:13.5px;color:var(--white);}
+  .pr-row:last-child{border-bottom:none;}
+  .pr-row b{font:600 13px 'JetBrains Mono',monospace;white-space:nowrap;}
+  .pr-row small{display:block;font-size:11px;color:var(--grey-dim);margin-top:1px;}
+  .ws-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
+  .ws-field{display:flex;flex-direction:column;gap:3px;padding:8px 12px;border-radius:14px;border:1px solid var(--border);
+    background:var(--card);min-width:0;}
+  .ws-field:focus-within{border-color:var(--amber);}
+  .ws-field span{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--grey-dim);font-weight:600;}
+  .ws-field input{background:transparent !important;border:none !important;box-shadow:none !important;padding:0;
+    font:600 16px 'JetBrains Mono',monospace;color:var(--white);width:100%;min-width:0;outline:none;}
+  .ws-ex{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) 32px;gap:6px;align-items:center;margin-top:7px;}
+  .ws-ex input{min-width:0;width:100%;padding:10px 11px;border-radius:12px;border:1px solid var(--border);
+    background:var(--card);color:var(--white);font-size:13.5px;}
+  .ws-ex input.sets{font-family:'JetBrains Mono',monospace;font-size:13px;}
+  .ws-ex button{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:none;color:var(--grey-dim);cursor:pointer;}
+  .ws-ex small{grid-column:1/-1;font:500 11px 'JetBrains Mono',monospace;color:var(--grey-dim);margin:-1px 0 1px 4px;}
+  .ws-quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px;}
+  .ws-quick button{padding:7px 11px;border-radius:16px;border:1px dashed var(--border);background:none;color:var(--grey);
+    font:500 12px var(--font-body);cursor:pointer;}
+  .ws-quick button.own{border-style:solid;border-color:var(--amber);color:var(--amber);}
+  /* ---- счета ---- */
+  .acc2-rates{display:flex;flex-wrap:wrap;gap:5px 12px;align-items:baseline;margin-top:14px;padding-top:10px;
+    border-top:1px solid var(--hair, var(--border));font:500 11.5px 'JetBrains Mono',monospace;color:var(--grey);}
+  .acc2-rates small{font-family:var(--font-body);color:var(--grey-dim);font-size:11px;}
+  .acc2-rates button{border:none;background:none;color:var(--amber);font:600 12px var(--font-body);cursor:pointer;padding:0;margin-left:auto;}
+  .acc2-rates .note{flex-basis:100%;font-family:var(--font-body);font-size:11px;color:var(--grey-dim);}
+  .acc2-bank{display:flex;justify-content:space-between;gap:10px;font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--grey-dim);font-weight:600;margin:14px 0 0;}
+  .acc2-bank:first-child{margin-top:2px;}
+  .acc2-bank b{letter-spacing:0;text-transform:none;font:500 11px 'JetBrains Mono',monospace;}
+  .fx-row .a small{display:block;font:500 10.5px 'JetBrains Mono',monospace;color:var(--grey-dim);text-align:right;margin-top:1px;}
+  .acc2-cur{font:500 11.5px 'JetBrains Mono',monospace;color:var(--grey);margin-top:8px;}
+  .acc2-note{font-size:11.5px;color:var(--grey-dim);margin-top:10px;line-height:1.45;}
+  .acc2-rec{display:flex;gap:8px;align-items:center;margin-top:8px;}
+  .acc2-rec input{flex:1;min-width:0;padding:11px 13px;border-radius:13px;border:1px solid var(--border);background:var(--card);
+    color:var(--white);font:600 14px 'JetBrains Mono',monospace;}
+  .acc2-rec .btn{flex:0 0 auto;padding:11px 14px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2038,7 +2091,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-02 11:59+c28f0aff";
+window.TRACKER_BUILD = "2026-10-02 12:24+18bcea3c";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2521,7 +2574,7 @@ function render(){
     const v=subView("money");
     const nav=renderSubNav("money",[["finance","Финансы"],["where","Счета"],["savings","Накопления"],["invest","Инвестиции"]]);
     if(v==="finance"){ c.innerHTML=nav+renderFinanceV3(); bindSubNav(); bindFinance(); bindFinanceV3(); }
-    else if(v==="where"){ c.innerHTML=nav+renderWhere(); bindSubNav(); bindWhere(); }
+    else if(v==="where"){ c.innerHTML=nav+renderWhere2(); bindSubNav(); bindWhere2(); }
     else if(v==="invest"){ c.innerHTML=nav+renderInvest(); bindSubNav(); bindInvest(); }
     else { c.innerHTML=nav+renderMonthNav()+renderSavings(); bindSubNav(); bindMonthNav(); bindSavings(); }
   }
@@ -3967,6 +4020,519 @@ function bindWorkouts(){
   };
 }
 
+// ═════════ КУРС USDT С RAPIRA ═════════
+// Rapira отдаёт курс только своему сайту (CORS), и из WebView запрос к ней
+// блокируется. Поэтому спрашивает оболочка (приложение 2.5+, AndroidHost.httpGet),
+// а без неё курс USDT остаётся с CoinGecko — и везде подписано, откуда он.
+const RAPIRA_URL="https://api.rapira.net/open/market/rates";
+let httpSeq=0;
+const httpWait={};
+window.__httpDone=function(id, code, body){ const w=httpWait[id]; if(!w) return; delete httpWait[id]; w(code, body); };
+function nativeHttp(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.httpGet==="function"; }
+function nativeGet(url, ms){
+  return new Promise((resolve, reject)=>{
+    if(!nativeHttp()){ reject(new Error("no native http")); return; }
+    const id="h"+(++httpSeq);
+    const t=setTimeout(()=>{ delete httpWait[id]; reject(new Error("timeout")); }, ms||15000);
+    httpWait[id]=(code, body)=>{ clearTimeout(t); (code>=200 && code<300) ? resolve(body) : reject(new Error("http "+code)); };
+    let ok=false;
+    try{ ok=AndroidHost.httpGet(id, url); }catch(e){ ok=false; }
+    if(!ok){ clearTimeout(t); delete httpWait[id]; reject(new Error("refused")); }
+  });
+}
+async function fetchRapiraUsdt(){
+  const j=JSON.parse(await nativeGet(RAPIRA_URL, 15000));
+  const row=((j && j.data) || []).find(x=>x && x.symbol==="USDT/RUB");
+  const rate=row ? +row.close : 0;
+  if(!(rate>0)) throw new Error("нет USDT/RUB");
+  return {rate, bid:+row.bidPrice||0, ask:+row.askPrice||0};
+}
+function fmtRate(v){ return (+v).toLocaleString('ru-RU',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+function rateLineHtml(){
+  const p=DATA.prices||{};
+  const when=x=> x? new Date(x).toLocaleString('ru-RU',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : "";
+  const bits=[];
+  if(+p.usdtRub>0){
+    bits.push(`<span>₮ ${fmtRate(p.usdtRub)} ₽ <small>Rapira${p.usdtAt? ", "+when(p.usdtAt) : ""}</small></span>`);
+    if(+p.usdRub) bits.push(`<span>$ ${fmtRate(p.usdRub)} ₽ <small>${escapeHtml(p.src||"")}</small></span>`);
+  } else if(+p.usdRub){
+    bits.push(`<span>₮ и $ ${fmtRate(p.usdRub)} ₽ <small>${escapeHtml(p.src||"")}${p.updated? ", "+when(p.updated) : ""}</small></span>`);
+  }
+  if(+p.eurRub) bits.push(`<span>€ ${fmtRate(p.eurRub)} ₽</span>`);
+  if(!bits.length) bits.push(`<span>Курс ещё не загружался</span>`);
+  const note = !(+p.usdtRub>0) && isNativeShell() && !nativeHttp()
+    ? `<span class="note">Курс USDT с Rapira — в приложении 2.5: Rapira пускает к курсу только через приложение.</span>` : "";
+  return `<div class="acc2-rates">${bits.join("")}<button data-fxrates="1">${pricesLoading? "Обновляю…" : "⟳ Обновить"}</button>${note}</div>`;
+}
+
+// ═════════ ТРЕНИРОВКИ ═════════
+// Раньше: четыре огромные плитки с нулями на весь первый экран и каждая тренировка
+// — развёрнутая форма прямо в журнале. Теперь: шапка с цифрами в ряд и календарём,
+// журнал строками, тренировка правится листом снизу.
+function workoutById(id){ return (DATA.workouts||[]).find(w=>String(w.id)===String(id)); }
+function wkFeel(v){ const f=FEELINGS.find(x=>x[0]===String(v||"")); return f && v ? f[1] : ""; }
+function wkTon(v){ return v>=1000 ? `${(v/1000).toLocaleString('ru-RU',{maximumFractionDigits:1})} т` : `${Math.round(v)} кг`; }
+function wkDurShort(min){ min=Math.round(min||0); if(min<60) return `${min} мин`; const h=Math.floor(min/60), m=min%60; return m? `${h} ч ${m}` : `${h} ч`; }
+function workoutSummary(w){
+  const bits=[];
+  if(+w.duration) bits.push(fmtDuration(+w.duration));
+  if(+w.distance) bits.push(`${(+w.distance).toLocaleString('ru-RU',{maximumFractionDigits:2})} км`);
+  const vol=workoutVolume(w);
+  if(vol) bits.push(wkTon(vol));
+  const n=(w.exercises||[]).filter(e=>(e.name||"").trim()).length;
+  if(n) bits.push(`${n} ${plural(n,'упражнение','упражнения','упражнений')}`);
+  return bits.join(" · ");
+}
+function renderWorkouts2(){
+  ensureWorkouts();
+  (DATA.workouts||[]).forEach(w=>{ if(w.id==null) w.id=Date.now()+Math.random(); });
+  const y=cur.year, m=cur.monthIdx, f=wkFilter();
+  const monthList=workoutsInMonth(y,m);
+  const totalMin=monthList.reduce((s,w)=>s+(+w.duration||0),0);
+  const totalVol=monthList.reduce((s,w)=>s+workoutVolume(w),0);
+  const totalKm=monthList.reduce((s,w)=>s+(+w.distance||0),0);
+  const since=daysSinceLastWorkout();
+  const sinceTxt = since==null? "Тренировок ещё не было — запиши первую"
+    : since===0? "Последняя — сегодня" : since===1? "Последняя — вчера" : `Последняя — ${since} ${plural(since,'день','дня','дней')} назад`;
+  const hero=`<div class="card fx-hero">
+    <div class="hb2-nav" style="margin-top:0;"><button data-wknav="-1" aria-label="Прошлый месяц">‹</button><span>${MONTHS_RU[m]} ${y}</span><button data-wknav="1" aria-label="Следующий месяц">›</button></div>
+    <div class="wk2-stats">
+      <div><b>${monthList.length}</b><span>${plural(monthList.length,'раз','раза','раз')}</span></div>
+      <div><b>${totalMin? wkDurShort(totalMin) : "—"}</b><span>время</span></div>
+      <div><b>${totalVol? wkTon(totalVol) : "—"}</b><span>тоннаж</span></div>
+      <div><b>${totalKm? totalKm.toLocaleString('ru-RU',{maximumFractionDigits:1}) : "—"}</b><span>км</span></div>
+    </div>
+    <div class="hb2-say">${sinceTxt}</div>
+    ${renderWorkoutCalendar()}
+    <button class="btn wk2-add" id="wkAdd">+ Тренировка</button>
+  </div>`;
+
+  const shown=filteredWorkouts();
+  const groups={};
+  shown.forEach(w=>{ (groups[w.date||""]=groups[w.date||""]||[]).push(w); });
+  const ts=todayStr();
+  const days=Object.keys(groups).sort().reverse().map(date=>{
+    const list=groups[date].slice().sort((a,b)=>(a.time||"").localeCompare(b.time||""));
+    const dt=parseLocalDate(date);
+    const label = !dt ? "без даты" : date===ts ? "сегодня" : `${WEEKDAYS[(dt.getDay()+6)%7]}, ${dt.getDate()} ${MONTHS_GEN[dt.getMonth()]}`;
+    const dw=dayWeight(list);
+    return `<div class="wk2-day"><span>${label}</span><b>${dw? "⚖ "+fmtKg(dw) : ""}</b></div>
+      ${list.map(w=>`<button class="fx-row" data-wkopen="${w.id}">
+        <i class="dot" style="background:${workoutTypeColor(w.type)}"></i>
+        <span class="t"><b>${escapeHtml(w.type||"Тренировка")}${w.time? ` · ${escapeHtml(w.time)}` : ""}</b>
+          <small>${escapeHtml(workoutSummary(w) || "нажми, чтобы заполнить")}${(w.notes||"").trim()? " · "+escapeHtml(w.notes.trim()) : ""}</small></span>
+        <span class="a">${escapeHtml(wkFeel(w.feeling).split(" ")[0]||"")}</span>
+      </button>`).join("")}`;
+  }).join("");
+  const filtering=!!(f.ex || f.type || f.day);
+  const journal=`<div class="card">
+    <h2>Журнал</h2>
+    ${monthList.length>=3 || filtering ? renderWorkoutFilters(monthList, shown) : ""}
+    ${days || `<div class="empty">${filtering? "По фильтру ничего" : "В этом месяце тренировок пока нет"}</div>`}
+  </div>`;
+
+  const hist=exerciseHistory(f.ex).slice(0,20);
+  const histCard = hist.length? `<div class="card">
+    <h2>«${escapeHtml(f.ex.trim())}» — история</h2>
+    ${hist.map(h=>`<div class="pr-row"><span>${escapeHtml(h.sets)}<small>${h.date? h.date.split('-').reverse().join('.') : '—'}</small></span>
+      <b>${h.best? `макс ${h.best.toLocaleString('ru-RU',{maximumFractionDigits:1})} кг` : `${h.reps} повт.`}</b></div>`).join("")}
+  </div>` : "";
+  const prs=personalRecords().slice(0,10);
+  const prCard = prs.length? `<div class="card">
+    <h2>Личные рекорды</h2>
+    ${prs.map(p=>`<div class="pr-row"><span>${escapeHtml(p.name)}<small>${p.date? p.date.split('-').reverse().join('.') : ""}</small></span>
+      <b>${p.w.toLocaleString('ru-RU',{maximumFractionDigits:1})} кг × ${p.r}</b></div>`).join("")}
+  </div>` : "";
+  return `${hero}${journal}${histCard}${prCard}
+    <div class="card"><h2>Тренировок по месяцам · ${cur.year}</h2><canvas id="wkChart" style="width:100%;height:120px;display:block;"></canvas></div>
+    ${renderExerciseLibCard()}`;
+}
+function bindWorkouts2(){
+  const counts=[]; for(let i=0;i<12;i++) counts.push(workoutsInMonth(cur.year,i).length);
+  drawGroupedBars("wkChart", MONTHS_SHORT, [{data:counts, color:cssVar("--amber")}]);
+  document.querySelectorAll('[data-wknav]').forEach(b=>b.onclick=()=>{
+    cur.monthIdx+= +b.dataset.wknav;
+    if(cur.monthIdx<0){ cur.monthIdx=11; cur.year--; }
+    if(cur.monthIdx>11){ cur.monthIdx=0; cur.year++; }
+    cur.wkFilter={ex:"",type:"",day:"",expand:false};
+    render();
+  });
+  document.querySelectorAll('[data-wkopen]').forEach(b=>b.onclick=()=>openWorkoutSheet(b.dataset.wkopen));
+  document.querySelectorAll('[data-wkday]').forEach(c=>c.onclick=()=>{ const f=wkFilter(); f.day = f.day===c.dataset.wkday ? "" : c.dataset.wkday; render(); });
+  document.querySelectorAll('[data-wkftype]').forEach(b=>b.onclick=()=>{ const v=b.dataset.wkftype, f=wkFilter(); f.type=(v && f.type===v)? "" : v; render(); });
+  document.querySelectorAll('[data-wkfex]').forEach(b=>b.onclick=()=>{ const v=b.dataset.wkfex, f=wkFilter(); f.ex=(v && f.ex===v)? "" : v; render(); });
+  const more=document.getElementById("wkFilterMore");
+  if(more) more.onclick=()=>{ wkFilter().expand=!wkFilter().expand; render(); };
+  const cd=document.getElementById("wkClearDay");
+  if(cd) cd.onclick=()=>{ wkFilter().day=""; render(); };
+  const ca=document.getElementById("wkClearFilter");
+  if(ca) ca.onclick=()=>{ cur.wkFilter={ex:"",type:"",day:"",expand:false}; render(); };
+  bindExerciseLibCard();
+  const add=document.getElementById("wkAdd");
+  if(add) add.onclick=()=>{
+    const now=new Date();
+    const sameMonth = now.getFullYear()===cur.year && now.getMonth()===cur.monthIdx;
+    const date = wkFilter().day || (sameMonth? todayStr() : `${cur.year}-${pad2(cur.monthIdx+1)}-01`);
+    const last=(DATA.workouts||[]).slice().sort((a,b)=>(b.date||"").localeCompare(a.date||""))[0];
+    const w={id:Date.now(), date, time: sameMonth? nowTime() : "", type: last && last.type || "Силовая",
+      duration:"", distance:"", feeling:"", notes:"", exercises:[], _new:true};
+    DATA.workouts.push(w);
+    scheduleSave();
+    openWorkoutSheet(w.id);
+  };
+}
+// Пустая тренировка, которую только что создали и закрыли, не остаётся в журнале
+function dropEmptyWorkout(id){
+  const i=(DATA.workouts||[]).findIndex(w=>String(w.id)===String(id));
+  if(i<0) return;
+  const w=DATA.workouts[i];
+  if(!w._new) return;
+  const empty=!(+w.duration) && !(+w.distance) && !(w.notes||"").trim() && !parseKg(w.weight) && !w.feeling
+    && !(w.exercises||[]).some(e=>(e.name||"").trim() || (e.sets||"").trim());
+  if(empty) DATA.workouts.splice(i,1); else delete w._new;
+  scheduleSave();
+}
+function openWorkoutSheet(id){ cur.sheet={kind:"workout", id:String(id)}; render(); }
+function renderWorkoutSheet(s){
+  const w=workoutById(s.id);
+  if(!w) return `<div class="sh-head"><div class="sh-title left"><b>Тренировка удалена</b></div><button class="sh-x" data-shclose="1">✕</button></div>`;
+  const dt=parseLocalDate(w.date);
+  const isCardio=CARDIO_TYPES.indexOf(w.type)>=0;
+  const inW={};
+  (w.exercises||[]).forEach(e=>{ inW[(e.name||"").trim().toLowerCase()]=1; });
+  const quick=knownExercises().filter(n=>!inW[n.toLowerCase()]).slice(0,8);
+  const ex=(w.exercises||[]).map((e,ei)=>{
+    const sets=parseSets(e.sets), vol=exerciseVolume(sets), reps=sets.reduce((a,x)=>a+x.r,0);
+    const badge = vol? `${Math.round(vol).toLocaleString('ru-RU')} кг · ${sets.length} ${plural(sets.length,'подход','подхода','подходов')}` : (reps? `${reps} повт.` : "");
+    return `<div class="ws-ex">
+      <input list="exNames" placeholder="Упражнение" value="${escapeHtml(e.name||"")}" data-wse="${ei}:name" id="wsEx${ei}n">
+      <input class="sets" placeholder="60x10, 70x8" value="${escapeHtml(e.sets||"")}" data-wse="${ei}:sets" id="wsEx${ei}s">
+      <button data-wsexdel="${ei}" aria-label="Убрать упражнение">✕</button>
+      ${badge? `<small>${badge}</small>` : ""}
+    </div>`;
+  }).join("");
+  return `${renderExerciseDatalist()}<div class="sh-head">
+      <div class="sh-title left"><b>${escapeHtml(w.type||"Тренировка")}</b><span class="zero">${dt? `${dt.getDate()} ${MONTHS_GEN[dt.getMonth()]}` : "без даты"}${workoutSummary(w)? " · "+escapeHtml(workoutSummary(w)) : ""}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="sh-lab">Тип</div>
+    <div class="fx-pick sm">${WORKOUT_TYPES.map(t=>`<button class="${w.type===t?'on':''}" data-wst="${escapeHtml(t)}" style="--src:${workoutTypeColor(t)}"><i></i>${escapeHtml(t)}</button>`).join("")}</div>
+    <div class="ws-grid2">
+      <label class="ws-field"><span>Дата</span><input type="date" data-wsf="date" id="wsDate" value="${escapeHtml(w.date||"")}"></label>
+      <label class="ws-field"><span>Время</span><input type="time" data-wsf="time" id="wsTime" value="${escapeHtml(w.time||"")}"></label>
+      <label class="ws-field"><span>Минут</span><input type="text" inputmode="numeric" data-wsf="duration" id="wsDur" placeholder="0" value="${escapeHtml(String(w.duration||""))}"></label>
+      ${isCardio? `<label class="ws-field"><span>Км</span><input type="text" inputmode="decimal" data-wsf="distance" id="wsKm" placeholder="0" value="${escapeHtml(String(w.distance||""))}"></label>`
+        : `<label class="ws-field"><span>Вес тела, кг</span><input type="text" inputmode="decimal" data-wsf="weight" id="wsW" placeholder="—" value="${escapeHtml(String(w.weight||""))}"></label>`}
+    </div>
+    <div class="sh-lab" style="margin-top:14px;">Самочувствие</div>
+    <div class="fx-pick sm">${FEELINGS.slice(1).map(([v,l])=>`<button class="${String(w.feeling||"")===v?'on':''}" data-wsfeel="${v}">${l}</button>`).join("")}</div>
+    ${isCardio && !(w.exercises||[]).length ? "" : `<div class="sh-lab" style="margin-top:14px;">Упражнения</div>
+      ${ex || `<div class="fx-hint" style="margin:4px 2px 0;">Добавь упражнения — подходы пишутся «60x10, 70x8»: вес × повторы, просто число — повторы.</div>`}
+      <div class="ws-quick"><button class="own" data-wsexadd="1">+ Упражнение</button>${quick.map(n=>`<button data-wsexq="${escapeHtml(n)}">+ ${escapeHtml(n)}</button>`).join("")}</div>`}
+    <input class="sh-in" data-wsf="notes" id="wsNotes" placeholder="Заметка — как прошло, что болело…" value="${escapeHtml(w.notes||"")}">
+    ${isCardio? `<input class="sh-in" data-wsf="weight" id="wsW2" type="text" inputmode="decimal" placeholder="⚖ Вес тела, кг (необязательно)" value="${escapeHtml(String(w.weight||""))}">` : ""}
+    <div class="sh-actions">
+      <button class="btn ghost danger" id="wsDel">Удалить</button>
+      <button class="btn" data-shclose="1">Готово</button>
+    </div>`;
+}
+function bindWorkoutSheet(s){
+  const root=sheetRoot(), w=workoutById(s.id);
+  if(!w) return;
+  const save=()=>{ scheduleSave(); render(); };
+  root.querySelectorAll('[data-wst]').forEach(b=>b.onclick=()=>{ w.type=b.dataset.wst; save(); });
+  root.querySelectorAll('[data-wsf]').forEach(el=>el.onchange=()=>{ w[el.dataset.wsf]=el.value.trim(); save(); });
+  root.querySelectorAll('[data-wsfeel]').forEach(b=>b.onclick=()=>{ w.feeling = String(w.feeling||"")===b.dataset.wsfeel ? "" : b.dataset.wsfeel; save(); });
+  root.querySelectorAll('[data-wse]').forEach(el=>el.onchange=()=>{
+    const [ei,f]=el.dataset.wse.split(":");
+    const e=w.exercises[+ei];
+    if(!e) return;
+    e[f]=el.value;
+    if(f==="name"){
+      if(!(e.sets||"").trim()){ const prev=lastSetsFor(el.value); if(prev) e.sets=prev; }
+      addExerciseToLib(el.value);
+    }
+    save();
+  });
+  root.querySelectorAll('[data-wsexdel]').forEach(b=>b.onclick=()=>{
+    const ei=+b.dataset.wsexdel, n=(w.exercises[ei]||{}).name||"без названия";
+    deleteWithUndo(`Упражнение «${n}»`, ()=>w.exercises.splice(ei,1));
+  });
+  root.querySelectorAll('[data-wsexq]').forEach(b=>b.onclick=()=>{ w.exercises.push({name:b.dataset.wsexq, sets:lastSetsFor(b.dataset.wsexq)}); save(); });
+  root.querySelectorAll('[data-wsexadd]').forEach(b=>b.onclick=()=>{
+    w.exercises.push({name:"", sets:""}); save();
+    const last=document.getElementById(`wsEx${w.exercises.length-1}n`); if(last) last.focus();
+  });
+  const del=document.getElementById("wsDel");
+  if(del) del.onclick=()=>{
+    const i=DATA.workouts.indexOf(w);
+    cur.sheet=null; closeSheet();
+    if(i>=0) deleteWithUndo(`Тренировка ${w.type||""}`.trim(), ()=>DATA.workouts.splice(i,1));
+  };
+}
+
+// ═════════ СЧЕТА ═════════
+// Раньше: три огромные плитки, суммы «по каждой валюте отдельно», а ниже — формы
+// со всеми полями каждого счёта и каждого перевода. Теперь: общая сумма крупно в
+// одной валюте с долями, счета и переводы строками, правка — листом снизу.
+function renderWhere2(){
+  ensureFinanceAccounts(); ensureInvestments();
+  const accs=DATA.finance.accounts;
+  const d0=displayCurrency(), disp = d0==="native" ? "RUB" : d0;
+  const missing=new Set();
+  const conv=(v,c)=>{ const r=convertMoney(v, c||"RUB", disp); if(r==null){ missing.add(c); return 0; } return r; };
+  const rows=accs.map((a,i)=>({a, i, bal:accountBalance(a.id), color:CAT_PALETTE[i%CAT_PALETTE.length]}));
+  rows.forEach(r=>{ r.v=conv(r.bal, r.a.currency); });
+  const invRub=(DATA.investments||[]).reduce((s,x)=>s+invValueRub(x),0);
+  const inv=conv(invRub, "RUB");
+  const onAcc=rows.reduce((s,r)=>s+r.v,0), total=onAcc+inv;
+  const slices=rows.filter(r=>r.v>0).map(r=>({name:r.a.name, v:r.v, c:r.color}));
+  if(inv>0) slices.push({name:"Инвестиции", v:inv, c:"var(--grey-dim)"});
+  const pos=slices.reduce((s,x)=>s+x.v,0);
+  const bar = slices.length>1 && pos>0 ? `<div class="fx-bar">${slices.sort((a,b)=>b.v-a.v).map(x=>
+    `<i style="width:${(x.v/pos*100).toFixed(2)}%;background:${x.c}" title="${escapeHtml(x.name)}"></i>`).join("")}</div>` : "";
+  const accMap={};
+  rows.forEach(r=>addToMap(accMap, r.bal, r.a.currency||"RUB"));
+  const curs=Object.keys(accMap).filter(k=>Math.abs(accMap[k])>0.005);
+  const sub=[`на счетах ${fmtMoney(onAcc, disp, 0)}`];
+  if(inv) sub.push(`в активах ${fmtMoney(inv, disp, 0)}`);
+  if(inv && total>0) sub.push(`${Math.round(onAcc/total*100)}% под рукой`);
+  const hero=`<div class="card fx-hero">
+    <div class="fx-hero-top"><span class="fx-k">Все деньги</span>
+      <div class="fx-cur" role="group" aria-label="Валюта">${["RUB","USDT","USD","EUR"].map(c=>
+        `<button class="${disp===c?'on':''}" data-dispcur="${c}" title="${c}">${CURRENCY_SYMBOL[c]||c}</button>`).join("")}</div></div>
+    <div class="fx-big ${total<0?'neg':'plain'}">${fmtMoney(total, disp, 0)}</div>
+    <div class="fx-sub">${sub.join(" · ")}</div>
+    ${bar}
+    ${curs.length>1? `<div class="acc2-cur">в своих валютах: ${fmtMoneyMap(accMap,0)}</div>` : ""}
+    ${missing.size? `<div class="fx-warn">Нет курса для ${[...missing].join(", ")} — не вошло в сумму. <button data-fxrates="1">Обновить курс</button></div>` : ""}
+    ${rateLineHtml()}
+  </div>`;
+
+  const groups={};
+  rows.forEach(r=>{ const k=(r.a.bank||"").trim(); (groups[k]=groups[k]||[]).push(r); });
+  const gkeys=Object.keys(groups).sort((a,b)=>groups[b].reduce((s,r)=>s+r.v,0)-groups[a].reduce((s,r)=>s+r.v,0));
+  // заголовки банков — только когда в банке несколько счетов; иначе банк в подписи
+  const showHeads = gkeys.some(k=>k && groups[k].length>1);
+  const glist = showHeads ? gkeys : [""];
+  if(!showHeads) groups[""]=rows.slice();
+  const accHtml=glist.map(k=>{
+    const list=groups[k].sort((a,b)=>b.v-a.v);
+    return `${showHeads? `<div class="acc2-bank"><span>${escapeHtml(k||"Без банка")}</span><b>${fmtMoney(list.reduce((s,r)=>s+r.v,0), disp, 0)}</b></div>` : ""}
+      ${list.map(r=>`<button class="fx-row" data-accopen="${r.a.id}">
+        <i class="dot" style="background:${r.color}"></i>
+        <span class="t"><b>${escapeHtml(r.a.name||"Счёт")}</b><small>${escapeHtml([r.a.kind||"Карта", !showHeads && (r.a.bank||"").trim() && r.a.bank.trim()!==(r.a.name||"").trim() ? r.a.bank.trim() : ""].filter(Boolean).join(" · "))}${pos>0 && r.v>0? ` · ${Math.round(r.v/pos*100)}%` : ""}</small></span>
+        <span class="a ${r.bal<0?'neg':''}">${fmtMoney(r.bal, r.a.currency||"RUB", 2)}${(r.a.currency||"RUB")!==disp && r.v? `<small>≈ ${fmtMoney(r.v, disp, 0)}</small>` : ""}</span>
+      </button>`).join("")}`;
+  }).join("");
+  const lk=leakageSince(90);
+  const accCard=`<div class="card">
+    <div class="fx-rec-head"><h2>Счета</h2><button class="fx-linkbtn" data-accnew="1">+ Счёт</button></div>
+    ${accHtml}
+    ${lk.count? `<div class="acc2-note">За 90 дней сверка ${lk.net>=0? `списала <b style="color:var(--pink)">${fmtRub(lk.net)}</b>` : `нашла <b style="color:var(--green)">${fmtRub(-lk.net)}</b>`} неучтённого — ${lk.count} ${plural(lk.count,'раз','раза','раз')}.</div>` : ""}
+    <div class="fx-hint">Нажми на счёт — название, банк, валюта, баланс и сверка.</div>
+  </div>`;
+
+  const trs=(DATA.finance.transfers||[]).map((t,i)=>({t,i})).sort((a,b)=>(b.t.date||"").localeCompare(a.t.date||"") || b.i-a.i);
+  const showT=cur.trfAll? trs : trs.slice(0,8);
+  const accName=id=>{ const a=accs.find(x=>String(x.id)===String(id)); return a? a.name : "—"; };
+  const accCur=id=>{ const a=accs.find(x=>String(x.id)===String(id)); return a? (a.currency||"RUB") : "RUB"; };
+  const trCard=`<div class="card">
+    <div class="fx-rec-head"><h2>Переводы</h2>${accs.length>1? `<button class="fx-linkbtn" data-trfnew="1">+ Перевод</button>` : ""}</div>
+    ${showT.length? showT.map(({t,i})=>{
+      const fc=accCur(t.fromAccountId), tc=accCur(t.toAccountId), dt=parseLocalDate(t.date);
+      return `<button class="fx-row" data-trfopen="${i}">
+        <i class="dot" style="background:var(--grey-dim)"></i>
+        <span class="t"><b>${escapeHtml(accName(t.fromAccountId))} → ${escapeHtml(accName(t.toAccountId))}</b>
+          <small>${dt? `${dt.getDate()} ${MONTHS_GEN[dt.getMonth()]}` : "без даты"}${t.comment? " · "+escapeHtml(t.comment) : ""}</small></span>
+        <span class="a">${fmtMoney(+t.amount||0, fc, 2)}${fc!==tc && +t.toAmount? `<small>→ ${fmtMoney(+t.toAmount, tc, 2)}</small>` : ""}</span>
+      </button>`; }).join("")
+      : `<div class="fx-empty sm">${accs.length>1? "Переводов пока нет" : "Заведи второй счёт — и можно будет переводить между ними"}</div>`}
+    ${trs.length>showT.length? `<button class="fx-linkbtn" id="trfAll">Показать все ${trs.length}</button>` : ""}
+    <div class="fx-hint">Переводы не считаются доходом или расходом — только переносят деньги между счетами.</div>
+  </div>`;
+  return hero + accCard + trCard;
+}
+function bindWhere2(){
+  bindCurrencySwitch();
+  document.querySelectorAll('[data-fxrates]').forEach(b=>b.onclick=()=>refreshPrices(true));
+  document.querySelectorAll('[data-accopen]').forEach(b=>b.onclick=()=>openAccSheet(b.dataset.accopen));
+  document.querySelectorAll('[data-accnew]').forEach(b=>b.onclick=()=>openAccSheet(null));
+  document.querySelectorAll('[data-trfopen]').forEach(b=>b.onclick=()=>openTrfSheet(+b.dataset.trfopen));
+  document.querySelectorAll('[data-trfnew]').forEach(b=>b.onclick=()=>openTrfSheet(null));
+  const all=document.getElementById("trfAll");
+  if(all) all.onclick=()=>{ cur.trfAll=true; render(); };
+  refreshPrices(false);
+}
+function parseMoneyIn(v){ const n=parseFloat(String(v==null?"":v).replace(/\s/g,"").replace(",",".")); return isFinite(n)? n : null; }
+
+// ---------- лист: счёт ----------
+function openAccSheet(id){
+  cur.sheet={kind:"acc", scope:"acc", id: id==null? null : String(id), rec:"",
+    draft: id==null? {name:"", bank:"", kind:"Карта", currency:"RUB", bal:""} : null};
+  render();
+}
+function renderAccSheet(s){
+  const isNew=s.id==null;
+  const a = isNew ? s.draft : DATA.finance.accounts.find(x=>String(x.id)===s.id);
+  if(!a) return `<div class="sh-head"><div class="sh-title left"><b>Счёт удалён</b></div><button class="sh-x" data-shclose="1">✕</button></div>`;
+  const c=a.currency||"RUB", sym=CURRENCY_SYMBOL[c]||c;
+  const bal = isNew ? a.bal : accountBalance(a.id);
+  const balStr = isNew ? (a.bal||"") : String(Math.round(bal*100)/100).replace(".",",");
+  const rec=parseMoneyIn(s.rec), diff = !isNew && rec!=null ? rec-bal : null;
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${isNew? "Новый счёт" : escapeHtml(a.name||"Счёт")}</b><span class="zero">${isNew? "карта, вклад, биржа, наличные" : escapeHtml([a.kind||"Карта", a.bank].filter(Boolean).join(" · "))}</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="sh-lab">Название</div>
+    <input class="sh-in" id="acName" style="margin-top:6px;" placeholder="например, Bybit или Тинькофф Black" value="${escapeHtml(a.name||"")}" autocomplete="off">
+    <div class="sh-lab" style="margin-top:12px;">Банк или где лежит</div>
+    <input class="sh-in" id="acBank" style="margin-top:6px;" placeholder="необязательно — по нему счета группируются" value="${escapeHtml(a.bank||"")}" autocomplete="off">
+    <div class="sh-lab" style="margin-top:14px;">Тип</div>
+    <div class="fx-pick sm">${ACCOUNT_KINDS.map(k=>`<button class="${(a.kind||"Карта")===k?'on':''}" data-ackind="${k}">${k}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:14px;">Валюта</div>
+    <div class="fx-pick cur" style="margin-top:6px;">${CURRENCY_LIST.map(x=>`<button class="${c===x?'on':''}" data-accur="${x}">${CURRENCY_SYMBOL[x]||x} ${x}</button>`).join("")}</div>
+    <div class="sh-lab" style="margin-top:14px;">${isNew? "Сколько на нём сейчас" : "Баланс"}</div>
+    <label class="fx-amt pos"><input id="acBal" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(balStr)}"><span class="c">${sym}</span></label>
+    ${isNew? "" : `<div class="acc2-note">Впишешь другое число — приложение подгонит стартовую сумму, записи не изменятся.</div>
+      <div class="sh-lab" style="margin-top:16px;">Сверка</div>
+      <div class="acc2-note" style="margin-top:2px;">По записям сейчас <b>${fmtMoney(bal, c, 2)}</b>. Если на деле другое — впиши, и разница запишется ${diff!=null && diff>0? "доходом" : "расходом"} «${UNCATEGORIZED_CAT}».</div>
+      <div class="acc2-rec"><input id="acRec" type="text" inputmode="decimal" placeholder="фактически, ${sym}" value="${escapeHtml(s.rec||"")}" autocomplete="off">
+        <button class="btn ghost" id="acRecBtn">Записать</button></div>
+      ${diff!=null && Math.abs(diff)>=0.005? `<div class="acc2-note">Разница <b style="color:${diff<0?'var(--pink)':'var(--green)'}">${diff>0?"+":"−"}${fmtMoney(Math.abs(diff), c, 2)}</b></div>` : ""}`}
+    <div class="sh-actions">
+      ${!isNew && DATA.finance.accounts.length>1? `<button class="btn ghost danger" id="acDel">Удалить</button>` : ""}
+      <button class="btn" id="acDone">${isNew? "Создать" : "Готово"}</button>
+    </div>`;
+}
+function bindAccSheet(s){
+  const root=sheetRoot(), isNew=s.id==null;
+  const a = isNew ? s.draft : DATA.finance.accounts.find(x=>String(x.id)===s.id);
+  if(!a) return;
+  const name=document.getElementById("acName"), bank=document.getElementById("acBank"), bal=document.getElementById("acBal"), rec=document.getElementById("acRec");
+  const syncNew=()=>{ if(!isNew) return; if(name) a.name=name.value; if(bank) a.bank=bank.value; if(bal) a.bal=bal.value; };
+  if(isNew){ [name,bank,bal].forEach(el=>{ if(el) el.oninput=syncNew; }); }
+  else {
+    if(name) name.onchange=()=>{ const v=name.value.trim(); if(v){ a.name=v; scheduleSave(); render(); } else name.value=a.name; };
+    if(bank) bank.onchange=()=>{ a.bank=bank.value.trim(); scheduleSave(); render(); };
+    if(bal) bal.onchange=()=>{
+      const want=parseMoneyIn(bal.value);
+      if(want==null){ render(); return; }
+      a.startBalance=(+a.startBalance||0)+(want-accountBalance(a.id));
+      scheduleSave(); render();
+    };
+    if(rec) rec.oninput=()=>{ s.rec=rec.value; };
+  }
+  root.querySelectorAll('[data-ackind]').forEach(b=>b.onclick=()=>{ syncNew(); a.kind=b.dataset.ackind; if(!isNew) scheduleSave(); render(); });
+  root.querySelectorAll('[data-accur]').forEach(b=>b.onclick=()=>{ syncNew(); a.currency=b.dataset.accur; if(!isNew) scheduleSave(); render(); });
+  const rb=document.getElementById("acRecBtn");
+  if(rb) rb.onclick=()=>{
+    if(rec) s.rec=rec.value;
+    const actual=parseMoneyIn(s.rec);
+    if(actual==null){ flashError(rec, "Впиши, сколько на счёте на самом деле"); return; }
+    const res=reconcileAccount(a.id, actual);
+    s.rec="";
+    render();
+    if(res && res.diff===0) showActionToast("Всё сходится");
+    else if(res) showActionToast(`${res.diff<0? "Списано" : "Добавлено"} ${fmtMoney(Math.abs(res.diff), a.currency||"RUB", 2)} как «${UNCATEGORIZED_CAT}»`);
+  };
+  const del=document.getElementById("acDel");
+  if(del) del.onclick=()=>{
+    const i=DATA.finance.accounts.indexOf(a);
+    if(i<0 || DATA.finance.accounts.length<2) return;
+    closeSheet();
+    deleteWithUndo(`Счёт «${a.name}»`, ()=>{
+      DATA.finance.accounts.splice(i,1);
+      const fb=DATA.finance.accounts[0].id;
+      DATA.finance.entries.forEach(e=>{ if(String(e.accountId)===String(a.id)) e.accountId=fb; });
+      (DATA.finance.transfers||[]).forEach(t=>{
+        if(String(t.fromAccountId)===String(a.id)) t.fromAccountId=fb;
+        if(String(t.toAccountId)===String(a.id)) t.toAccountId=fb;
+      });
+    });
+  };
+  const done=document.getElementById("acDone");
+  if(done) done.onclick=()=>{
+    if(!isNew){ closeSheet(); render(); return; }
+    syncNew();
+    const n=(a.name||"").trim();
+    if(!n){ flashError(name, "Как назвать счёт?"); return; }
+    const start=parseMoneyIn(a.bal)||0;
+    DATA.finance.accounts.push({id:Date.now(), name:n, bank:(a.bank||"").trim(), kind:a.kind||"Карта", currency:a.currency||"RUB", startBalance:start});
+    scheduleSave(); closeSheet(); render();
+    showActionToast(`Счёт «${n}» добавлен`);
+  };
+}
+
+// ---------- лист: перевод ----------
+function openTrfSheet(i){
+  const accs=DATA.finance.accounts, t = i==null ? null : (DATA.finance.transfers||[])[i];
+  cur.sheet={kind:"trf", scope:"acc", i: i==null? null : i,
+    draft: t ? {date:t.date||todayStr(), from:String(t.fromAccountId), to:String(t.toAccountId),
+        amount: t.amount? String(t.amount).replace(".",",") : "", toAmount: t.toAmount? String(t.toAmount).replace(".",",") : "", comment:t.comment||""}
+      : {date:todayStr(), from:String(accs[0].id), to:String((accs[1]||accs[0]).id), amount:"", toAmount:"", comment:""}};
+  render();
+}
+function renderTrfSheet(s){
+  const d=s.draft, accs=DATA.finance.accounts;
+  const curOf=id=>{ const a=accs.find(x=>String(x.id)===String(id)); return a? (a.currency||"RUB") : "RUB"; };
+  const fc=curOf(d.from), tc=curOf(d.to);
+  const amt=parseMoneyIn(d.amount);
+  const guess = fc!==tc && amt ? convertMoney(amt, fc, tc) : null;
+  const pick=(attr, sel)=>accs.map(a=>`<button class="${String(a.id)===String(sel)?'on':''}" data-${attr}="${a.id}">${escapeHtml(a.name)} <small>${a.currency||"RUB"}</small></button>`).join("");
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>${s.i==null? "Новый перевод" : "Перевод"}</b><span class="zero">между своими счетами</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    <div class="sh-lab">Откуда</div><div class="fx-pick sm">${pick("trfrom", d.from)}</div>
+    <div class="sh-lab" style="margin-top:12px;">Куда</div><div class="fx-pick sm">${pick("trto", d.to)}</div>
+    <label class="fx-amt neg" style="margin-top:14px;"><span class="s">−</span><input id="trAmt" type="text" inputmode="decimal" autocomplete="off" placeholder="0" value="${escapeHtml(d.amount||"")}"><span class="c">${CURRENCY_SYMBOL[fc]||fc}</span></label>
+    ${fc!==tc? `<label class="fx-amt pos"><span class="s">+</span><input id="trTo" type="text" inputmode="decimal" autocomplete="off" placeholder="${guess!=null? String(Math.round(guess*100)/100).replace(".",",") : "0"}" value="${escapeHtml(d.toAmount||"")}"><span class="c">${CURRENCY_SYMBOL[tc]||tc}</span></label>
+      <div class="acc2-note">Зачислено в другой валюте. Пусто — посчитаю по курсу${guess!=null? `: ≈ ${fmtMoney(guess, tc, 2)}` : ""}.</div>` : ""}
+    <input class="sh-in" id="trDate" type="date" value="${escapeHtml(d.date||"")}">
+    <input class="sh-in" id="trCom" placeholder="Комментарий — необязательно" value="${escapeHtml(d.comment||"")}" autocomplete="off">
+    <div class="sh-actions">
+      ${s.i!=null? `<button class="btn ghost danger" id="trDel">Удалить</button>` : ""}
+      <button class="btn" id="trSave">${s.i==null? "Записать" : "Сохранить"}</button>
+    </div>`;
+}
+function bindTrfSheet(s){
+  const root=sheetRoot(), d=s.draft;
+  const sync=()=>{
+    const g=id=>document.getElementById(id);
+    if(g("trAmt")) d.amount=g("trAmt").value;
+    if(g("trTo")) d.toAmount=g("trTo").value;
+    if(g("trDate")) d.date=g("trDate").value;
+    if(g("trCom")) d.comment=g("trCom").value;
+  };
+  ["trAmt","trTo","trDate","trCom"].forEach(id=>{ const el=document.getElementById(id); if(el) el.oninput=sync; });
+  root.querySelectorAll('[data-trfrom]').forEach(b=>b.onclick=()=>{ sync(); d.from=b.dataset.trfrom; if(d.from===d.to){ const o=DATA.finance.accounts.find(a=>String(a.id)!==d.from); if(o) d.to=String(o.id); } renderSheet(); });
+  root.querySelectorAll('[data-trto]').forEach(b=>b.onclick=()=>{ sync(); d.to=b.dataset.trto; renderSheet(); });
+  const del=document.getElementById("trDel");
+  if(del) del.onclick=()=>{ const i=s.i; closeSheet(); deleteWithUndo("Перевод", ()=>DATA.finance.transfers.splice(i,1)); };
+  const sv=document.getElementById("trSave");
+  if(sv) sv.onclick=()=>{
+    sync();
+    const amt=parseMoneyIn(d.amount);
+    if(!(amt>0)){ flashError(document.getElementById("trAmt"), "Сколько переводишь?"); return; }
+    if(d.from===d.to){ showActionToast("Выбери разные счета"); return; }
+    const accs=DATA.finance.accounts;
+    const curOf=id=>{ const a=accs.find(x=>String(x.id)===String(id)); return a? (a.currency||"RUB") : "RUB"; };
+    const fc=curOf(d.from), tc=curOf(d.to);
+    let toAmount=0;
+    if(fc!==tc){
+      toAmount=parseMoneyIn(d.toAmount);
+      if(!(toAmount>0)){ const g=convertMoney(amt, fc, tc); toAmount = g!=null? Math.round(g*100)/100 : 0; }
+      if(!(toAmount>0)){ flashError(document.getElementById("trTo"), "Сколько пришло — курса пока нет"); return; }
+    }
+    const rec={date:d.date||todayStr(), fromAccountId:+d.from||d.from, toAccountId:+d.to||d.to, amount:amt, toAmount, comment:(d.comment||"").trim()};
+    if(!DATA.finance.transfers) DATA.finance.transfers=[];
+    if(s.i==null) DATA.finance.transfers.push(rec); else Object.assign(DATA.finance.transfers[s.i], rec);
+    scheduleSave(); closeSheet(); render();
+    showActionToast(`Перевод записан: ${fmtMoney(amt, fc, 2)}`);
+  };
+}
+
 // ---------- PLAN ----------
 const PLAN_CATS=[["РАБОТА","#C15C48"],["СПОРТ","#83A972"],["РАЗВИТИЕ","#D9A441"],["ДЕНЬГИ","#E8703A"],
                   ["ЗДОРОВЬЕ","#4C8C88"],["БЫТ","#E2916B"],["ЛИЧНОЕ","#C98B7A"],["ДЛЯ СЕБЯ","#9CA86B"]];
@@ -5151,7 +5717,7 @@ function leakageSince(days){
   (DATA.finance.entries||[]).forEach(e=>{
     if(!e.reconcile || !e.date || e.date<fromStr) return;
     n++;
-    if(e.type==="расход") lost+=(+e.amount||0); else found+=(+e.amount||0);
+    const v=toRub(+e.amount||0, entryCurrency(e)); if(e.type==="расход") lost+=v; else found+=v;
   });
   return {lost, found, net:lost-found, count:n};
 }
@@ -5360,7 +5926,9 @@ function setDisplayCurrency(v){
 function rateToRub(c){
   if(!c || c==="RUB") return 1;
   if(c==="EUR") return +DATA.prices.eurRub||0;
-  return +DATA.prices.usdRub||0; // USD and USDT share a rate
+  // USDT — по Rapira, когда приложение умеет её спрашивать; иначе как доллар
+  if(c==="USDT" && +DATA.prices.usdtRub>0) return +DATA.prices.usdtRub;
+  return +DATA.prices.usdRub||0;
 }
 // Returns null when the conversion can't be done honestly, so callers can say so
 // instead of silently rendering a zero.
@@ -5597,7 +6165,7 @@ function spendRateNote(){
   const out=[];
   const cs=Object.keys(other);
   if(cs.length) out.push(`<div class="fx-sub" style="margin-top:6px;">Включая ${cs.map(c=>
-    `${fmtMoney(other[c],c)} по курсу ${rateToRub(c).toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽`).join(", ")}</div>`);
+    `${fmtMoney(other[c],c)} по курсу ${rateToRub(c).toLocaleString('ru-RU',{maximumFractionDigits:2})} ₽${c==="USDT" && +DATA.prices.usdtRub>0? " (Rapira)" : ""}`).join(", ")}</div>`);
   if(miss.size) out.push(`<div class="fx-warn">Нет курса для ${[...miss].join(", ")} — эти траты пока не вошли. <button data-fxrates="1">Обновить курс</button></div>`);
   return out.join("");
 }
@@ -7713,6 +8281,8 @@ function closeSheet(){
   }
   if(was && was.kind==="news") markNewsSeen();
   if(was && was.kind==="listen" && !was.done) voiceCancel();
+  if(was && was.kind==="workout"){ dropEmptyWorkout(was.id); render(); }
+  if(was && was.scope==="acc") render();
   // снять подсветку выбранного дня; из карточки пункта — показать правки в списке
   if(was && (was.scope==="fin" || was.kind==="doitem")) render();
 }
@@ -7748,6 +8318,9 @@ function renderSheet(){
   else if(s.kind==="doitem") body=renderDoItemSheet(s);
   else if(s.kind==="pnlgoal") body=renderGoalSheet(s);
   else if(s.kind==="sleep") body=renderSleepSheet(s);
+  else if(s.kind==="workout") body=renderWorkoutSheet(s);
+  else if(s.kind==="acc") body=renderAccSheet(s);
+  else if(s.kind==="trf") body=renderTrfSheet(s);
 
   r.innerHTML=`<div class="sheet-wrap ${wasIn?'in':''}">
       <div class="sheet-back" data-shclose="1"></div>
@@ -7785,6 +8358,9 @@ function renderSheet(){
   else if(s.kind==="doitem") bindDoItemSheet(s);
   else if(s.kind==="pnlgoal") bindGoalSheet(s);
   else if(s.kind==="sleep") bindSleepSheet(s);
+  else if(s.kind==="workout") bindWorkoutSheet(s);
+  else if(s.kind==="acc") bindAccSheet(s);
+  else if(s.kind==="trf") bindTrfSheet(s);
 }
 // Лист можно смахнуть вниз за шапку — как любой лист в Android
 function bindSheetDrag(sheet){
@@ -7818,6 +8394,7 @@ function afterRender(){
   const onFin = cur.tab==="money" && subView("money")==="finance";
   if(!onFin) document.documentElement.classList.remove("has-fab");
   if(cur.sheet && cur.sheet.scope==="fin" && !onFin) cur.sheet=null;
+  if(cur.sheet && cur.sheet.scope==="acc" && !(cur.tab==="money" && subView("money")==="where")) cur.sheet=null;
   const r=document.getElementById("sheetRoot");
   if(cur.sheet || (r && r.innerHTML && r.dataset.closing!=="1")) renderSheet();
 }
@@ -8250,7 +8827,11 @@ function todosWeekRow(dates){
 
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-02-habits", items:[
+const WHATS_NEW={id:"2026-10-02-wk-acc", items:[
+  ["🏋","Тренировки заново","Сверху — месяц, четыре цифры в ряд и календарь. Журнал строками, тренировка правится листом снизу: тип, время, подходы, самочувствие."],
+  ["💳","Счета заново","Все деньги одной суммой с переключателем ₽ ₮ $ € и долями по счетам. Счета и переводы строками, правка и сверка — листом снизу."],
+  ["₮","Курс USDT с Rapira","Расходы, доходы и счета в USDT пересчитываются по курсу Rapira. Рядом с курсом всегда видно, откуда он.","rapira"],
+  ["₮","Курс USDT с Rapira — в приложении 2.5","Rapira отдаёт курс только через само приложение. Кнопка ниже скачает новую версию: ставится поверх, данные сохранятся.","norapira"],
   ["↻","Привычки — заново","Без ленты, которая листалась вбок. Неделя — одна сетка на экран. Месяц — строка на привычку с полоской дней, нажмёшь — календарь для отметок. Год — месяцы цветом и столбики. Сверху — процент по плану и кто проседает."],
   ["₽","Расходы в любой валюте","Траты в USDT и долларах входят в «Потрачено», бюджет, категории и календарь — в рублях по курсу. Под суммой видно, по какому курсу посчитано."],
   ["↶","Отменить отметку","Отметил дело или привычку случайно — внизу на 6 секунд появляется «Отменить»."],
@@ -8271,6 +8852,8 @@ function newsItems(){
     if(x[3]==="native") return isNativeShell();
     if(x[3]==="notify") return notifyNative();
     if(x[3]==="nonotify") return isNativeShell() && !notifyNative();
+    if(x[3]==="rapira") return nativeHttp();
+    if(x[3]==="norapira") return isNativeShell() && !nativeHttp();
     return true;
   });
 }
@@ -8322,7 +8905,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.4", size:"меньше 1 МБ",
+const LATEST_APP={version:"2.5", size:"меньше 1 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -9275,6 +9858,8 @@ async function refreshPrices(force){
   const syms=cryptoSymbols();
   pricesLoading=true; cur.pricesError="";
   if(force) render();
+  // Rapira спрашиваем параллельно: её курс USDT нужен, даже если CoinGecko лёг
+  const rapira = nativeHttp() ? fetchRapiraUsdt().catch(()=>null) : Promise.resolve(null);
   try{
     const idSet={}; syms.forEach(s=>{ idSet[coinId(s)]=1; }); idSet["tether"]=1;
     const ids=Object.keys(idSet).filter(Boolean);
@@ -9300,6 +9885,12 @@ async function refreshPrices(force){
   }catch(e){
     try{ await refreshPricesFallback(syms); }
     catch(e2){ cur.pricesError="Не удалось получить цены — показаны последние сохранённые"; }
+  }
+  const rp=await rapira;
+  if(rp){
+    DATA.prices.usdtRub=rp.rate; DATA.prices.usdtBid=rp.bid; DATA.prices.usdtAsk=rp.ask;
+    DATA.prices.usdtSrc="Rapira"; DATA.prices.usdtAt=Date.now();
+    if(DATA.prices.rub) DATA.prices.rub.USDT=rp.rate;
   }
   pricesLoading=false;
   scheduleSave();
@@ -9353,7 +9944,7 @@ function depositState(inv){
 function toRub(amount, currency){
   if(!currency || currency==="RUB") return amount;
   if(currency==="EUR") return amount*(+DATA.prices.eurRub||0);
-  return amount*(+DATA.prices.usdRub||0); // USD and USDT are treated as one rate
+  return amount*(rateToRub(currency)||0);
 }
 function invValueRub(inv){
   if(inv.kind==="crypto"){
@@ -11208,7 +11799,7 @@ function notifyBed(day){
 function renderHealthTab(c){
   const v=subView("health");
   const nav=renderSubNav("health",[["sleep","Сон"],["workouts","Тренировки"],["body","Вес"],["feel","Самочувствие"]]);
-  if(v==="workouts"){ c.innerHTML = nav + renderMonthNav() + renderWorkouts(); bindSubNav(); bindMonthNav(); bindWorkouts(); }
+  if(v==="workouts"){ c.innerHTML = nav + renderWorkouts2(); bindSubNav(); bindWorkouts2(); }
   else if(v==="body"){ c.innerHTML = nav + renderBody(); bindSubNav(); bindBody(); }
   else if(v==="feel"){ c.innerHTML = nav + renderFeel(); bindSubNav(); bindFeel(); }
   else { c.innerHTML = nav + renderSleep(); bindSubNav(); bindSleep(); }
