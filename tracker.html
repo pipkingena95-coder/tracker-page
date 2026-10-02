@@ -2362,7 +2362,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-03 00:18+186020b5";
+window.TRACKER_BUILD = "2026-10-03 00:24+e9a7e8f8";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -8999,7 +8999,7 @@ function buildNotifyPlan(){
     if(today && !h) cancel.push(`eh:${key}`);
   }
   items.sort((a,b)=>a.at-b.at);
-  return {items, cancel};
+  return {items, cancel, bed:{goal:Math.round((+healthData().cfg.goal||8)*60), lead:30}};
 }
 
 let notifyTimer=null, notifyLast="";
@@ -11701,9 +11701,49 @@ function notifyEventItems(day, key, now){
   return out;
 }
 
+// ═════════ ОТБОЙ ПО БУДИЛЬНИКУ ═════════
+// Приложение 2.9 говорит, на сколько заведён ближайший будильник. Отбой = будильник
+// минус цель сна, округлённо до 5 минут. Будильника нет — работает «Ложиться в».
+function alarmOk(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.nextAlarm==="function"; }
+function alarmNext(){
+  if(!alarmOk()) return 0;
+  try{ return +AndroidHost.nextAlarm() || 0; }catch(e){ return 0; }
+}
+// будильник для ночи после этого дня: с 15:00 дня до 14:00 следующего
+function alarmBedFor(day){
+  const a=alarmNext();
+  if(!a) return null;
+  day=day||new Date();
+  const from=new Date(day.getFullYear(), day.getMonth(), day.getDate(), 15, 0).getTime();
+  const to=new Date(day.getFullYear(), day.getMonth(), day.getDate()+1, 14, 0).getTime();
+  if(a<from || a>to) return null;
+  const goal=(+healthData().cfg.goal||8)*3600000;
+  const bedAt=Math.round((a-goal)/300000)*300000;
+  const hm=t=>{ const x=new Date(t); return `${pad2(x.getHours())}:${pad2(x.getMinutes())}`; };
+  return {alarm:hm(a), bed:hm(bedAt), bedAt, alarmAt:a};
+}
+// на вечер сегодня; после полуночи — та же ночь
+function alarmBedTonight(){
+  const now=new Date();
+  return now.getHours()<4 ? alarmBedFor(new Date(now.getFullYear(), now.getMonth(), now.getDate()-1)) : alarmBedFor(now);
+}
+function bedRowHint(){
+  const H=healthData(), ab=alarmBedTonight();
+  if(ab) return `⏰ будильник на ${ab.alarm} — ложись в ${ab.bed}, чтобы поспать ${fmtGoal(H.cfg.goal)}`;
+  return `цель — лечь в ${escapeHtml(H.cfg.bed)} и спать ${fmtGoal(H.cfg.goal)}; утром нажмёшь «Встал»`;
+}
+function alarmBedLine(){
+  if(!alarmOk()) return isNativeShell() && appOutdated() ? `<div class="fx-hint" style="margin:6px 2px 0;">С приложением ${LATEST_APP.version} время отбоя будет считаться от твоего будильника.</div>` : "";
+  // после полуночи идущая ночь уже не про будильник — показываем следующую
+  const ab=alarmBedTonight() || alarmBedFor(new Date()), H=healthData();
+  if(!ab) return `<div class="fx-hint" style="margin:6px 2px 0;">⏰ Заведи будильник в «Часах» — подскажу, во сколько ложиться, чтобы поспать ${fmtGoal(H.cfg.goal)}.</div>`;
+  return `<div class="hl-note" style="margin-top:8px;">⏰ Будильник на <b>${ab.alarm}</b> → ложись в <b>${ab.bed}</b>${notifyCfg().bed? `, напомню в ${(()=>{ const x=new Date(ab.bedAt-30*60000); return `${pad2(x.getHours())}:${pad2(x.getMinutes())}`; })()}` : ""}. Время «Ложиться в» — на дни без будильника.</div>`;
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-03-cal", items:[
+const WHATS_NEW={id:"2026-10-03-alarm", items:[
+  ["⏰","Отбой по будильнику","Приложение 2.9 видит твой будильник: «Будильник на 7:00 — ложись в 23:00», и напомнит за 30 минут. Переставил будильник — напоминание сдвинется само."],
   ["📅","Свой календарь","Дела → Календарь: месяц сеткой, события с повтором и напоминанием, рядом — дела со сроком и платежи. События дня — на «Сегодня», новое — «+» → «Событие»."],
   ["📈","Режимы дня","«Торговый день», «Выходной», «В дороге» и свои: в режиме часть привычек на паузе (серия не рвётся) и часть уведомлений молчит. Кнопка под заголовком на «Сегодня»; можно включать само по дням недели."],
   ["🖼","Траты и доходы со скриншота","Скриншот списка операций в банке или PnL с биржи: «+» → «Со скриншота» или «Поделиться → В трекер» (приложение 2.8). Суммы, даты и магазины прочитаются на телефоне — проверишь и запишешь."],
@@ -11799,7 +11839,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.8", size:"около 2 МБ",
+const LATEST_APP={version:"2.9", size:"около 2 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -14239,7 +14279,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} try{ sleepAutoRun(); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} try{ sleepAutoRun(); }catch(e){} try{ scheduleNotifyPlan(); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
@@ -14706,7 +14746,7 @@ function renderHealthToday(){
       <button class="ev-row" data-jqgo="${day}"><span><b>Три вопроса дня</b>
         <small>${ans? "отвечено ✓ — можно дополнить" : "что получилось, что нет, что завтра главное"}</small></span><i>›</i></button>
       ${pend? "" : `<button class="ev-row" data-slbed="1"><span><b>Ложусь спать</b>
-        <small>цель — лечь в ${escapeHtml(H.cfg.bed)} и спать ${fmtGoal(H.cfg.goal)}; утром нажмёшь «Встал»</small></span><i>🌙</i></button>`}
+        <small>${bedRowHint()}</small></span><i>🌙</i></button>`}
     </div>`);
   }
   return out.join("");
@@ -14788,6 +14828,7 @@ function renderSleep(){
       <div class="hl-lab" style="margin-top:2px;">Цель сна</div>
       <div class="sl-goal">${[7,7.5,8,8.5,9].map(g=>`<button class="${+H.cfg.goal===g?'on':''}" data-slgoal="${g}">${fmtGoal(g)}</button>`).join("")}</div>
       <label class="hl-set"><span>Ложиться в</span><input type="time" data-slbedt="1" value="${escapeHtml(H.cfg.bed)}"></label>
+      ${alarmBedLine()}
       ${renderSleepPhoneToggle()}
       <label class="vc-check"><input type="checkbox" data-slremind="1" ${notifyCfg().bed?"checked":""}><span class="tt">Напоминать за 30 минут до отбоя</span>
         <small>${native? "заодно — про три вопроса дня, если ещё не ответил" : "уведомления приходят в приложении на телефоне (2.3+)"}</small></label>
@@ -14996,6 +15037,13 @@ function bindFeel(){
 // ---------- уведомление об отбое ----------
 // Вечер дня day: если отбой после полуночи, напоминание уже на следующих сутках
 function notifyBed(day){
+  const ab=alarmBedFor(day);
+  if(ab){
+    const H0=healthData(), k0=ymdOf(day), a0=jqAnswered(k0);
+    return {at:ab.bedAt-30*60000, title:"Через 30 минут — отбой",
+      text:`Будильник на ${ab.alarm} — ложись в ${ab.bed}, чтобы поспать ${fmtGoal(H0.cfg.goal)}.${a0? "" : "\nПеред сном — три вопроса дня: нажми, откроется дневник."}`,
+      open: a0? "health" : `journal:${k0}`};
+  }
   const H=healthData(), bm=hmToMin(H.cfg.bed);
   if(bm==null) return null;
   const at=new Date(day.getFullYear(), day.getMonth(), day.getDate()+(bm<12*60? 1 : 0), Math.floor(bm/60), bm%60).getTime()-30*60000;
