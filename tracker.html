@@ -1655,6 +1655,29 @@
   .ev-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;}
   .ev-row2 .sh-in{margin-top:4px;}
 
+  /* ---- биржи ---- */
+  .ex-row{display:flex;align-items:center;gap:11px;width:100%;padding:10px 2px;border:none;border-bottom:1px solid var(--hair, var(--border));
+    background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;}
+  .ex-row:last-of-type{border-bottom:none;}
+  .ex-row .dot{width:9px;height:9px;border-radius:50%;flex:0 0 auto;}
+  .ex-row .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .ex-row .t b{font-size:13.5px;font-weight:600;color:var(--white);}
+  .ex-row .t small{font-size:11.5px;color:var(--grey-dim);}
+  .ex-row .t small.old{color:var(--amber2, var(--amber));}
+  .ex-row .a{font:600 13.5px 'JetBrains Mono',monospace;color:var(--white);white-space:nowrap;text-align:right;}
+  .ex-row .a small{display:block;font:500 10.5px 'JetBrains Mono',monospace;color:var(--grey-dim);margin-top:1px;}
+  .ex-tot{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:2px;}
+  .ex-tot b{font:700 24px var(--fx-num);letter-spacing:-.03em;color:var(--white);}
+  .ex-tot span{font-size:12px;color:var(--grey);}
+  .ex-tot span .pos{color:var(--pnl-up);} .ex-tot span .neg{color:var(--pnl-down);}
+  .ex-up{display:flex;align-items:center;gap:10px;margin-top:8px;}
+  .ex-up .n{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px;}
+  .ex-up .n b{font-size:13.5px;font-weight:600;color:var(--white);}
+  .ex-up .n small{font-size:11px;color:var(--grey-dim);}
+  .ex-up label{display:flex;align-items:center;gap:6px;flex:0 0 46%;}
+  .ex-up label .sh-in{margin-top:0;text-align:right;}
+  .ex-up label span{font:600 12px var(--font-body);color:var(--grey);min-width:30px;}
+
   /* ---- shell: topbar + bottom tabbar + subnav ---- */
   .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:6px 4px 4px;}
   .tb-left{min-width:0;}
@@ -2362,7 +2385,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-05 18:34+08f7ed33";
+window.TRACKER_BUILD = "2026-10-05 18:45+3fe641f3";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -4685,10 +4708,11 @@ function renderWhere2(){
     ${trs.length>showT.length? `<button class="fx-linkbtn" id="trfAll">Показать все ${trs.length}</button>` : ""}
     <div class="fx-hint">Переводы не считаются доходом или расходом — только переносят деньги между счетами.</div>
   </div>`;
-  return hero + accCard + trCard;
+  return hero + renderExchCard() + accCard + trCard;
 }
 function bindWhere2(){
   bindCurrencySwitch();
+  bindExchCard();
   document.querySelectorAll('[data-fxrates]').forEach(b=>b.onclick=()=>refreshPrices(true));
   document.querySelectorAll('[data-accopen]').forEach(b=>b.onclick=()=>openAccSheet(b.dataset.accopen));
   document.querySelectorAll('[data-accnew]').forEach(b=>b.onclick=()=>openAccSheet(null));
@@ -6350,7 +6374,7 @@ function bindCurrencySwitch(){
 // ---------- WHERE THE MONEY SITS ----------
 // One screen that answers "where is my money right now": every account grouped by
 // bank, converted to a common currency, plus the investment portfolio on top.
-const ACCOUNT_KINDS=["Карта","Счёт","Наличные","Вклад","Брокер","Крипта","Копилка","Другое"];
+const ACCOUNT_KINDS=["Карта","Счёт","Наличные","Вклад","Брокер","Биржа","Крипта","Копилка","Другое"];
 
 function accountRub(acc){ return toRub(accountBalance(acc.id), acc.currency); }
 function needsRates(){
@@ -8679,6 +8703,7 @@ function renderSheet(){
   else if(s.kind==="trf") body=renderTrfSheet(s);
   else if(s.kind==="savent") body=renderSavEntrySheet(s);
   else if(s.kind==="quick") body=renderQuickSheet(s);
+  else if(s.kind==="exupd") body=renderExUpdSheet(s);
   else if(s.kind==="event") body=renderEventSheet(s);
   else if(s.kind==="mode") body=renderModeSheet(s);
   else if(s.kind==="modeedit") body=renderModeEditSheet(s);
@@ -8732,6 +8757,7 @@ function renderSheet(){
   else if(s.kind==="trf") bindTrfSheet(s);
   else if(s.kind==="savent") bindSavEntrySheet(s);
   else if(s.kind==="quick") bindQuickSheet(s);
+  else if(s.kind==="exupd") bindExUpdSheet(s);
   else if(s.kind==="event") bindEventSheet(s);
   else if(s.kind==="mode") bindModeSheet(s);
   else if(s.kind==="modeedit") bindModeEditSheet(s);
@@ -11235,14 +11261,14 @@ function parseShotText(text){
     const plus=/^\+/.test(sign), minus=/[\-−–—]/.test(sign);
     const c=cur || curDefault;
     if(pnl && (c==="USDT" || c==="USD")){
-      items.push({k:"inc", amount: minus? -v : v, cur:c, label: label || "PnL", date, src:(srcById("crypto") || incomeSources().find(s=>s.currency==="USDT") || OTHER_SRC).id});
+      items.push({signed:!!sign, k:"inc", amount: minus? -v : v, cur:c, label: label || "PnL", date, src:(srcById("crypto") || incomeSources().find(s=>s.currency==="USDT") || OTHER_SRC).id});
       continue;
     }
     const incWords=/(?:перевод от|зачислен|пополнен|возврат|кэшбэк|кешбэк|зарплат|поступлен|вам перевел|входящ)/i;
     const isInc= plus || (!minus && incWords.test(label));
     const pretty=bankPrettyMerchant(label) || label;
-    if(isInc) items.push({k:"inc", amount:v, cur:c, label:pretty, date, src:"other"});
-    else items.push({k:"exp", amount:v, cur:c, label:pretty, hint:next, date, cat: bankCategory(`${pretty} ${next}`) || guessCategory(next, hist) || ""});
+    if(isInc) items.push({signed:!!sign, k:"inc", amount:v, cur:c, label:pretty, date, src:"other"});
+    else items.push({signed:!!sign, k:"exp", amount:v, cur:c, label:pretty, hint:next, date, cat: bankCategory(`${pretty} ${next}`) || guessCategory(next, hist) || ""});
   }
   // уже записанное — снять по умолчанию
   items.forEach(it=>{
@@ -11278,7 +11304,10 @@ function openShot(src){
     s.text=text;
     const r=parseShotText(text);
     s.items=r.items; s.pnl=r.pnl;
-    r.items.forEach((it,i)=>{ if(it.dup) s.off[i]=true; });
+    s.bal=parseBalanceShot(text);
+    // экран активов: строки монет — не операции; остаются только суммы со знаком
+    if(s.bal) s.items=s.items.filter(it=>it.signed);
+    s.items.forEach((it,i)=>{ if(it.dup) s.off[i]=true; });
     s.stage="done";
     if(cur.sheet===s) renderSheet();
   }).catch(e=>{
@@ -11297,7 +11326,7 @@ function shotItems(s){
 }
 function renderShotSheet(s){
   const head=`<div class="sh-head">
-      <div class="sh-title left"><b>Со скриншота</b><span class="zero">${s.stage==="done"? (s.items.length? `нашёл ${s.items.length} ${plural(s.items.length,'сумму','суммы','сумм')}` : "сумм не нашёл") : s.stage==="error"? "не получилось" : "распознаю на телефоне"}</span></div>
+      <div class="sh-title left"><b>Со скриншота</b><span class="zero">${s.stage==="done"? (s.bal && !s.items.length? "баланс биржи" : s.items.length? `нашёл ${s.items.length} ${plural(s.items.length,'сумму','суммы','сумм')}` : "сумм не нашёл") : s.stage==="error"? "не получилось" : "распознаю на телефоне"}</span></div>
       <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
     </div>`;
   if(s.stage==="read") return head+`<img class="sh-img" src="${s.src}" alt="">
@@ -11319,14 +11348,15 @@ function renderShotSheet(s){
       <span class="ck">${CHECK_SVG}</span></div>`;
   }).join("");
   const n=items.filter((x,i)=>!s.off[i]).length;
-  return head+(items.length? `<div class="dp-list shot-list">${rows}</div>
+  return head+shotBalanceHtml(s)+(items.length? `<div class="dp-list shot-list">${rows}</div>
       <div class="dp-ex" style="margin-top:8px;">Нажми на строку — не записывать; «расход/доход» и валюта переключаются.${items.some(x=>x.dup)? " Совпадающие с уже записанным сняты." : ""}</div>`
-      : `<div class="dp-none">Не нашёл сумм. Подойдёт скриншот, где видны суммы со знаком −/+ или с ₽, $, USDT — список операций в банке или PnL на бирже.</div>`)
+      : s.bal? "" : `<div class="dp-none">Не нашёл сумм. Подойдёт скриншот, где видны суммы со знаком −/+ или с ₽, $, USDT — список операций в банке или PnL на бирже.</div>`)
     + `<details class="sh-raw"><summary>Что прочитал</summary><pre>${escapeHtml(s.text||"")}</pre></details>`
     + (items.length? `<div class="sh-actions"><button class="btn" id="shSave">${n? `Записать ${n} ${plural(n,'операцию','операции','операций')}` : "Записать"}</button></div>` : "");
 }
 function bindShotSheet(s){
   const root=sheetRoot();
+  bindShotBalance(s);
   root.querySelectorAll('[data-shoff]').forEach(b=>b.onclick=()=>{ const i=+b.dataset.shoff; s.off[i]=!s.off[i]; renderSheet(); });
   root.querySelectorAll('[data-shty]').forEach(b=>b.onclick=e=>{
     e.stopPropagation();
@@ -11740,9 +11770,219 @@ function alarmBedLine(){
   return `<div class="hl-note" style="margin-top:8px;">⏰ Будильник на <b>${ab.alarm}</b> → ложись в <b>${ab.bed}</b>${notifyCfg().bed? `, напомню в ${(()=>{ const x=new Date(ab.bedAt-30*60000); return `${pad2(x.getHours())}:${pad2(x.getMinutes())}`; })()}` : ""}. Время «Ложиться в» — на дни без будильника.</div>`;
 }
 
+// ═════════ БИРЖИ: ГДЕ ЛЕЖАТ ДЕНЬГИ ═════════
+// Без API: у каждой биржи — счёт, баланс обновляется скриншотом экрана активов
+// или сверкой одним листом. История обновлений — для «за месяц +620 USDT».
+const EXCH_LIST=[["Bybit",/bybit|байбит/i],["OKX",/\bokx\b|okex/i],["Binance",/binance|бинанс/i],["BingX",/bingx/i],["MEXC",/mexc/i],
+  ["HTX",/\bhtx\b|huobi/i],["Bitget",/bitget/i],["Gate",/gate\.io|\bgate\b/i],["KuCoin",/kucoin/i],["BitMart",/bitmart/i],
+  ["Rapira",/rapira|рапира/i],["Кошелёк TG",/telegram wallet|кошел[её]к/i]];
+const EXCH_PRESETS=["Bybit","OKX","Binance","BingX","MEXC","HTX","Bitget","Rapira"];
+function exchOfText(t){ const x=EXCH_LIST.find(([,re])=>re.test(String(t||""))); return x? x[0] : ""; }
+function isExchAcc(a){ return !!a && (a.kind==="Биржа" || a.kind==="Крипта" || !!exchOfText(`${a.name||""} ${a.bank||""}`)); }
+function exchData(){
+  if(!DATA.exch || typeof DATA.exch!=="object") DATA.exch={};
+  if(!DATA.exch.upd) DATA.exch.upd={};
+  if(!Array.isArray(DATA.exch.hist)) DATA.exch.hist=[];
+  return DATA.exch;
+}
+function exchAccs(){ return (DATA.finance.accounts||[]).filter(isExchAcc); }
+// «12,345.67», «12 345,67», «12345.6789» — число как его пишут биржи
+function parseLooseNum(s){
+  s=String(s||"").replace(/[\s ]/g,"");
+  if(!s) return null;
+  const lc=s.lastIndexOf(","), ld=s.lastIndexOf(".");
+  if(lc>=0 && ld>=0){ s= ld>lc ? s.replace(/,/g,"") : s.replace(/\./g,"").replace(",","."); }
+  else if(lc>=0){ s= /,\d{3}(?:,\d{3})*$/.test(s) && !/,\d{1,2}$/.test(s) ? s.replace(/,/g,"") : s.replace(",","."); }
+  const v=parseFloat(s);
+  return isFinite(v)? v : null;
+}
+function balCur(x){
+  x=String(x||"").toLowerCase();
+  if(x==="usdt") return "USDT";
+  if(x==="usd" || x==="$") return "USD";
+  if(/^(?:₽|руб|rub|р)$/.test(x)) return "RUB";
+  if(x==="eur" || x==="€") return "EUR";
+  return "";
+}
+// Экран активов: «Общий баланс» / «Total assets» / «Equity» и число рядом
+function parseBalanceShot(text){
+  const lines=String(text||"").split(/\n+/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+  const KEY=/(общ\p{L}* (?:баланс|стоимост\p{L}*|актив\p{L}*)|баланс|всего|итого|total|equity|net asset|активы|assets|оценк\p{L}*|estimated|стоимост\p{L}*|капитал|account value|portfolio|портфел\p{L}*)/iu;
+  const SKIP=/(pnl|p&l|доход|прибыл|убыт|сегодня|today|24ч|24h|нереализ|unrealized|доступн\p{L}* для вывода)/iu;
+  const NUM=/(\$\s*)?(\d{1,3}(?:[  ,.]\d{3})+(?!\d)(?:[.,]\d{1,8})?|\d+(?:[.,]\d{1,8})?)\s*(usdt|usd|\$|₽|руб|rub|eur|€)?/giu;
+  const all=lines.join(" ");
+  const exch=exchOfText(all);
+  const defCur= /usdt/i.test(all)? "USDT" : /\busd\b|\$/i.test(all)? "USD" : "";
+  for(let i=0;i<lines.length;i++){
+    if(!KEY.test(lines[i]) || SKIP.test(lines[i])) continue;
+    for(let j=i;j<=Math.min(i+2, lines.length-1);j++){
+      if(j>i && (SKIP.test(lines[j]) || KEY.test(lines[j]))) break;
+      const src= j===i ? lines[j].slice(lines[j].search(KEY)) : lines[j];
+      NUM.lastIndex=0;
+      let m;
+      while((m=NUM.exec(src))){
+        const v=parseLooseNum(m[2]);
+        if(v==null || v<=0) continue;
+        // «0.1023 BTC» — сумма в монете; берём долларовый эквивалент рядом
+        if(!m[3] && /^\s*(?:btc|eth|bnb|sol|ton|usdc|trx|xrp|doge)\b/i.test(src.slice(m.index+m[0].length))) continue;
+        if(!m[1] && !m[3] && m[2].replace(/\D/g,"").length<2) continue;
+        const cur= m[1]? "USD" : (balCur(m[3]) || defCur);
+        if(!cur || cur==="RUB" && defCur) continue;      // «≈ 1 234 567 ₽» рядом с USDT — не то
+        return {exch, amount:Math.round(v*100)/100, cur};
+      }
+    }
+  }
+  return null;
+}
+function exchStaleTxt(id){
+  const t=exchData().upd[id];
+  if(!t) return {txt:"баланс ещё не обновлял", old:true};
+  const days=Math.floor((Date.now()-t)/86400000);
+  return {txt: days<=0? "обновлено сегодня" : days===1? "обновлено вчера" : `обновлено ${days} ${plural(days,'день','дня','дней')} назад`, old: days>=7};
+}
+// новый баланс счёта: подгоняем стартовую сумму, записи не трогаем; запоминаем точку истории
+function exchSetBalance(id, amount, cur){
+  const a=(DATA.finance.accounts||[]).find(x=>String(x.id)===String(id));
+  if(!a) return null;
+  const ac=a.currency||"RUB";
+  const want= cur && cur!==ac ? convertMoney(amount, cur, ac) : amount;
+  if(want==null) return null;
+  const was=accountBalance(a.id);
+  a.startBalance=(+a.startBalance||0)+(want-was);
+  const E=exchData(), d=todayStr();
+  E.upd[a.id]=Date.now();
+  E.hist=E.hist.filter(h=>!(h.id===String(a.id) && h.d===d));
+  E.hist.push({d, id:String(a.id), v:Math.round(want*100)/100, c:ac});
+  if(E.hist.length>2000) E.hist=E.hist.slice(-2000);
+  return {was, now:want, cur:ac, name:a.name};
+}
+function exchAddPreset(name){
+  ensureFinanceAccounts();
+  const a={id:Date.now(), name, bank:"", kind:"Биржа", currency: name==="Rapira"? "RUB" : "USDT", startBalance:0};
+  DATA.finance.accounts.push(a);
+  return a;
+}
+// сумма по биржам в выбранной валюте и что было ~месяц назад по истории
+function exchTotals(disp){
+  const accs=exchAccs(), E=exchData();
+  let now=0, miss=false;
+  accs.forEach(a=>{ const v=convertMoney(accountBalance(a.id), a.currency||"RUB", disp); if(v==null) miss=true; else now+=v; });
+  const from=addDaysKey(todayStr(), -30);
+  let past=0, have=0, oldest="9999";
+  accs.forEach(a=>{
+    const h=E.hist.filter(x=>x.id===String(a.id) && x.d<=from).sort((x,y)=>y.d.localeCompare(x.d))[0]
+      || E.hist.filter(x=>x.id===String(a.id)).sort((x,y)=>x.d.localeCompare(y.d))[0];
+    if(!h) return;
+    const v=convertMoney(h.v, h.c||a.currency||"RUB", disp);
+    if(v!=null){ past+=v; have++; if(h.d<oldest) oldest=h.d; }
+  });
+  // сравнивать есть с чем, только если сверке хотя бы неделя
+  const ok= have===accs.length && have && oldest<=addDaysKey(todayStr(), -7);
+  return {now, miss, delta: ok? now-past : null, since: ok? oldest : ""};
+}
+function renderExchCard(){
+  const accs=exchAccs();
+  const d0=displayCurrency(), disp= d0==="native"? "USDT" : d0;
+  const have=new Set(accs.map(a=>exchOfText(a.name)).filter(Boolean));
+  const presets=EXCH_PRESETS.filter(p=>!have.has(p));
+  if(!accs.length) return `<div class="card">
+    <div class="fx-rec-head"><h2>Биржи</h2></div>
+    <div class="fx-hint" style="margin:0 0 10px;">Сколько где лежит — без API. Заведи биржи и обновляй баланс скриншотом экрана активов или сверкой одним листом.</div>
+    <div class="fx-pick sm">${EXCH_PRESETS.map(p=>`<button data-exadd="${p}">+ ${p}</button>`).join("")}</div>
+  </div>`;
+  const rows=accs.map((a,i)=>({a, i, bal:accountBalance(a.id), v:convertMoney(accountBalance(a.id), a.currency||"RUB", disp), color:CAT_PALETTE[(DATA.finance.accounts.indexOf(a))%CAT_PALETTE.length]}));
+  const T=exchTotals(disp), pos=rows.filter(r=>(r.v||0)>0), sum=pos.reduce((s,r)=>s+r.v,0);
+  const bar= pos.length>1? `<div class="fx-bar">${pos.sort((x,y)=>y.v-x.v).map(r=>`<i style="width:${(r.v/sum*100).toFixed(2)}%;background:${r.color}" title="${escapeHtml(r.a.name)}"></i>`).join("")}</div>` : "";
+  return `<div class="card">
+    <div class="fx-rec-head"><h2>Биржи</h2><button class="fx-linkbtn" data-exupd="1">Обновить балансы</button></div>
+    <div class="ex-tot"><b>${escapeHtml(fmtMoney(T.now, disp, 0))}</b>${T.delta!=null? `<span>${T.since<=addDaysKey(todayStr(),-28)? "за месяц" : "с "+parseLocalDate(T.since).getDate()+" "+MONTHS_GEN[parseLocalDate(T.since).getMonth()]} <b class="${T.delta>=0?'pos':'neg'}">${T.delta>=0?"+":"−"}${escapeHtml(fmtMoney(Math.abs(T.delta), disp, 0))}</b></span>` : ""}</div>
+    ${bar}
+    ${rows.sort((x,y)=>(y.v||0)-(x.v||0)).map(r=>{ const st=exchStaleTxt(r.a.id); const c=r.a.currency||"RUB";
+      return `<button class="ex-row" data-accopen="${r.a.id}"><i class="dot" style="background:${r.color}"></i>
+        <span class="t"><b>${escapeHtml(r.a.name)}</b><small class="${st.old?'old':''}">${st.txt}${sum>0 && (r.v||0)>0? ` · ${Math.round(r.v/sum*100)}%` : ""}</small></span>
+        <span class="a">${escapeHtml(fmtMoney(r.bal, c, 2))}${c!==disp && r.v!=null? `<small>≈ ${escapeHtml(fmtMoney(r.v, disp, 0))}</small>` : ""}</span></button>`; }).join("")}
+    <div class="bk-acts"><button class="btn" data-exshot="1">📷 Со скриншота</button><button class="btn ghost" data-exupd="1">Сверить вручную</button></div>
+    ${presets.length? `<div class="fx-pick sm" style="margin-top:10px;">${presets.slice(0,6).map(p=>`<button data-exadd="${p}">+ ${p}</button>`).join("")}</div>` : ""}
+    <div class="fx-hint">Скриншот — экран «Активы» в приложении биржи: «Поделиться → В трекер». Общий баланс и биржа узнаются сами.</div>
+  </div>`;
+}
+function bindExchCard(){
+  document.querySelectorAll('[data-exadd]').forEach(b=>b.onclick=()=>{
+    const a=exchAddPreset(b.dataset.exadd);
+    scheduleSave(); render();
+    openSheet({kind:"exupd", focus:String(a.id), vals:{}});
+  });
+  document.querySelectorAll('[data-exupd]').forEach(b=>b.onclick=()=>openSheet({kind:"exupd", vals:{}}));
+  document.querySelectorAll('[data-exshot]').forEach(b=>b.onclick=()=>pickShot());
+}
+function renderExUpdSheet(s){
+  const accs=exchAccs();
+  return `<div class="sh-head">
+      <div class="sh-title left"><b>Балансы бирж</b><span class="zero">впиши, сколько сейчас на каждой</span></div>
+      <button class="sh-x" data-shclose="1" aria-label="Закрыть">✕</button>
+    </div>
+    ${accs.map(a=>{ const c=a.currency||"RUB", st=exchStaleTxt(a.id), bal=accountBalance(a.id);
+      return `<div class="ex-up"><span class="n"><b>${escapeHtml(a.name)}</b><small>${st.txt}</small></span>
+        <label><input class="sh-in" data-exv="${a.id}" type="text" inputmode="decimal" placeholder="${escapeHtml(String(Math.round(bal*100)/100).replace(".",","))}" value="${escapeHtml(s.vals[a.id]||"")}" autocomplete="off"><span>${escapeHtml(CURRENCY_SYMBOL[c]||c)}</span></label></div>`; }).join("")}
+    <div class="fx-hint" style="margin:8px 2px 0;">Пустое поле — без изменений. Разница не пишется доходом или расходом: результат торговли ты записываешь сам.</div>
+    <div class="sh-actions"><button class="btn" id="exSave">Сохранить</button></div>`;
+}
+function bindExUpdSheet(s){
+  const root=sheetRoot();
+  root.querySelectorAll('[data-exv]').forEach(inp=>{ inp.oninput=()=>{ s.vals[inp.dataset.exv]=inp.value; }; });
+  if(s.focus){ const f=root.querySelector(`[data-exv="${s.focus}"]`); if(f) f.focus(); s.focus=null; }
+  const sv=document.getElementById("exSave");
+  if(sv) sv.onclick=()=>{
+    const res=[];
+    Object.keys(s.vals).forEach(id=>{
+      const v=parseLooseNum(s.vals[id]);
+      if(v==null || v<0) return;
+      const a=(DATA.finance.accounts||[]).find(x=>String(x.id)===id);
+      const r=exchSetBalance(id, v, a && a.currency);
+      if(r) res.push(r);
+    });
+    if(!res.length){ showActionToast("Ничего не изменилось"); return; }
+    scheduleSave(); closeSheet(); render();
+    showActionToast(res.length===1? `${res[0].name}: ${fmtMoney(res[0].now, res[0].cur, 2)} (${res[0].now-res[0].was>=0? "+" : "−"}${fmtMoney(Math.abs(res[0].now-res[0].was), res[0].cur, 2)})` : `Обновлено бирж: ${res.length}`);
+  };
+}
+// в листе «Со скриншота»: найден общий баланс — обновить счёт биржи
+function shotBalanceHtml(s){
+  const b=s.bal;
+  if(!b || s.balDone) return s.balDone? `<div class="rc-dup" style="margin-top:4px;">✓ Баланс обновлён: <b>${escapeHtml(s.balDone)}</b></div>` : "";
+  const accs=exchAccs();
+  if(s.balAcc==null){
+    const m=accs.find(a=>b.exch && exchOfText(`${a.name} ${a.bank||""}`)===b.exch);
+    s.balAcc= m? String(m.id) : accs.length===1 && !b.exch ? String(accs[0].id) : "new";
+  }
+  const a=accs.find(x=>String(x.id)===s.balAcc);
+  return `<div class="rc-dup" style="margin-top:4px;">Похоже на баланс${b.exch? ` <b>${escapeHtml(b.exch)}</b>` : " биржи"}: <b>${escapeHtml(shotAmt(b.amount, b.cur))}</b></div>
+    <div class="sh-lab" style="margin-top:12px;">Какой счёт обновить</div>
+    <div class="fx-pick sm" style="margin-top:6px;">${accs.map(x=>`<button class="${s.balAcc===String(x.id)?'on':''}" data-shbacc="${x.id}">${escapeHtml(x.name)}</button>`).join("")}<button class="${s.balAcc==="new"?'on':''}" data-shbacc="new">+ ${escapeHtml(b.exch||"новая биржа")}</button></div>
+    ${a? `<div class="fx-hint" style="margin:6px 2px 0;">Было ${escapeHtml(fmtMoney(accountBalance(a.id), a.currency||"RUB", 2))} → станет ${escapeHtml(shotAmt(b.amount, b.cur))}</div>` : ""}
+    <div class="sh-actions" style="margin-top:10px;"><button class="btn" id="shBalSave">Обновить баланс</button></div>`;
+}
+function bindShotBalance(s){
+  const root=sheetRoot();
+  root.querySelectorAll('[data-shbacc]').forEach(b=>b.onclick=()=>{ s.balAcc=b.dataset.shbacc; renderSheet(); });
+  const sv=document.getElementById("shBalSave");
+  if(sv) sv.onclick=()=>{
+    const b=s.bal;
+    let id=s.balAcc;
+    if(id==="new"){ const a=exchAddPreset(b.exch || "Биржа"); a.currency= b.cur==="RUB"? "RUB" : "USDT"; id=String(a.id); }
+    const r=exchSetBalance(id, b.amount, b.cur);
+    if(!r){ showActionToast("Нет курса, чтобы пересчитать в валюту счёта"); return; }
+    scheduleSave();
+    s.balDone=`${r.name} · ${fmtMoney(r.now, r.cur, 2)}`;
+    if(!s.items.length){ closeSheet(); render(); showActionToast(`${r.name}: ${fmtMoney(r.now, r.cur, 2)} (${r.now-r.was>=0? "+" : "−"}${fmtMoney(Math.abs(r.now-r.was), r.cur, 2)})`); }
+    else { render(); renderSheet(); }
+  };
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-03-alarm", items:[
+const WHATS_NEW={id:"2026-10-05-exch", items:[
+  ["🏦","Где лежат деньги на биржах","Без API: «Счета» → «Биржи». Скриншот экрана активов («Поделиться → В трекер») — общий баланс и биржа узнаются сами; или сверка всех бирж одним листом. Видно, сколько где, доли и изменение за месяц."],
   ["⏰","Отбой по будильнику","Приложение 2.9 видит твой будильник: «Будильник на 7:00 — ложись в 23:00», и напомнит за 30 минут. Переставил будильник — напоминание сдвинется само."],
   ["📅","Свой календарь","Дела → Календарь: месяц сеткой, события с повтором и напоминанием, рядом — дела со сроком и платежи. События дня — на «Сегодня», новое — «+» → «Событие»."],
   ["📈","Режимы дня","«Торговый день», «Выходной», «В дороге» и свои: в режиме часть привычек на паузе (серия не рвётся) и часть уведомлений молчит. Кнопка под заголовком на «Сегодня»; можно включать само по дням недели."],
