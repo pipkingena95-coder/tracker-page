@@ -2385,7 +2385,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-05 23:54+e625dad2";
+window.TRACKER_BUILD = "2026-10-06 00:00+06bbdc66";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -2687,6 +2687,7 @@ async function loadData(){
   handleAndroidOpen();
   try{ bankSync(false); }catch(e){}
   try{ sleepAutoRun(); }catch(e){}
+  try{ screenSync(); }catch(e){}
 }
 
 // Every migration a save needs, whether it came from storage or from a restored
@@ -11835,6 +11836,11 @@ function parseBalanceShot(text){
   }
   return null;
 }
+function exchConv(v, from, to){
+  if(!from || from===to) return v;
+  if((from==="USD" && to==="USDT") || (from==="USDT" && to==="USD")) return v;
+  return convertMoney(v, from, to);
+}
 function exchStaleTxt(id){
   const t=exchData().upd[id];
   if(!t) return {txt:"баланс ещё не обновлял", old:true};
@@ -11846,7 +11852,7 @@ function exchSetBalance(id, amount, cur){
   const a=(DATA.finance.accounts||[]).find(x=>String(x.id)===String(id));
   if(!a) return null;
   const ac=a.currency||"RUB";
-  const want= cur && cur!==ac ? convertMoney(amount, cur, ac) : amount;
+  const want= exchConv(amount, cur, ac);
   if(want==null) return null;
   const was=accountBalance(a.id);
   a.startBalance=(+a.startBalance||0)+(want-was);
@@ -11859,7 +11865,9 @@ function exchSetBalance(id, amount, cur){
 }
 function exchAddPreset(name){
   ensureFinanceAccounts();
-  const a={id:Date.now(), name, bank:"", kind:"Биржа", currency: name==="Rapira"? "RUB" : "USDT", startBalance:0};
+  let nid=Date.now();
+  while((DATA.finance.accounts||[]).some(x=>String(x.id)===String(nid))) nid++;
+  const a={id:nid, name, bank:"", kind:"Биржа", currency: name==="Rapira"? "RUB" : "USDT", startBalance:0};
   DATA.finance.accounts.push(a);
   return a;
 }
@@ -11889,6 +11897,7 @@ function renderExchCard(){
   if(!accs.length) return `<div class="card">
     <div class="fx-rec-head"><h2>Биржи</h2></div>
     <div class="fx-hint" style="margin:0 0 10px;">Сколько где лежит — без API. Заведи биржи и обновляй баланс скриншотом экрана активов или сверкой одним листом.</div>
+    ${renderScreenRow()}
     <div class="fx-pick sm">${EXCH_PRESETS.map(p=>`<button data-exadd="${p}">+ ${p}</button>`).join("")}</div>
   </div>`;
   const rows=accs.map((a,i)=>({a, i, bal:accountBalance(a.id), v:convertMoney(accountBalance(a.id), a.currency||"RUB", disp), color:CAT_PALETTE[(DATA.finance.accounts.indexOf(a))%CAT_PALETTE.length]}));
@@ -11903,6 +11912,7 @@ function renderExchCard(){
         <span class="t"><b>${escapeHtml(r.a.name)}</b><small class="${st.old?'old':''}">${st.txt}${sum>0 && (r.v||0)>0? ` · ${Math.round(r.v/sum*100)}%` : ""}</small></span>
         <span class="a">${escapeHtml(fmtMoney(r.bal, c, 2))}${c!==disp && r.v!=null? `<small>≈ ${escapeHtml(fmtMoney(r.v, disp, 0))}</small>` : ""}</span></button>`; }).join("")}
     <div class="bk-acts"><button class="btn" data-exshot="1">📷 Со скриншота</button><button class="btn ghost" data-exupd="1">Сверить вручную</button></div>
+    ${renderScreenRow()}
     ${presets.length? `<div class="fx-pick sm" style="margin-top:10px;">${presets.slice(0,6).map(p=>`<button data-exadd="${p}">+ ${p}</button>`).join("")}</div>` : ""}
     <div class="fx-hint">Скриншот — экран «Активы» в приложении биржи: «Поделиться → В трекер». Общий баланс и биржа узнаются сами. На ПК — закладка «В трекер»: баланс со страницы биржи → QR → «+» → «Чек по QR».</div>
   </div>`;
@@ -11995,9 +12005,71 @@ function applyTrkQr(raw){
   }, ()=> res? `${res.name}: ${fmtMoney(res.now, res.cur, 2)} (${res.now-res.was>=0? "+" : "−"}${fmtMoney(Math.abs(res.now-res.was), res.cur, 2)})` : "Нет курса, чтобы пересчитать в валюту счёта");
 }
 
+// ═════════ БАЛАНС С ЭКРАНА ПРИЛОЖЕНИЯ БИРЖИ ═════════
+// Приложение 3.0: служба «Специальных возможностей» кладёт текст экрана биржи, когда
+// на нём виден баланс. Здесь — найти общий баланс и обновить счёт. Цены тикают, поэтому
+// мелкие колебания (меньше 0,1%) не пишем, а сообщаем не чаще раза в 10 минут на биржу.
+const EXCH_PKG={"com.bybit.app":"Bybit","com.okinc.okex.gp":"OKX","com.binance.dev":"Binance","pro.bingbon.app":"BingX",
+  "com.mexcpro.client":"MEXC","pro.huobi":"HTX","com.bitget.exchange":"Bitget","com.gateio.gateio":"Gate",
+  "com.kubi.kucoin":"KuCoin","com.bitmart.bitmarket":"BitMart"};
+function screenOk(){ return typeof AndroidHost!=="undefined" && typeof AndroidHost.screenList==="function"; }
+function screenState(){ if(!screenOk()) return null; try{ return JSON.parse(AndroidHost.screenStatus()||"{}"); }catch(e){ return {}; } }
+let screenSyncing=false;
+function screenSync(){
+  if(!screenOk() || screenSyncing || !DATA || !DATA.finance) return;
+  let list=[];
+  try{ list=JSON.parse(AndroidHost.screenList()||"[]"); }catch(e){ list=[]; }
+  if(!list.length) return;
+  screenSyncing=true;
+  const E=exchData(), done=[], said=[];
+  E.toastAt=E.toastAt||{};
+  list.forEach(it=>{
+    if(!it) return;
+    done.push(it.id);
+    const exch=EXCH_PKG[it.pkg] || exchOfText(it.app||"") || it.app || "Биржа";
+    const r=parseBalanceShot(it.text);
+    if(!r) return;
+    const accs=exchAccs();
+    let a=accs.find(x=>exchOfText(`${x.name} ${x.bank||""}`)===exch) || accs.find(x=>x.name===exch);
+    if(!a){ a=exchAddPreset(exch); a.currency= r.cur==="RUB"? "RUB" : "USDT"; }
+    const ac=a.currency||"RUB", want=exchConv(r.amount, r.cur, ac);
+    if(want==null) return;
+    const was=accountBalance(a.id);
+    if(Math.abs(want-was) < Math.max(0.01, Math.abs(was)*0.001)){ E.upd[a.id]=Date.now(); return; }
+    const res=exchSetBalance(a.id, r.amount, r.cur);
+    if(res && (!E.toastAt[a.id] || Date.now()-E.toastAt[a.id]>10*60000)){ E.toastAt[a.id]=Date.now(); said.push(res); }
+  });
+  scheduleSave();
+  try{ AndroidHost.screenAck(JSON.stringify(done)); }catch(e){}
+  screenSyncing=false;
+  if(!cur.sheet && cur.tab==="money") render();
+  if(said.length) showActionToast(said.length===1
+    ? `📱 ${said[0].name}: ${fmtMoney(said[0].now, said[0].cur, 2)} (${said[0].now-said[0].was>=0? "+" : "−"}${fmtMoney(Math.abs(said[0].now-said[0].was), said[0].cur, 2)})`
+    : `📱 Обновлены балансы: ${said.map(x=>x.name).join(", ")}`);
+}
+window.__screenNew=function(){ try{ screenSync(); }catch(e){} };
+function renderScreenRow(){
+  if(!screenOk()){
+    if(isNativeShell() && appOutdated()) return `<div class="bk-note">С приложением ${LATEST_APP.version} баланс будет обновляться сам, когда открываешь приложение биржи. <a href="${LATEST_APP.url}">Скачать</a></div>`;
+    return "";
+  }
+  const st=screenState()||{};
+  if(st.granted) return `<div class="bk-note"><span class="bk-ok">✓ Читаю сам</span> — открой «Активы» в приложении биржи, и баланс обновится. ${escapeHtml(Object.values(EXCH_PKG).slice(0,6).join(", "))}… <button class="fx-linkbtn" data-scron="1">Настройки</button></div>`;
+  return `<div class="rc-dup" style="margin-top:10px;"><b>Обновлять само, без скриншотов</b><br>Включи «Трекер: балансы бирж» в «Специальных возможностях» — когда откроешь приложение биржи, баланс прочитается с экрана. Только приложения бирж, ничего не нажимается и не отправляется.
+    <div class="bk-acts"><button class="btn" data-scron="1">Включить</button></div>
+    <div class="bk-note">Android предупредит про «полный контроль» — так он пишет про любые специальные возможности. Если пишет «Ограниченная настройка»: «О приложении» → ⋮ → «Разрешить ограниченные настройки».</div></div>`;
+}
+document.addEventListener("click", e=>{
+  const b=e.target && e.target.closest && e.target.closest('[data-scron]');
+  if(!b) return;
+  e.preventDefault();
+  try{ AndroidHost.screenSettings(); }catch(err){}
+});
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-05-pcqr", items:[
+const WHATS_NEW={id:"2026-10-05-screen", items:[
+  ["📱","Баланс биржи — сам, с экрана","Приложение 3.0: открыл «Активы» в приложении биржи — общий баланс прочитается с экрана и счёт обновится. Включается в «Счета → Биржи». Только приложения бирж, ничего не отправляется."],
   ["💻","Баланс биржи с компьютера","Закладка «В трекер» в браузере на ПК находит общий баланс на странице биржи и показывает QR. На телефоне «+» → «Чек по QR» — счёт биржи обновится."],
   ["🏦","Где лежат деньги на биржах","Без API: «Счета» → «Биржи». Скриншот экрана активов («Поделиться → В трекер») — общий баланс и биржа узнаются сами; или сверка всех бирж одним листом. Видно, сколько где, доли и изменение за месяц."],
   ["⏰","Отбой по будильнику","Приложение 2.9 видит твой будильник: «Будильник на 7:00 — ложись в 23:00», и напомнит за 30 минут. Переставил будильник — напоминание сдвинется само."],
@@ -12096,7 +12168,7 @@ function bindNewsSheet(){
 // Кнопка микрофона видна всегда. Когда распознавать нечем, она объясняет почему
 // и предлагает выход, а не молча исчезает: раньше из-за этого казалось, что
 // голосового ввода нет вовсе.
-const LATEST_APP={version:"2.9", size:"около 2 МБ",
+const LATEST_APP={version:"3.0", size:"около 2 МБ",
   url:"https://raw.githubusercontent.com/pipkingena95-coder/tracker-page/main/tracker.apk"};
 let voicePending=null, voiceKind=null, voiceWeb=null;
 
@@ -14536,7 +14608,7 @@ function maybeAppUpdate(){
   if(Date.now()-(c.at||0) < UPDATE_CHECK_GAP) return;
   checkAppUpdate(true);
 }
-window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} try{ sleepAutoRun(); }catch(e){} try{ scheduleNotifyPlan(); }catch(e){} };
+window.onAndroidResume=function(){ voiceKind=null; try{ maybeAppUpdate(); }catch(e){} try{ notifyOnResume(); }catch(e){} try{ bankSync(false); }catch(e){} try{ sleepAutoRun(); }catch(e){} try{ scheduleNotifyPlan(); }catch(e){} try{ screenSync(); }catch(e){} };
 document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") window.onAndroidResume(); });
 
 // Скачанная страница лежит рядом, и мост отдаёт её по этому адресу. Перейти на
