@@ -717,8 +717,8 @@
   .fx-fab span{font-size:25px;font-weight:400;line-height:1;margin-top:-2px;}
   .fx-fab:active{transform:scale(.96);}
   .fx-spacer{height:64px;}
-  html.has-fab .undo-toast{bottom:calc(152px + env(safe-area-inset-bottom));}
-  @media(min-width:760px){ .fx-fab{bottom:28px;right:28px;} html.has-fab .undo-toast{bottom:92px;} }
+  html.has-fab:not(.sheet-open) .undo-toast{bottom:calc(152px + env(safe-area-inset-bottom));}
+  @media(min-width:760px){ .fx-fab{bottom:28px;right:28px;} html.has-fab:not(.sheet-open) .undo-toast{bottom:92px;} }
 
   /* ═══════ ЛИСТ СНИЗУ ═══════ */
   .sheet-wrap{position:fixed;inset:0;z-index:70;display:flex;flex-direction:column;justify-content:flex-end;
@@ -1460,10 +1460,10 @@
     transition:transform .22s ease, opacity .22s ease;}
   .qa-fab:active{transform:scale(.94);}
   html.fab-hide .qa-fab, html.sheet-open .qa-fab{transform:translateY(160%);opacity:0;pointer-events:none;}
-  html.has-qa .undo-toast{bottom:calc(156px + env(safe-area-inset-bottom));}
+  html.has-qa:not(.sheet-open) .undo-toast{bottom:calc(156px + env(safe-area-inset-bottom));}
   /* конец любого списка докручивается выше кнопки — она не закрывает последние строки */
   html.has-qa .app{padding-bottom:calc(166px + env(safe-area-inset-bottom));}
-  @media(min-width:760px){ .qa-fab{bottom:28px;right:28px;} html.has-qa .undo-toast{bottom:96px;} html.has-qa .app{padding-bottom:110px;} }
+  @media(min-width:760px){ .qa-fab{bottom:28px;right:28px;} html.has-qa:not(.sheet-open) .undo-toast{bottom:96px;} html.has-qa .app{padding-bottom:110px;} }
   .qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px;}
   .qa-tile{display:flex;align-items:center;gap:10px;padding:15px 12px;border-radius:16px;border:1px solid var(--border);
     background:var(--card);color:var(--white);font:600 13.5px var(--font-body);text-align:left;cursor:pointer;min-width:0;}
@@ -2362,7 +2362,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-03 00:24+e9a7e8f8";
+window.TRACKER_BUILD = "2026-10-05 18:34+08f7ed33";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
