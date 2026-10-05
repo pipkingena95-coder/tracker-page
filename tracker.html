@@ -2385,7 +2385,7 @@
  * (в браузерной сборке его предоставляет контейнер), поэтому здесь тот же интерфейс,
  * только поверх файлов в приватной папке приложения.
  */
-window.TRACKER_BUILD = "2026-10-05 18:45+3fe641f3";
+window.TRACKER_BUILD = "2026-10-05 23:54+e625dad2";
 
 (function(){
   if (typeof AndroidHost === "undefined") return;   // открыли в обычном браузере
@@ -9296,7 +9296,7 @@ function renderQuickSheet(s){
     <input class="fe-note" id="qaFeelNote" placeholder="Что-то беспокоит? — необязательно" value="${escapeHtml(f.note||"")}" autocomplete="off">
     <div class="sh-actions"><button class="btn" id="qaFeelSave">Готово</button></div>`;
   }
-  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button><button class="qa-tile qa-wide" data-qa="shot"><span class="i">🖼</span><span class="tt"><span>Со скриншота</span><small>банк или биржа — суммы запишутся сами</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>сумма и время — точно с чека</small></span></button>` : ""}${QA_TILES.map(([k,ic,l],i)=>
+  return head("Записать", "что-то одно — быстро", 0)+`<div class="qa-grid"><button class="qa-tile qa-wide" data-qa="phrase"><span class="i">🎤</span><span class="tt"><span>Весь день одной фразой</span><small>деньги, траты, спорт, сон, настроение — разом</small></span></button><button class="qa-tile qa-wide" data-qa="shot"><span class="i">🖼</span><span class="tt"><span>Со скриншота</span><small>банк или биржа — суммы запишутся сами</small></span></button>${qrAvailable()? `<button class="qa-tile qa-wide" data-qa="qr"><span class="i">📷</span><span class="tt"><span>Чек по QR</span><small>чек из магазина или баланс биржи с ПК</small></span></button>` : ""}${QA_TILES.map(([k,ic,l],i)=>
     `<button class="qa-tile${i===QA_TILES.length-1 && QA_TILES.length%2? " qa-wide" : ""}" data-qa="${k}"><span class="i">${ic}</span><span>${l}</span></button>`).join("")}</div>`;
 }
 function quickWorkout(){
@@ -10819,6 +10819,7 @@ async function scanReceipt(){
   try{ raw=await qrScan(); }
   catch(e){ const msg=e && e.message || ""; if(msg && msg!=="unavailable") showActionToast("📷 "+msg); else if(msg==="unavailable") showActionToast("Сканер чеков — в приложении "+LATEST_APP.version); return; }
   const r=parseReceiptQr(raw);
+  if(/^TRK1;/.test(raw)){ applyTrkQr(raw); return; }
   if(!r){ showActionToast("Это не QR кассового чека"); return; }
   const accs=DATA.finance.accounts||[];
   const acc=accs.find(a=>(a.currency||"RUB")==="RUB") || accs[0];
@@ -11903,7 +11904,7 @@ function renderExchCard(){
         <span class="a">${escapeHtml(fmtMoney(r.bal, c, 2))}${c!==disp && r.v!=null? `<small>≈ ${escapeHtml(fmtMoney(r.v, disp, 0))}</small>` : ""}</span></button>`; }).join("")}
     <div class="bk-acts"><button class="btn" data-exshot="1">📷 Со скриншота</button><button class="btn ghost" data-exupd="1">Сверить вручную</button></div>
     ${presets.length? `<div class="fx-pick sm" style="margin-top:10px;">${presets.slice(0,6).map(p=>`<button data-exadd="${p}">+ ${p}</button>`).join("")}</div>` : ""}
-    <div class="fx-hint">Скриншот — экран «Активы» в приложении биржи: «Поделиться → В трекер». Общий баланс и биржа узнаются сами.</div>
+    <div class="fx-hint">Скриншот — экран «Активы» в приложении биржи: «Поделиться → В трекер». Общий баланс и биржа узнаются сами. На ПК — закладка «В трекер»: баланс со страницы биржи → QR → «+» → «Чек по QR».</div>
   </div>`;
 }
 function bindExchCard(){
@@ -11979,9 +11980,25 @@ function bindShotBalance(s){
   };
 }
 
+// ═════════ БАЛАНС БИРЖИ С ПК ═════════
+// QR из закладки «В трекер»: «TRK1;Bybit;12345.67;USDT»
+function applyTrkQr(raw){
+  const p=String(raw||"").trim().split(";");
+  const name=(p[1]||"Биржа").trim(), v=parseFloat(p[2]), c=String(p[3]||"USDT").trim().toUpperCase();
+  if(!(v>=0) || CURRENCY_LIST.indexOf(c)<0){ showActionToast("Непонятный QR"); return; }
+  const accs=exchAccs(), key=exchOfText(name);
+  let a=accs.find(x=>x.name===name) || (key? accs.find(x=>exchOfText(`${x.name} ${x.bank||""}`)===key) : null);
+  let res=null;
+  withUndo(()=>{
+    if(!a){ a=exchAddPreset(name); a.currency= c==="RUB"? "RUB" : "USDT"; }
+    res=exchSetBalance(a.id, v, c);
+  }, ()=> res? `${res.name}: ${fmtMoney(res.now, res.cur, 2)} (${res.now-res.was>=0? "+" : "−"}${fmtMoney(Math.abs(res.now-res.was), res.cur, 2)})` : "Нет курса, чтобы пересчитать в валюту счёта");
+}
+
 // ═════════ ЧТО НОВОГО ═════════
 // После обновления сразу видно, что именно поменялось, — а не «вроде то же самое».
-const WHATS_NEW={id:"2026-10-05-exch", items:[
+const WHATS_NEW={id:"2026-10-05-pcqr", items:[
+  ["💻","Баланс биржи с компьютера","Закладка «В трекер» в браузере на ПК находит общий баланс на странице биржи и показывает QR. На телефоне «+» → «Чек по QR» — счёт биржи обновится."],
   ["🏦","Где лежат деньги на биржах","Без API: «Счета» → «Биржи». Скриншот экрана активов («Поделиться → В трекер») — общий баланс и биржа узнаются сами; или сверка всех бирж одним листом. Видно, сколько где, доли и изменение за месяц."],
   ["⏰","Отбой по будильнику","Приложение 2.9 видит твой будильник: «Будильник на 7:00 — ложись в 23:00», и напомнит за 30 минут. Переставил будильник — напоминание сдвинется само."],
   ["📅","Свой календарь","Дела → Календарь: месяц сеткой, события с повтором и напоминанием, рядом — дела со сроком и платежи. События дня — на «Сегодня», новое — «+» → «Событие»."],
